@@ -1,4 +1,5 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import InputNav from './InputNav';
 import Login from '../screens/Login';
 import React from 'react';
 const Stack = createNativeStackNavigator();
@@ -11,6 +12,7 @@ const RootStackNav = () => {
         component={Login}
         options={{headerShown: false}}
       />
+      <Stack.Screen name="InputNav" component={InputNav} />
       {/* <Stack.Screen name="InputNav" component={InputNav} />
       <Stack.Screen name="BottomTabNav" component={BottomTabNav} />
       <Stack.Screen name="FoodDetail" component={FoodDetail} />
