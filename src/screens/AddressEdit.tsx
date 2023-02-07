@@ -30,7 +30,7 @@ import {
   deleteAddress,
   setSelectedAddressId,
   updateAddress,
-} from '~/stores/slices/orderSlice';
+} from '../stores/slices/orderSlice';
 import DAlert from '../components/common/DAlert';
 
 const PostalCode = styled(TextSub)`
@@ -158,7 +158,7 @@ const AddressEdit = ({
                   setAddressDeleteAlertShow(true);
                 }}>
                 <AddressDeleteIcon
-                  source={require('~/assets/icons/24_icon=close.png')}
+                  source={require('../assets/icons/24_icon=close.png')}
                 />
               </AddressDeleteBtn>
             </Row>
