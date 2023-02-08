@@ -1,5 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {KakaoOAuthToken, login} from '@react-native-seoul/kakao-login';
+import {
+  KakaoOAuthToken,
+  login,
+  loginWithKakaoAccount,
+} from '@react-native-seoul/kakao-login';
 import axios from 'axios';
 import {
   PRODUCT_LIST,
@@ -74,6 +78,8 @@ export const validateToken = async () => {
       console.log(e, 'refresh만료');
       // 카카오로그인
       const kakaoToken: KakaoOAuthToken = await login();
+      // const kakaoToken: KakaoOAuthToken = await loginWithKakaoAccount();
+      console.log('kakaoLogin kakaoToken: ', JSON.stringify(kakaoToken));
       const {accessToken, refreshToken} = await getDoobiToken(
         kakaoToken.accessToken,
       );
