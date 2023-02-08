@@ -31,7 +31,7 @@ export const storeToken = async (
   refreshToken && (await AsyncStorage.setItem('REFRESH_TOKEN', refreshToken));
 };
 
-const getStoredToken = async () => {
+export const getStoredToken = async () => {
   const accessToken = await AsyncStorage.getItem('ACCESS_TOKEN');
   const refreshToken = await AsyncStorage.getItem('REFRESH_TOKEN');
   return {
