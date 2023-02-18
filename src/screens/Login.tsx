@@ -4,6 +4,7 @@ import colors from '../styles/colors';
 import {validateToken} from '../query/query';
 import {NavigationProps} from '../constants/constants';
 import React from 'react';
+import {getProfile} from '@react-native-seoul/kakao-login';
 
 const Login = ({navigation: {navigate}}: NavigationProps) => {
   // 실제 로그인. 테스트때만 주석처리
@@ -13,8 +14,10 @@ const Login = ({navigation: {navigate}}: NavigationProps) => {
     // 바로 메인페이지로 이동시키기
     // TBD: ios 로그인 설정
     const isTokenValid = await validateToken();
+    const profile = await getProfile();
+    // console.log('profile', profile);
     console.log(isTokenValid);
-    if (isTokenValid) {
+    if (isTokenValid || profile) {
       navigate('InputNav', {screen: 'FirstInput'});
     }
     //메인페이지 이동
