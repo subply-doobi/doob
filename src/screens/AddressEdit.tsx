@@ -1,4 +1,4 @@
-import {View, Text, ScrollView, Modal, Alert} from 'react-native';
+import {View, Pressable, Text, ScrollView, Modal, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import {
@@ -64,11 +64,16 @@ const AddressConfirmBtn = styled(BtnCTA)`
   margin-top: 8px;
   margin-bottom: 8px;
 `;
+
 const ModalBackGround = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
-  background-color: #000000a6;
+  margin-top: 22;
+  /* flex: 1;
+  justify-content: center;
+  align-items: center;
+  background-color: #000000a6; */
 `;
 
 const AlertText = styled(TextMain)`
@@ -220,16 +225,17 @@ const AddressEdit = ({
         }}>
         <BtnText>확인</BtnText>
       </AddressConfirmBtn>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={postModalVisible}
-        onRequestClose={() => {
-          setPostModalVisible(!postModalVisible);
-        }}>
-        <ModalBackGround>
+      <ModalBackGround>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={postModalVisible}
+          onRequestClose={() => {
+            setPostModalVisible(!postModalVisible);
+          }}>
+          {/* <ModalBackGround> */}
           <Postcode
-            style={{width: SCREENWIDTH - 32, height: SCREENHEIGHT / 2}}
+            style={{width: SCREENWIDTH - 32, minHeight: 470}}
             jsOptions={{animation: true, hideMapBtn: false}}
             onSelected={data => {
               setAddressBase(data.roadAddress);
@@ -239,8 +245,9 @@ const AddressEdit = ({
             }}
             onError={() => console.log('오류')}
           />
-        </ModalBackGround>
-      </Modal>
+          {/* </ModalBackGround> */}
+        </Modal>
+      </ModalBackGround>
       <DAlert
         alertShow={addressDeleteAlertShow}
         onCancel={() => {
