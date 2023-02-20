@@ -13,7 +13,7 @@ import {
   TextMain,
   TextSub,
 } from '../../styles/styledConsts';
-import {addProductToMenu, deleteProduct} from '../../stores/slices/cartSlice';
+// import {addProductToMenu, deleteProduct} from '../../stores/slices/cartSlice';
 import NutrientsProgress from '../../components/common/NutrientsProgress';
 import colors from '../../styles/colors';
 import {FlatList, Text, View} from 'react-native';
@@ -101,7 +101,7 @@ const Home = ({navigation}) => {
   const dispatch = useDispatch();
 
   // state
-  const {menuIndex, cart} = useSelector((state: RootState) => state.cart);
+  const {menuIndex} = useSelector((state: RootState) => state.cart);
   const [searchText, setSearchText] = useState('');
   const [testData, setTestData] = useState([]);
   const [menuSelectOpen, setMenuSelectOpen] = useState(false);
@@ -150,7 +150,7 @@ const Home = ({navigation}) => {
           </BottomSheetTestScreen>
         ))}
       </FilterMenuContainer>
-      <FlatList
+      {/* <FlatList
         style={{marginTop: 24}}
         data={testData}
         renderItem={item => (
@@ -160,7 +160,7 @@ const Home = ({navigation}) => {
         keyExtractor={item => item.productNo}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{paddingBottom: 80}}
-      />
+      /> */}
       <BtnCTA
         btnStyle="activated"
         onPress={async () => {

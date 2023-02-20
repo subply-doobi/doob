@@ -14,10 +14,10 @@ const Login = ({navigation: {navigate}}: NavigationProps) => {
     // 바로 메인페이지로 이동시키기
     // TBD: ios 로그인 설정
     const isTokenValid = await validateToken();
-    const profile = await getProfile();
-    // console.log('profile', profile);
-    console.log(isTokenValid);
-    if (isTokenValid || profile) {
+    // const profile = await getProfile();
+    // // console.log('profile', profile);
+    // console.log(isTokenValid);
+    if (isTokenValid) {
       navigate('InputNav', {screen: 'FirstInput'});
     }
     //메인페이지 이동

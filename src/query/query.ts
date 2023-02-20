@@ -128,4 +128,5 @@ export const getUserBaseLine = async () => {
     },
   });
   console.log('getUserBaseLine: res:', res.data);
+  return res.data;
 };

@@ -7,6 +7,8 @@ import * as Progress from 'react-native-progress';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
 import {calculateCartNutr} from '../../util/targetCalculation';
+import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
+import {getUserBaseLine} from '../../query/query';
 
 const ProgressBarContainer = styled.View`
   flex: 1;
@@ -78,33 +80,41 @@ const ProgressBar = ({title, numerator, denominator}: INutrientProgress) => {
   );
 };
 
-const NutrientsProgress = ({menuIndex}: {menuIndex: number}) => {
+const NutrientsProgress = ({menuIndex}: {menuIndex: string}) => {
   const {userTarget} = useSelector((state: RootState) => state.userInfo);
-  const {cart} = useSelector((state: RootState) => state?.cart);
-  const {calorie, carb, protein, fat} = calculateCartNutr(cart[menuIndex]);
+
+  // react-query test
+  const {isLoading, error, data, isFetching} = useQuery({
+    queryKey: ['baseLine'],
+    queryFn: getUserBaseLine,
+  });
+  console.log(isLoading, error, data, isFetching);
+  // const {cart} = useSelector((state: RootState) => state?.cart);
+  // const {calorie, carb, protein, fat} = calculateCartNutr(cart[menuIndex]);
+  const {calorie, carb, protein, fat} = data;
   return (
     <Container>
       <ProgressBar
         title="칼로리(g)"
-        numerator={calorie}
+        numerator={parseInt(calorie)}
         denominator={parseInt(userTarget.calorie)}
       />
       <VerticalSpace width={8} />
       <ProgressBar
         title="탄수화물(g)"
-        numerator={carb}
+        numerator={parseInt(carb)}
         denominator={parseInt(userTarget.carb)}
       />
       <VerticalSpace width={8} />
       <ProgressBar
         title="단백질(g)"
-        numerator={protein}
+        numerator={parseInt(protein)}
         denominator={parseInt(userTarget.protein)}
       />
       <VerticalSpace width={8} />
       <ProgressBar
         title="지방(g)"
-        numerator={fat}
+        numerator={parseInt(fat)}
         denominator={parseInt(userTarget.fat)}
       />
     </Container>
