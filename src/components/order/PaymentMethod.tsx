@@ -41,14 +41,13 @@ interface IPaymentMethod {
 }
 const PaymentMethod = ({control, setValue}: IPaymentMethod) => {
   const paymentMethodValue = useWatch({control, name: 'paymentMethod'});
-
   const renderKakaoPayBtn = ({field: {onChange, value}}: IFormField) => {
     return (
       <KakaoPayBtn
         btnStyle="border"
         isActivated={true}
         onPress={() => {
-          // setValue("paymentMethod", paymentMethodValue ? "" : "kakao");
+          setValue('paymentMethod', paymentMethodValue ? '' : 'kakao');
         }}>
         <Row>
           <KakaoLogo source={require('../../assets/icons/kakaoPay.png')} />

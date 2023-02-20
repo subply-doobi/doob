@@ -20,6 +20,7 @@ import Orderer from '../components/order/Orderer';
 import Address from '../components/order/Address';
 import PaymentMethod from '../components/order/PaymentMethod';
 import {
+  IProduct,
   kakaoAppAdminKey,
   NavigationProps,
   SCREENWIDTH,
@@ -69,6 +70,13 @@ const Order = ({navigation: {navigate}, route}: NavigationProps) => {
   const {orderInfo, selectedAddressId} = useSelector(
     (state: RootState) => state.order,
   );
+  console.log('cart:', cart);
+
+  let totalAmount: number = cart[0].reduce((acc: number, cur: IProduct) => {
+    acc = acc + cur.price * cur.qty;
+    return acc;
+  }, 0);
+
   // react-hook-form
   interface IFormData {
     orderer: string;
@@ -156,7 +164,7 @@ const Order = ({navigation: {navigate}, route}: NavigationProps) => {
     },
     {
       title: '결제금액',
-      subTitle: <HeaderSubTitle />,
+      subTitle: <HeaderSubTitle>{totalAmount}원</HeaderSubTitle>,
       content: <></>,
     },
   ];
@@ -220,9 +228,10 @@ const Order = ({navigation: {navigate}, route}: NavigationProps) => {
   };
   // AddressEdit스크린에서 다시 Orders스크린 온 경우 active section설정
   // navigation 적용할 것 -> InputNav.tsx: AddressEdit Screen | AddressEdit.tsx: delete, confirm
-  useEffect(() => {
-    handleSubmit(() => {})();
-  }, []);
+  // useEffect(() => {
+  //   handleSubmit(() => {})();
+  // }, []);
+
   return (
     <Container>
       <ScrollView
@@ -252,7 +261,7 @@ const Order = ({navigation: {navigate}, route}: NavigationProps) => {
         <BtnText>
           {Object.keys(errors).length === 0 &&
           orderInfo.address[selectedAddressId]
-            ? '총 .... 원 결제하기'
+            ? `총 ${totalAmount}원 결제하기`
             : '정보를 모두 입력해주세요'}
         </BtnText>
       </BtnBottomCTA>

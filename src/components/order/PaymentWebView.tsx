@@ -1,9 +1,8 @@
-import React, { SetStateAction } from "react";
-import { Modal } from "react-native";
-import { Text } from "react-native-svg";
-import WebView from "react-native-webview";
-import styled from "styled-components/native";
-import colors from "~/styles/colors";
+import React, {SetStateAction} from 'react';
+import {Modal} from 'react-native';
+import {Text} from 'react-native-svg';
+import WebView from 'react-native-webview';
+import styled from 'styled-components/native';
 
 const Cancel = styled.TouchableOpacity`
   width: 30px;
@@ -28,9 +27,13 @@ const PaymentWebView = ({
     <Modal
       animationType="slide"
       transparent={true}
-      visible={isPaymentModalVisible ? true : false}
-    >
-      <WebView source={{ uri: uri }} />
+      visible={isPaymentModalVisible ? true : false}>
+      <WebView
+        source={{uri: uri}}
+        onError={() => {
+          setIsPaymentModalVisible(false);
+        }}
+      />
       <Cancel onPress={() => setIsPaymentModalVisible(false)}>
         <Text>취소</Text>
       </Cancel>
