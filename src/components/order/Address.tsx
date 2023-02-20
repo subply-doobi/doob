@@ -113,6 +113,7 @@ const Address = ({
   );
   // 렌더링이 6번되는데....
   console.log('Address: selectedId: ', selectedAddressId);
+  console.log('orderInfo: ', orderInfo);
 
   // navigation
   const navigation = useNavigation();
