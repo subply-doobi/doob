@@ -9,24 +9,24 @@ import {
   Row,
   TextMain,
   TextSub,
-} from '../styles/styledConsts';
+} from '../../styles/styledConsts';
 import Accordion from 'react-native-collapsible/Accordion';
 import {useForm, useWatch} from 'react-hook-form';
-import colors from '../styles/colors';
+import colors from '../../styles/colors';
 import {useSelector} from 'react-redux';
-import {RootState} from '../stores/store';
-import FoodToOrder from '../components/order/FoodToOrder';
-import Orderer from '../components/order/Orderer';
-import Address from '../components/order/Address';
-import PaymentMethod from '../components/order/PaymentMethod';
+import {RootState} from '../../stores/store';
+import FoodToOrder from '../../components/order/FoodToOrder';
+import Orderer from '../../components/order/Orderer';
+import Address from '../../components/order/Address';
+import PaymentMethod from '../../components/order/PaymentMethod';
 import {
   IProduct,
   kakaoAppAdminKey,
   NavigationProps,
   SCREENWIDTH,
-} from '../constants/constants';
+} from '../../constants/constants';
 import axios from 'axios';
-import PaymentWebView from '../components/order/PaymentWebView';
+import PaymentWebView from '../../components/order/PaymentWebView';
 
 const Container = styled.View`
   flex: 1;
@@ -66,6 +66,7 @@ const Order = ({navigation: {navigate}, route}: NavigationProps) => {
   // TBD | 장바구니 담긴 식품 판매자별로 정리 및 식품가격 배송비 각각 변수에
 
   // redux
+
   const {cart} = useSelector((state: RootState) => state.cart);
   const {orderInfo, selectedAddressId} = useSelector(
     (state: RootState) => state.order,
@@ -178,9 +179,9 @@ const Order = ({navigation: {navigate}, route}: NavigationProps) => {
           )}
         </Col>
         {isActive ? (
-          <UpDownArrow source={require('../assets/icons/20_up.png')} />
+          <UpDownArrow source={require('../../assets/icons/20_up.png')} />
         ) : (
-          <UpDownArrow source={require('../assets/icons/20_down.png')} />
+          <UpDownArrow source={require('../../assets/icons/20_down.png')} />
         )}
       </AccordionHeader>
     );
@@ -219,9 +220,10 @@ const Order = ({navigation: {navigate}, route}: NavigationProps) => {
         null,
         kakaoPayConfig,
       );
-      console.log('testKakaoPay: res: ', res.data.next_redirect_mobile_url);
+
       setPaymentUrl(res.data.next_redirect_mobile_url);
       setIsPaymentModalVisible(true);
+      console.log('tid:', res.data.tid);
     } catch (e) {
       console.log(e);
     }

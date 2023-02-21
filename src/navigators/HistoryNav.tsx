@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import History from '../screens/History';
-import Order from '../screens/Order';
+import Order from '../screens/orderScreen/Order';
 import colors from '../styles/colors';
 import {NavigationProps} from '../constants/constants';
 import HistoryDetail from '../screens/HistoryDetail';

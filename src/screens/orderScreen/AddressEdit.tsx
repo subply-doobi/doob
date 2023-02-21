@@ -6,7 +6,7 @@ import {
   NavigationProps,
   SCREENWIDTH,
   validationRules,
-} from '../constants/constants';
+} from '../../constants/constants';
 import {
   AlertContentContainer,
   BtnCTA,
@@ -18,19 +18,19 @@ import {
   TextMain,
   TextSub,
   UserInfoTextInput,
-} from '../styles/styledConsts';
+} from '../../styles/styledConsts';
 import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../stores/store';
+import {RootState} from '../../stores/store';
 import {Controller, useForm, useWatch} from 'react-hook-form';
 import Postcode from '@actbase/react-daum-postcode';
-import colors from '../styles/colors';
+import colors from '../../styles/colors';
 import {
   addAddress,
   deleteAddress,
   setSelectedAddressId,
   updateAddress,
-} from '../stores/slices/orderSlice';
-import DAlert from '../components/common/DAlert';
+} from '../../stores/slices/orderSlice';
+import DAlert from '../../components/common/DAlert';
 
 const PostalCode = styled(TextSub)`
   font-size: 16px;
@@ -203,7 +203,7 @@ const AddressEdit = ({
                     setAddressDeleteAlertShow(true);
                   }}>
                   <AddressDeleteIcon
-                    source={require('../assets/icons/24_icon=close.png')}
+                    source={require('../../assets/icons/24_icon=close.png')}
                   />
                 </AddressDeleteBtn>
               </Row>
@@ -238,7 +238,7 @@ const AddressEdit = ({
                   justifyContent: 'flex-start',
                 }}>
                 <Pressable onPress={() => setPostModalVisible(false)}>
-                  <BackBtn source={require('../assets/icons/24_back.png')} />
+                  <BackBtn source={require('../../assets/icons/24_back.png')} />
                 </Pressable>
               </View>
               <Postcode
