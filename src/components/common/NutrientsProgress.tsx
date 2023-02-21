@@ -1,14 +1,12 @@
-import {View, Text} from 'react-native';
 import React from 'react';
 import styled from 'styled-components/native';
 import colors from '../../styles/colors';
-import {Col, Row, VerticalSpace} from '../../styles/styledConsts';
+import {VerticalSpace} from '../../styles/styledConsts';
 import * as Progress from 'react-native-progress';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
-import {calculateCartNutr} from '../../util/targetCalculation';
 import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
-import {getUserBaseLine} from '../../query/query';
+import {useGetBaseLine} from '../../queries/baseLine';
 
 const ProgressBarContainer = styled.View`
   flex: 1;
@@ -81,41 +79,33 @@ const ProgressBar = ({title, numerator, denominator}: INutrientProgress) => {
 };
 
 const NutrientsProgress = ({menuIndex}: {menuIndex: string}) => {
-  const {userTarget} = useSelector((state: RootState) => state.userInfo);
-
   // react-query test
-  const {isLoading, error, data, isFetching} = useQuery({
-    queryKey: ['baseLine'],
-    queryFn: getUserBaseLine,
-  });
-  console.log(isLoading, error, data, isFetching);
-  // const {cart} = useSelector((state: RootState) => state?.cart);
-  // const {calorie, carb, protein, fat} = calculateCartNutr(cart[menuIndex]);
+  const {isLoading, error, data} = useGetBaseLine();
   const {calorie, carb, protein, fat} = data;
   return (
     <Container>
       <ProgressBar
         title="칼로리(g)"
-        numerator={parseInt(calorie)}
-        denominator={parseInt(userTarget.calorie)}
+        numerator={parseInt('0')}
+        denominator={parseInt(calorie)}
       />
       <VerticalSpace width={8} />
       <ProgressBar
         title="탄수화물(g)"
-        numerator={parseInt(carb)}
-        denominator={parseInt(userTarget.carb)}
+        numerator={parseInt('0')}
+        denominator={parseInt(carb)}
       />
       <VerticalSpace width={8} />
       <ProgressBar
         title="단백질(g)"
-        numerator={parseInt(protein)}
-        denominator={parseInt(userTarget.protein)}
+        numerator={parseInt('0')}
+        denominator={parseInt(protein)}
       />
       <VerticalSpace width={8} />
       <ProgressBar
         title="지방(g)"
-        numerator={parseInt(fat)}
-        denominator={parseInt(userTarget.fat)}
+        numerator={parseInt('0')}
+        denominator={parseInt(fat)}
       />
     </Container>
   );
