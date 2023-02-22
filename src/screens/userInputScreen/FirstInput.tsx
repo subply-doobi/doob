@@ -15,7 +15,6 @@ import {
   VerticalSpace,
 } from '../../styles/styledConsts';
 import {
-  IDropdownField,
   NavigationProps,
   purposeCategory,
   validationRules,
@@ -27,6 +26,7 @@ import {calculateBMR} from '../../util/targetCalculation';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
 import {saveUserInfo} from '../../stores/slices/userInfoSlice';
+import {useGetBaseLine} from '../../queries/baseLine';
 
 interface IFormData {
   gender: string;
@@ -36,36 +36,8 @@ interface IFormData {
   dietPurposecd: string;
 }
 
-const Title = styled(TextMain)`
-  font-size: 24px;
-  font-weight: bold;
-`;
-
-const BtnToggle = styled.TouchableOpacity`
-  flex: 1;
-  height: 48px;
-  margin-top: 48px;
-  justify-content: center;
-  align-items: center;
-  border-width: 1px;
-  border-radius: 4px;
-  border-color: ${({isActivated}: StyledProps) =>
-    isActivated ? colors.main : colors.inactivated};
-`;
-
-const ToggleText = styled.Text`
-  font-size: 16px;
-  color: ${({isActivated}: StyledProps) =>
-    isActivated ? colors.main : colors.inactivated};
-`;
-
-const InputHeader = styled(InputHeaderText)`
-  margin-top: 24px;
-`;
-const Input = styled(UserInfoTextInput)``;
-
 const renderAgeInput = (
-  {field: {onChange, value}}: IDropdownField,
+  {field: {onChange, value}}: any,
   userInfo1Refs?: React.MutableRefObject<any[]>,
 ) => {
   return (
@@ -89,7 +61,7 @@ const renderAgeInput = (
   );
 };
 const renderHeightInput = (
-  {field: {onChange, onBlur, value}}: IDropdownField,
+  {field: {onChange, onBlur, value}}: any,
   userInfo1Refs?: React.MutableRefObject<any[]>,
   scrollRef?: any, // TBD | scrollView ref type?!
 ) => {
@@ -117,7 +89,7 @@ const renderHeightInput = (
   );
 };
 const renderWeightInput = (
-  {field: {onChange, onBlur, value}}: IDropdownField,
+  {field: {onChange, onBlur, value}}: any,
   userInfo1Refs?: React.MutableRefObject<any[]>,
   scrollRef?: any, // TBD | scrollView ref type?!
 ) => {
@@ -143,6 +115,8 @@ const renderWeightInput = (
 };
 
 const FirstInput = ({navigation: {navigate}}: NavigationProps) => {
+  const {data} = useGetBaseLine();
+  console.log('firstInput:', data);
   // state
   // redux
   const {userInfo} = useSelector((state: RootState) => state.userInfo);
@@ -152,7 +126,10 @@ const FirstInput = ({navigation: {navigate}}: NavigationProps) => {
   // refs
   const scrollRef = useRef<ScrollView>(null);
   const userInfo1Refs = useRef([]);
-
+  /** 유저정보 체크 후 값이 있으면, 기존 값 올려두기
+   *  없다면 설정할 필요없이 기존 코드 그대로
+   *
+   */
   // react-hook-form
   const {
     control,
@@ -301,3 +278,31 @@ const FirstInput = ({navigation: {navigate}}: NavigationProps) => {
 };
 
 export default FirstInput;
+
+const Title = styled(TextMain)`
+  font-size: 24px;
+  font-weight: bold;
+`;
+
+const BtnToggle = styled.TouchableOpacity`
+  flex: 1;
+  height: 48px;
+  margin-top: 48px;
+  justify-content: center;
+  align-items: center;
+  border-width: 1px;
+  border-radius: 4px;
+  border-color: ${({isActivated}: StyledProps) =>
+    isActivated ? colors.main : colors.inactivated};
+`;
+
+const ToggleText = styled.Text`
+  font-size: 16px;
+  color: ${({isActivated}: StyledProps) =>
+    isActivated ? colors.main : colors.inactivated};
+`;
+
+const InputHeader = styled(InputHeaderText)`
+  margin-top: 24px;
+`;
+const Input = styled(UserInfoTextInput)``;

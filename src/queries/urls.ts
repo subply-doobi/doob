@@ -9,6 +9,9 @@ export const GET_USER = `${BASE_URL}/api/member/user/get-user`; //사용자 정�
 export const CREATE_BASE_LINE =
   //기본 정보 생성
   `${BASE_URL}/api/member/baseline/create-base-line`;
+
+//기본 정보 업데이트
+export const UPDATE_BASE_LINE = `${BASE_URL}/api/member/baseline/update-base-line`;
 export const GET_BASE_LINE =
   //기본 정보 조회
   `${BASE_URL}/api/member/baseline/get-base-line`;
@@ -17,3 +20,6 @@ export const CREATE_DIET =
   `${BASE_URL}/api/member/diet/create-diet`;
 export const LIST_DIET = `${BASE_URL}/api/member/diet/list-diet`; //끼니 정보 목록 조회
 export const PRODUCT_LIST = `${BASE_URL}/api/member/product/list-product`;
+
+//공통 코드 목록 조회
+export const COMMON_CODE = `${BASE_URL}api/member/code/list-code/`;

@@ -9,20 +9,19 @@ import RootStackNav from './src/navigators/RootStackNav';
 import React from 'react';
 import {store} from './src/stores/store';
 import {Provider} from 'react-redux';
-import {QueryClient, QueryClientProvider} from 'react-query';
-import {ReactQueryDevtools} from 'react-query/devtools';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 
 const queryClient = new QueryClient();
 
 function App(): JSX.Element {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Provider store={store}>
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
         <NavigationContainer>
           <RootStackNav />
         </NavigationContainer>
-      </Provider>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </Provider>
   );
 }
 

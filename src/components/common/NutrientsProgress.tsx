@@ -1,13 +1,12 @@
-import {View, Text} from 'react-native';
 import React from 'react';
 import styled from 'styled-components/native';
 import colors from '../../styles/colors';
-import {Col, Row, VerticalSpace} from '../../styles/styledConsts';
+import {VerticalSpace} from '../../styles/styledConsts';
 import * as Progress from 'react-native-progress';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
 import {calculateCartNutr} from '../../util/targetCalculation';
-import {useQuery, useMutation, useQueryClient} from 'react-query';
+import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
 import {getUserBaseLine} from '../../query/query';
 import {ActivityIndicator} from 'react-native';
 

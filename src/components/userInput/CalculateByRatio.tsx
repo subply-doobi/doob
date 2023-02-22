@@ -20,30 +20,6 @@ import {RootState} from '../../stores/store';
 import Dropdown from './Dropdown';
 import {calculateCaloriesToNutr} from '../../util/targetCalculation';
 
-const ContentContainer = styled.View`
-  padding-bottom: 30px;
-`;
-
-const InputHeader = styled(InputHeaderText)`
-  margin-top: 24px;
-`;
-const Input = styled(UserInfoTextInput)``;
-
-// TBD | CalculateByRatio.tsx, Auto.tsx, Manual.tsx 모두
-// ContentsContainer or SummaryContainer 겹침
-const SummaryContainer = styled.View`
-  margin-top: 12px;
-  border-width: 1px;
-  border-color: ${colors.main};
-  border-radius: 5px;
-  padding: 16px;
-`;
-
-const NutrientSummaryText = styled.Text`
-  font-size: 12px;
-  color: ${colors.textMain};
-`;
-
 const renderCaloriePerMealInput = (
   {field: {onChange, onBlur, value}}: IDropdownField,
   handleSubmit: Function,
@@ -58,7 +34,7 @@ const renderCaloriePerMealInput = (
         placeholder={`한 끼 칼로리 입력 (추천: ${calorieRecommended})`}
         value={value}
         onChangeText={onChange}
-        onFocus={() => handleSubmit()()}
+        onFocus={() => handleSubmit()}
         isActivated={value ? true : false}
         keyboardType="numeric"
         maxLength={4}
@@ -131,3 +107,27 @@ const CalculateByRatio = ({
 };
 
 export default CalculateByRatio;
+
+const ContentContainer = styled.View`
+  padding-bottom: 30px;
+`;
+
+const InputHeader = styled(InputHeaderText)`
+  margin-top: 24px;
+`;
+const Input = styled(UserInfoTextInput)``;
+
+// TBD | CalculateByRatio.tsx, Auto.tsx, Manual.tsx 모두
+// ContentsContainer or SummaryContainer 겹침
+const SummaryContainer = styled.View`
+  margin-top: 12px;
+  border-width: 1px;
+  border-color: ${colors.main};
+  border-radius: 5px;
+  padding: 16px;
+`;
+
+const NutrientSummaryText = styled.Text`
+  font-size: 12px;
+  color: ${colors.textMain};
+`;

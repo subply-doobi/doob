@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components/native';
 import colors from '../../styles/colors';
 import {Col, Row, TextMain, TextSub} from '../../styles/styledConsts';
-import {BASE_URL} from '../../query/urls';
+import {BASE_URL} from '../../queries/urls';
 import {hasProduct} from '../../util/reduxUtil';
 import {useDispatch, useSelector, batch} from 'react-redux';
 import {AppDispatch, RootState} from '../../stores/store';
@@ -100,7 +100,7 @@ interface IFoodList {
 const FoodList = ({item, menuIndex, navigation}: IFoodList) => {
   const {cart} = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch();
-  const itemExist = hasProduct(cart[menuIndex], item.item.productNo);
+  const itemExist = hasProduct(cart[menuIndex], item?.item?.productNo);
   return (
     <Container>
       <FoodDetailBtn

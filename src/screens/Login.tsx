@@ -2,40 +2,36 @@ import styled from 'styled-components/native';
 import {BtnCTA, BtnText} from '../styles/styledConsts';
 import colors from '../styles/colors';
 import {NavigationProps} from '../constants/constants';
-import React from 'react';
+import React, {useEffect} from 'react';
+import {useGetBaseLine} from '../queries/baseLine';
 import {validateToken, getUserData} from '../query/query';
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
+
 import {DatePickerIOSBase} from 'react-native';
 
 const Login = ({navigation: {navigate}}: NavigationProps) => {
   //유저값 check 후 화면 이동
-  const {data, status} = useQuery('getUserData', getUserData);
-  // Object.values(data?.data).includes('')
-  //   ? console.log('값미완성') // navigation.navigate('FirstInput')
-  //   : console.log('홈화면으로'); // navigation.navigate('Home')
-  const signInWithKakao = async (): Promise<void> => {
-    // TBD: 서버에 로그인 정보 (!!!닉네임!!!, 키 몸무게 등)있으면 redux-state에 저장 후
-    // or 서버말고 asyncStorage에서 확인하고 있으면 redux에 저장 후
-    // 바로 메인페이지로 이동시키기
-    // TBD: ios 로그인 설정
-    const isTokenValid = await validateToken();
-    console.log(isTokenValid);
-    if (isTokenValid && Object.values(data?.data).includes('')) {
-      navigate('InputNav', {screen: 'FirstInput'});
-    } else if (
-      isTokenValid &&
-      Object.values(data?.data).includes('') === false
-    ) {
-      navigate('BottomTabNav', {screen: 'Home'});
-    }
-  };
+  const {data, isLoading} = useGetBaseLine();
+  console.log('login/data:', data);
 
+  // const signInWithKakao = async (): Promise<void> => {
+  //   const isTokenValid = await validateToken();
+  //   if (isTokenValid && Object.values(data?.data).includes('')) {
+  //     navigate('InputNav', {screen: 'FirstInput'});
+  //   } else if (
+  //     isTokenValid &&
+  //     Object.values(data?.data).includes('') === false
+  //   ) {
+  //     navigate('BottomTabNav', {screen: 'Home'});
+  //   }
+  // };
+  useEffect(() => {
+    if (data != undefined) navigate('BottomTabNav', {screen: 'Home'});
+  }, [data]);
+
+  const signInWithKakao = async (): Promise<void> => {
+    const {isTokenValid} = await validateToken();
+    if (isTokenValid) navigate('InputNav', {screen: 'FirstInput'});
+  };
   return (
     <Container>
       <Box>

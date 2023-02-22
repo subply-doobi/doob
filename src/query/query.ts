@@ -7,7 +7,7 @@ import {
   GET_AUTH,
   RE_ISSUE_TOKEN,
   GET_BASE_LINE,
-} from './urls';
+} from '../queries/urls';
 
 export const getUserData = async () => {
   const isTokenValid = await validateToken();

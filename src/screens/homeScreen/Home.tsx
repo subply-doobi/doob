@@ -13,25 +13,17 @@ import {
   TextMain,
   TextSub,
 } from '../../styles/styledConsts';
-import {addProductToMenu, deleteProduct} from '../../stores/slices/cartSlice';
+// import {addProductToMenu, deleteProduct} from '../../stores/slices/cartSlice';
 import NutrientsProgress from '../../components/common/NutrientsProgress';
 import colors from '../../styles/colors';
 import {FlatList, Text, View} from 'react-native';
-import {getTestData, getDoobiToken, getKakaoToken} from '../../query/query';
 import FoodList from '../../components/home/FoodList';
 import BottomSheetTestScreen from '../../components/home/homeFilter/HomeFilter';
 import SortModal from '../../components/home/homeFilter/SortModal';
 import MenuSelect from '../../components/common/MenuSelect';
 import MenuHeader from '../../components/common/MenuHeader';
+import {getTestData, getDoobiToken, getKakaoToken} from '../../query/query';
 
-import axios from 'axios';
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
 import {PRODUCT_LIST, TOKEN_CONTROLLER} from '../../query/urls';
 import {
   getStoredToken,
@@ -106,7 +98,7 @@ const FilterMenuContainer = styled.View`
   margin-left: 10px;
 `;
 
-const Home = ({navigation}) => {
+const Home = ({navigation}: NavigationProps) => {
   // redux
   // const getQueryData = async () => {
   //   const isTokenValid = await validateToken();
@@ -184,7 +176,7 @@ const Home = ({navigation}) => {
           </BottomSheetTestScreen>
         ))}
       </FilterMenuContainer>
-      <FlatList
+      {/* <FlatList
         style={{marginTop: 24}}
         data={testData}
         renderItem={item => (
@@ -194,7 +186,7 @@ const Home = ({navigation}) => {
         keyExtractor={item => item.productNo}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{paddingBottom: 80}}
-      />
+      /> */}
       <BtnCTA
         btnStyle="activated"
         onPress={async () => {

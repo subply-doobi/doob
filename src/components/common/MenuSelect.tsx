@@ -1,7 +1,6 @@
 import {View, Text, FlatList, Alert} from 'react-native';
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
-import DropDownPicker from 'react-native-dropdown-picker';
 import colors from '../../styles/colors';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
@@ -56,7 +55,7 @@ const DeleteImg = styled.Image`
 `;
 
 const menuToDropdownValues = (cart: Array<Array<IProduct>>) => {
-  const dropdownCategory = cart.map((v, index) => {
+  const dropdownCategory = cart?.map((v, index) => {
     return {label: `끼니 ${index + 1}`, index: index};
   });
   return dropdownCategory;
@@ -130,7 +129,7 @@ const MenuSelect = ({setOpen}: IMenuSelect) => {
       <HorizontalLine />
       <Menu
         onPress={() => {
-          if (cart[menuIndex].length === 0) {
+          if (cart[menuIndex]?.length === 0) {
             Alert.alert('현재 끼니에 식품을 추가하고 이용해보세요');
             return;
           }
