@@ -12,7 +12,7 @@ import {calculateBMR, calculateNutrTarget} from '../util/targetCalculation';
 import {updateUserInfo} from '../stores/slices/userInfoSlice';
 import {changeNutrByWeight} from '../util/alertActions';
 import {BtnBottomCTA, BtnText} from '../styles/styledConsts';
-import {getUserBaseLine} from '../query/query';
+import {getUserBaseLine} from '../queries/requestFn';
 
 const Container = styled.View`
   flex: 1;

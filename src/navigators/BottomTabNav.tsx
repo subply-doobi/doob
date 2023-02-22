@@ -7,9 +7,8 @@ import Mypage from '../screens/Mypage';
 import Likes from '../screens/Likes';
 import Cart from '../screens/Cart';
 import colors from '../styles/colors';
-
-import HomeStack from './home-stack';
 import BackArrow from '../components/common/BackArrow';
+import Home from '../screens/homeScreen/Home';
 
 const Tab = createBottomTabNavigator();
 
@@ -23,7 +22,7 @@ const BottomTabNav = () => {
     <Tab.Navigator>
       <Tab.Screen
         name="Home"
-        component={HomeStack}
+        component={Home}
         options={{
           headerShown: false,
           tabBarIcon: ({focused}) =>
