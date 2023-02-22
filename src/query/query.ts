@@ -9,6 +9,51 @@ import {
   GET_BASE_LINE,
 } from './urls';
 
+export const getUserData = async () => {
+  const isTokenValid = await validateToken();
+  if (!isTokenValid) {
+    return;
+  }
+  const {accessToken, refreshToken} = await getStoredToken();
+  const response = await axios.get(`${GET_BASE_LINE}`, {
+    headers: {
+      authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return response;
+};
+export const updateUserCaloire = async () => {
+  const isTokenValid = await validateToken();
+  if (!isTokenValid) {
+    return;
+  }
+  const {accessToken, refreshToken} = await getStoredToken();
+  const response = await axios.post(
+    'http://52.79.208.191:8080/api/member/baseline/update-base-line',
+    {
+      companyCd: 'kakao',
+      userId: '1',
+      calorie: '500',
+      carb: '57',
+      protein: '21',
+      fat: '11',
+      gender: 'M',
+      age: '15',
+      height: '155',
+      weight: '55',
+      dietPurposecd: 'SP002001',
+      weightTimeCd: 'SP003001',
+      aerobicTimeCd: 'SP004001',
+    },
+    {
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+    },
+  );
+  return response;
+};
+
 // doobi server------------------ //
 // 카카오 토큰으로 DoobiToken 발급
 export const getDoobiToken = async (kakaoAccessToken: string | null) => {
@@ -66,6 +111,7 @@ export const validateToken = async () => {
             authorization: `Bearer ${refreshToken}`,
           },
         });
+        console.log('reIssue:', reIssue);
         await storeToken(reIssue.data.accessToken, reIssue.data.refreshToken);
         console.log('reIssue res: ', reIssue.data);
         isValid = true;
@@ -109,7 +155,6 @@ export const getTestData = async () => {
 };
 
 export const getUserBaseLine = async () => {
-  console.log('getUserBaseLine');
   const isTokenValid = await validateToken();
   if (!isTokenValid) {
     return;
@@ -121,5 +166,5 @@ export const getUserBaseLine = async () => {
       authorization: `Bearer ${accessToken}`,
     },
   });
-  console.log('getUserBaseLine: res:', res.data);
+  return res.data;
 };

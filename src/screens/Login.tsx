@@ -1,12 +1,24 @@
 import styled from 'styled-components/native';
 import {BtnCTA, BtnText} from '../styles/styledConsts';
 import colors from '../styles/colors';
-import {validateToken} from '../query/query';
 import {NavigationProps} from '../constants/constants';
 import React from 'react';
+import {validateToken, getUserData} from '../query/query';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query';
+import {DatePickerIOSBase} from 'react-native';
 
 const Login = ({navigation: {navigate}}: NavigationProps) => {
-  // 실제 로그인. 테스트때만 주석처리
+  //유저값 check 후 화면 이동
+  const {data, status} = useQuery('getUserData', getUserData);
+  // Object.values(data?.data).includes('')
+  //   ? console.log('값미완성') // navigation.navigate('FirstInput')
+  //   : console.log('홈화면으로'); // navigation.navigate('Home')
   const signInWithKakao = async (): Promise<void> => {
     // TBD: 서버에 로그인 정보 (!!!닉네임!!!, 키 몸무게 등)있으면 redux-state에 저장 후
     // or 서버말고 asyncStorage에서 확인하고 있으면 redux에 저장 후
@@ -14,10 +26,14 @@ const Login = ({navigation: {navigate}}: NavigationProps) => {
     // TBD: ios 로그인 설정
     const isTokenValid = await validateToken();
     console.log(isTokenValid);
-    if (isTokenValid) {
+    if (isTokenValid && Object.values(data?.data).includes('')) {
       navigate('InputNav', {screen: 'FirstInput'});
+    } else if (
+      isTokenValid &&
+      Object.values(data?.data).includes('') === false
+    ) {
+      navigate('BottomTabNav', {screen: 'Home'});
     }
-    //메인페이지 이동
   };
 
   return (
@@ -25,7 +41,11 @@ const Login = ({navigation: {navigate}}: NavigationProps) => {
       <Box>
         <TitleText>{'식단조절은\n두비에게'}</TitleText>
         <BtnKakaoLogin btnStyle="kakao" onPress={signInWithKakao}>
-          {/* <BtnKakaoLogin btnStyle="kakao" onPress={getUserBaseLine}> */}
+          {/* <BtnKakaoLogin
+          btnStyle="kakao"
+          onPress={() => {
+            console.log(Object.values(data?.data));
+          }}> */}
           <BtnTextKakao>카카오 로그인</BtnTextKakao>
         </BtnKakaoLogin>
       </Box>

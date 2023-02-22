@@ -25,7 +25,20 @@ import MenuSelect from '../../components/common/MenuSelect';
 import MenuHeader from '../../components/common/MenuHeader';
 
 import axios from 'axios';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query';
 import {PRODUCT_LIST, TOKEN_CONTROLLER} from '../../query/urls';
+import {
+  getStoredToken,
+  validateToken,
+  getUserData,
+  updateUserCaloire,
+} from '../../query/query';
 
 const MenuAndSearchBox = styled.View`
   flex-direction: row;
@@ -95,12 +108,32 @@ const FilterMenuContainer = styled.View`
 
 const Home = ({navigation}) => {
   // redux
+  // const getQueryData = async () => {
+  //   const isTokenValid = await validateToken();
+  //   if (!isTokenValid) {
+  //     return;
+  //   }
+  //   const {accessToken, refreshToken} = await getStoredToken();
+
+  //   const response = await axios.get(
+  //     `${PRODUCT_LIST}?searchText=도시락&categoryCd=&sort`,
+  //     {
+  //       headers: {
+  //         authorization: `Bearer ${accessToken}`,
+  //       },
+  //     },
+  //   );
+  //   return response;
+  // };
+  // const {data, status} = useQuery('updateUserCalorie', getUserData);
+  // console.log('Home/userData:', data);
+  // console.log('Home/userStatus:', status);
   const {userInfo, userTarget} = useSelector(
     (state: RootState) => state.userInfo,
   );
   const dispatch = useDispatch();
-
   // state
+
   const {menuIndex, cart} = useSelector((state: RootState) => state.cart);
   const [searchText, setSearchText] = useState('');
   const [testData, setTestData] = useState([]);
@@ -118,6 +151,7 @@ const Home = ({navigation}) => {
     };
     getInitialFoods().then(res => console.log(res));
   }, []);
+
   return (
     <Container>
       <MenuAndSearchBox>

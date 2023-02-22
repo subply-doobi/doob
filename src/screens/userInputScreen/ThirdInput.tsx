@@ -20,6 +20,20 @@ import {
 } from '../../styles/styledConsts';
 import {submitActionsByMethod} from '../../util/userInfoSubmit';
 
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query';
+import {
+  getStoredToken,
+  validateToken,
+  updateUserCaloire,
+} from '../../query/query';
+import axios from 'axios';
+
 interface IFormData {
   ratioType: string;
   caloriePerMeal: string;
@@ -133,6 +147,31 @@ const ThirdInput = ({navigation: {navigate}}: NavigationProps) => {
       : false;
   const btnStyle = btnIsActive ? 'activated' : 'inactivated';
 
+  const saveUserData = async () => {
+    const isTokenValid = await validateToken();
+    if (!isTokenValid) {
+      return;
+    }
+    const {accessToken, refreshToken} = await getStoredToken();
+
+    const response = await axios.put(
+      'http://52.79.208.191:8080/api/member/baseline/create-base-line',
+      {
+        ...userInfo,
+        ...userTarget,
+      },
+      {
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
+    return response;
+  };
+  const {data, status} = useMutation('createUserData', saveUserData);
+  console.log('status:', status);
+  console.log('data:', data);
+
   // TBD | 스크롤뷰 ref를 Manual에 넘겨서 단백질입력 활성화시 스크롤 내려주기
   return (
     <Container>
@@ -151,6 +190,7 @@ const ThirdInput = ({navigation: {navigate}}: NavigationProps) => {
           renderFooter={() => <HorizontalSpace height={20} />}
         />
       </ScrollView>
+
       <BtnBottomCTA
         btnStyle={btnStyle}
         disabled={btnIsActive ? false : true}

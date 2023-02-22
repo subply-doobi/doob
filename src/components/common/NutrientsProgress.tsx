@@ -7,6 +7,9 @@ import * as Progress from 'react-native-progress';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
 import {calculateCartNutr} from '../../util/targetCalculation';
+import {useQuery, useMutation, useQueryClient} from 'react-query';
+import {getUserBaseLine} from '../../query/query';
+import {ActivityIndicator} from 'react-native';
 
 const ProgressBarContainer = styled.View`
   flex: 1;
@@ -78,35 +81,51 @@ const ProgressBar = ({title, numerator, denominator}: INutrientProgress) => {
   );
 };
 
-const NutrientsProgress = ({menuIndex}: {menuIndex: number}) => {
-  const {userTarget} = useSelector((state: RootState) => state.userInfo);
-  const {cart} = useSelector((state: RootState) => state?.cart);
-  const {calorie, carb, protein, fat} = calculateCartNutr(cart[menuIndex]);
+const NutrientsProgress = ({menuIndex}: {menuIndex: string}) => {
+  // react-query test
+  const {isLoading, error, data, isFetching} = useQuery({
+    queryKey: ['baseLine'],
+    queryFn: getUserBaseLine,
+  });
+  console.log(isLoading, error, data, isFetching);
+  // const {cart} = useSelector((state: RootState) => state?.cart);
+  // const {calorie, carb, protein, fat} = calculateCartNutr(cart[menuIndex]);
+
+  // const {calorie, carb, protein, fat} = data;
   return (
     <Container>
-      <ProgressBar
-        title="칼로리(g)"
-        numerator={calorie}
-        denominator={parseInt(userTarget.calorie)}
-      />
-      <VerticalSpace width={8} />
-      <ProgressBar
-        title="탄수화물(g)"
-        numerator={carb}
-        denominator={parseInt(userTarget.carb)}
-      />
-      <VerticalSpace width={8} />
-      <ProgressBar
-        title="단백질(g)"
-        numerator={protein}
-        denominator={parseInt(userTarget.protein)}
-      />
-      <VerticalSpace width={8} />
-      <ProgressBar
-        title="지방(g)"
-        numerator={fat}
-        denominator={parseInt(userTarget.fat)}
-      />
+      {isLoading ? (
+        <ActivityIndicator />
+      ) : (
+        <>
+          <ProgressBar
+            title="칼로리(g)"
+            numerator={parseInt(data?.calorie)}
+            denominator={parseInt(data?.calorie)}
+          />
+          <VerticalSpace width={8} />
+
+          <ProgressBar
+            title="탄수화물(g)"
+            numerator={parseInt(data?.carb)}
+            denominator={parseInt(data?.carb)}
+          />
+          <VerticalSpace width={8} />
+
+          <ProgressBar
+            title="단백질(g)"
+            numerator={parseInt(data?.protein)}
+            denominator={parseInt(data?.protein)}
+          />
+          <VerticalSpace width={8} />
+
+          <ProgressBar
+            title="지방(g)"
+            numerator={parseInt(data?.fat)}
+            denominator={parseInt(data?.fat)}
+          />
+        </>
+      )}
     </Container>
   );
 };
