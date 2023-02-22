@@ -147,27 +147,6 @@ const ThirdInput = ({navigation: {navigate}}: NavigationProps) => {
       : false;
   const btnStyle = btnIsActive ? 'activated' : 'inactivated';
 
-  const saveUserData = async () => {
-    const isTokenValid = await validateToken();
-    if (!isTokenValid) {
-      return;
-    }
-    const {accessToken, refreshToken} = await getStoredToken();
-
-    const response = await axios.put(
-      'http://52.79.208.191:8080/api/member/baseline/create-base-line',
-      {
-        ...userInfo,
-        ...userTarget,
-      },
-      {
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-      },
-    );
-    return response;
-  };
   const {data, status} = useMutation('createUserData', saveUserData);
   console.log('status:', status);
   console.log('data:', data);

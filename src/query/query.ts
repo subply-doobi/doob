@@ -22,37 +22,6 @@ export const getUserData = async () => {
   });
   return response;
 };
-export const updateUserCaloire = async () => {
-  const isTokenValid = await validateToken();
-  if (!isTokenValid) {
-    return;
-  }
-  const {accessToken, refreshToken} = await getStoredToken();
-  const response = await axios.post(
-    'http://52.79.208.191:8080/api/member/baseline/update-base-line',
-    {
-      companyCd: 'kakao',
-      userId: '1',
-      calorie: '500',
-      carb: '57',
-      protein: '21',
-      fat: '11',
-      gender: 'M',
-      age: '15',
-      height: '155',
-      weight: '55',
-      dietPurposecd: 'SP002001',
-      weightTimeCd: 'SP003001',
-      aerobicTimeCd: 'SP004001',
-    },
-    {
-      headers: {
-        authorization: `Bearer ${accessToken}`,
-      },
-    },
-  );
-  return response;
-};
 
 // doobi server------------------ //
 // 카카오 토큰으로 DoobiToken 발급
