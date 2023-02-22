@@ -1,4 +1,10 @@
-import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  SafeAreaView,
+} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import styled from 'styled-components/native';
 import {
@@ -13,7 +19,7 @@ import {
 import Accordion from 'react-native-collapsible/Accordion';
 import {useForm, useWatch} from 'react-hook-form';
 import colors from '../../styles/colors';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {RootState} from '../../stores/store';
 import FoodToOrder from '../../components/order/FoodToOrder';
 import Orderer from '../../components/order/Orderer';
@@ -27,56 +33,28 @@ import {
 } from '../../constants/constants';
 import axios from 'axios';
 import PaymentWebView from '../../components/order/PaymentWebView';
-
-const Container = styled.View`
-  flex: 1;
-  background-color: ${colors.backgroundLight};
-`;
-
-const AccordionHeader = styled.View`
-  flex-direction: row;
-  width: 100%;
-  height: 64px;
-  padding: 0px 16px 0px 16px;
-  background-color: ${colors.white};
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const AccordionHeaderTitle = styled(TextMain)`
-  font-size: 18px;
-  font-weight: bold;
-`;
-
-const HeaderSubTitleBox = styled.View``;
-
-const HeaderSubTitle = styled(TextSub)`
-  font-size: 14px;
-  margin-top: 4px;
-`;
-const UpDownArrow = styled.Image`
-  width: 20px;
-  height: 20px;
-  margin-left: 8px;
-`;
+import {useKakaoPayReady} from '../../queries/order';
+import {setOrderSummary} from '../../stores/slices/orderSlice';
 
 const Order = ({navigation: {navigate}, route}: NavigationProps) => {
   // cart information -> 장바구니에서 route에 담아 보내줄 것.
   // 근데 그냥 장바구니식품 불러와서, 수량은 장바구니 qty쓰면 되는 거 아닌가...?!
   // TBD | 장바구니 담긴 식품 판매자별로 정리 및 식품가격 배송비 각각 변수에
+  // useKakaoPayReady
+  const {isLoading, isError, error, paymentUrl, pay} = useKakaoPayReady();
 
-  // redux
+  const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
 
-  const {cart} = useSelector((state: RootState) => state.cart);
-  const {orderInfo, selectedAddressId} = useSelector(
+  const {orderInfo, selectedAddressId, orderSummary} = useSelector(
     (state: RootState) => state.order,
   );
-  console.log('cart:', cart);
 
-  let totalAmount: number = cart[0].reduce((acc: number, cur: IProduct) => {
-    acc = acc + cur.price * cur.qty;
-    return acc;
-  }, 0);
+  let totalAmount = 2200;
+  //totalAmount는 잠시 이렇게
+  // let totalAmount: number = cart[0].reduce((acc: number, cur: IProduct) => {
+  //   acc = acc + cur.price * cur.qty;
+  //   return acc;
+  // }, 0);
 
   // react-hook-form
   interface IFormData {
@@ -124,7 +102,7 @@ const Order = ({navigation: {navigate}, route}: NavigationProps) => {
           <HeaderSubTitle>외</HeaderSubTitle>
         </Row>
       ),
-      content: <FoodToOrder cartInfo={cart} />,
+      // content: <FoodToOrder cartInfo={cart} />,
     },
     {
       title: '주문자',
@@ -192,41 +170,10 @@ const Order = ({navigation: {navigate}, route}: NavigationProps) => {
   const updateSections = (actives: Array<number>) => {
     setActiveSections(actives);
   };
-  const [paymentUrl, setPaymentUrl] = useState('');
-  const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
-  const testKakaoPay = async () => {
-    const kakaoPayConfig = {
-      headers: {
-        Authorization: `KakaoAK ${kakaoAppAdminKey}`,
-        'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
-      },
-      params: {
-        cid: 'TC0ONETIME',
-        partner_order_id: 'partner_order_id',
-        partner_user_id: 'partner_user_id',
-        item_name: '테스트',
-        quantity: 1,
-        total_amount: 2200,
-        vat_amount: 200,
-        tax_free_amount: 0,
-        approval_url: 'http://localhost:8081/',
-        cancel_url: 'http://localhost:8081/',
-        fail_url: 'http://localhost:8081/',
-      },
-    };
-    try {
-      const res = await axios.post(
-        'https://kapi.kakao.com/v1/payment/ready',
-        null,
-        kakaoPayConfig,
-      );
 
-      setPaymentUrl(res.data.next_redirect_mobile_url);
-      setIsPaymentModalVisible(true);
-      console.log('tid:', res.data.tid);
-    } catch (e) {
-      console.log(e);
-    }
+  const handlePressPaymentBtn = () => {
+    pay(2400);
+    setIsPaymentModalVisible(true);
   };
   // AddressEdit스크린에서 다시 Orders스크린 온 경우 active section설정
   // navigation 적용할 것 -> InputNav.tsx: AddressEdit Screen | AddressEdit.tsx: delete, confirm
@@ -235,7 +182,7 @@ const Order = ({navigation: {navigate}, route}: NavigationProps) => {
   // }, []);
 
   return (
-    <Container>
+    <SafeAreaView style={{flex: 1}}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{paddingBottom: 80}}>
@@ -259,7 +206,7 @@ const Order = ({navigation: {navigate}, route}: NavigationProps) => {
             ? 'activated'
             : 'inactivated'
         }
-        onPress={testKakaoPay}>
+        onPress={handlePressPaymentBtn}>
         <BtnText>
           {Object.keys(errors).length === 0 &&
           orderInfo.address[selectedAddressId]
@@ -272,8 +219,35 @@ const Order = ({navigation: {navigate}, route}: NavigationProps) => {
         isPaymentModalVisible={isPaymentModalVisible}
         setIsPaymentModalVisible={setIsPaymentModalVisible}
       />
-    </Container>
+    </SafeAreaView>
   );
 };
 
 export default Order;
+
+const AccordionHeader = styled.View`
+  flex-direction: row;
+  width: 100%;
+  height: 64px;
+  padding: 0px 16px 0px 16px;
+  background-color: ${colors.white};
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const AccordionHeaderTitle = styled(TextMain)`
+  font-size: 18px;
+  font-weight: bold;
+`;
+
+const HeaderSubTitleBox = styled.View``;
+
+const HeaderSubTitle = styled(TextSub)`
+  font-size: 14px;
+  margin-top: 4px;
+`;
+const UpDownArrow = styled.Image`
+  width: 20px;
+  height: 20px;
+  margin-left: 8px;
+`;

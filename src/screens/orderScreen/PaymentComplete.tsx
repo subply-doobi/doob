@@ -20,7 +20,7 @@ const PaymentComplete = ({navigation, route}: NavigationProps) => {
       <View style={styles.buttons}>
         <StyledButton
           onPress={() => {
-            navigation.navigate('PaymentHistory', {token: route.params.token});
+            navigation.navigate('PaymentHistory');
           }}>
           <ButtonText>결제내역 바로가기</ButtonText>
         </StyledButton>
