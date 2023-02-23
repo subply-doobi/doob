@@ -14,114 +14,88 @@ interface ISubmitParams {
   carbManual: string;
   proteinManual: string;
   fatManual: string;
-  dispatch: AppDispatch;
 }
 
-const autoMethodSubmit = ({userInfo, userTarget, dispatch}: ISubmitParams) => {
-  //  TBD | server request:
-  //  API: put: /api/member/baseline/create-base-line
-  //   {
-  //     "companyCd": "string",
-  //     "userId": "string",
-  //     "calorie": "string",
-  //     "carb": "string",
-  //     "protein": "string",
-  //     "fat": "string",
-  //     "gender": "string",
-  //     "age": "string",
-  //     "height": "string",
-  //     "weight": "string",
-  //     "dietPurposeCd": "string",
-  //     "weightTimeCd": "string",
-  //     "aerobicTimeCd": "string"
-  //   }
-  console.log('autoMethodSubmit!');
+const convertDataByAutoMethod = ({userInfo, userTarget}: ISubmitParams) => {
+  return {
+    companyCd: '',
+    userId: '',
+    calorie: userTarget.calorie,
+    carb: userTarget.carb,
+    protein: userTarget.protein,
+    fat: userTarget.fat,
+    gender: userInfo.gender,
+    age: userInfo.age,
+    height: userInfo.height,
+    weight: userInfo.weight,
+    dietPurposeCd: userInfo.dietPurposecd,
+    weightTimeCd: userInfo.weightTimeCd,
+    aerobicTimeCd: userInfo.aerobicTimeCd,
+  };
 };
-const ratioMethodSubmit = ({
+const convertDataByRatioMethod = ({
   userInfo,
   userTarget,
   ratioType,
   caloriePerMeal,
-  dispatch,
 }: ISubmitParams) => {
-  //  TBD | server request:
-  //  API: put: /api/member/baseline/create-base-line
-  //   {
-  //     "companyCd": "string",
-  //     "userId": "string",
-  //     "calorie": "string",
-  //     "carb": "string",
-  //     "protein": "string",
-  //     "fat": "string",
-  //     "gender": "string",
-  //     "age": "string",
-  //     "height": "string",
-  //     "weight": "string",
-  //     "dietPurposeCd": "string",
-  //     "weightTimeCd": "string",
-  //     "aerobicTimeCd": "string"
-  //   }
-
   console.log('ratioMethodSubmit!');
   const {carb, protein, fat} = calculateCaloriesToNutr(
     ratioType,
     caloriePerMeal,
   );
-  dispatch(
-    saveUserTarget({
-      calorie: caloriePerMeal,
-      carb,
-      protein,
-      fat,
-    }),
-  );
+
+  return {
+    companyCd: '',
+    userId: '',
+    calorie: caloriePerMeal,
+    carb: String(carb),
+    protein: String(protein),
+    fat: String(fat),
+    gender: userInfo.gender,
+    age: userInfo.age,
+    height: userInfo.height,
+    weight: userInfo.weight,
+    dietPurposeCd: userInfo.dietPurposecd,
+    weightTimeCd: userInfo.weightTimeCd,
+    aerobicTimeCd: userInfo.aerobicTimeCd,
+  };
 };
-const manualMethodSubmit = ({
+const convertDataByManualMethod = ({
   userInfo,
   userTarget,
-  dispatch,
   carbManual,
   proteinManual,
   fatManual,
 }: ISubmitParams) => {
-  //  TBD | server request:
-  //  API: put: /api/member/baseline/create-base-line
-  //   {
-  //     "companyCd": "string",
-  //     "userId": "string",
-  //     "calorie": "string",
-  //     "carb": "string",
-  //     "protein": "string",
-  //     "fat": "string",
-  //     "gender": "string",
-  //     "age": "string",
-  //     "height": "string",
-  //     "weight": "string",
-  //     "dietPurposeCd": "string",
-  //     "weightTimeCd": "string",
-  //     "aerobicTimeCd": "string"
-  //   }
   console.log('manualMethodSubmit!');
   const calorieTarget =
     parseInt(carbManual) * 4 +
     parseInt(proteinManual) * 4 +
     parseInt(fatManual) * 9;
 
-  dispatch(
-    saveUserTarget({
-      calorie: String(calorieTarget),
-      carb: carbManual,
-      protein: proteinManual,
-      fat: fatManual,
-    }),
-  );
+  return {
+    companyCd: '',
+    userId: '',
+    calorie: String(calorieTarget),
+    carb: carbManual,
+    protein: proteinManual,
+    fat: fatManual,
+    gender: userInfo.gender,
+    age: userInfo.age,
+    height: userInfo.height,
+    weight: userInfo.weight,
+    dietPurposeCd: userInfo.dietPurposecd,
+    weightTimeCd: userInfo.weightTimeCd,
+    aerobicTimeCd: userInfo.aerobicTimeCd,
+  };
 };
 
-interface ISubmitActions {
+interface IConvertDataByMethod {
   [key: number]: Function;
 }
-export const submitActionsByMethod: ISubmitActions = {
-  0: autoMethodSubmit, // 기존 store 값으로 server request
-  1: ratioMethodSubmit, // 직접 입력한 target으로 server request + store 수정
-  2: manualMethodSubmit, // 직접 입력한 target으로 server request + store 수정
+export const convertDataByMethod: IConvertDataByMethod = {
+  0: convertDataByAutoMethod,
+  1: convertDataByRatioMethod,
+  2: convertDataByManualMethod,
 };

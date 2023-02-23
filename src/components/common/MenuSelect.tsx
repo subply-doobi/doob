@@ -1,7 +1,6 @@
 import {View, Text, FlatList, Alert} from 'react-native';
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
-import DropDownPicker from 'react-native-dropdown-picker';
 import colors from '../../styles/colors';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
