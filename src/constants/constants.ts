@@ -233,28 +233,24 @@ export interface IFormField {
 }
 
 export interface IProduct {
-  // productNo: string;
-  // platformNm: string;
-  // itemReportNo: string;
-  // categoryNm: string;
-  // subCategoryNm: string;
-  // productNm: string;
-  // calorie: string;
-  // sodium: string;
-  // carb: string;
-  // sugar: string;
-  // fiber: string;
-  // protein: string;
-  // fat: string;
-  // cholesterol: string;
-  // transFat: string;
-  // saturatedFat: string;
-  // price: string;
-  // minQty: string;
-  // shippingPrice: string;
-  // freeShippingPrice: string;
-  // freeShippingYn: string;
-  // mainAttUrl: string;
-  // subAttUrl: string;
-  [key: string]: string;
+  calorie: number;
+  carb: number;
+  categoryCd: string;
+  categoryNm: string;
+  distributerBizNo: string;
+  distributerNm: string;
+  fat: number;
+  mainAttId: string;
+  mainAttUrl: string;
+  platformNm: string;
+  price: number;
+  priceCalorieCompare: number;
+  priceProteinCompare: number;
+  productNm: string;
+  productNo: string;
+  protein: number;
+  qty: number;
+  subCategoryCd: string;
+  subCategoryNm: string;
+  [key: string]: string | number;
 }

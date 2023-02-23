@@ -1,4 +1,4 @@
-import {View, Text, FlatList} from 'react-native';
+import {Linking, FlatList, SafeAreaView, Alert} from 'react-native';
 import React from 'react';
 import {
   Col,
@@ -10,11 +10,16 @@ import {
   TextSub,
   VerticalLine,
   VerticalSpace,
-} from '../styles/styledConsts';
+} from '../../styles/styledConsts';
 import styled from 'styled-components/native';
-import colors from '../styles/colors';
-import {NavigationProps} from '../constants/constants';
-
+import colors from '../../styles/colors';
+import {NavigationProps} from '../../constants/constants';
+import {useEffect} from 'react';
+import axios, {all} from 'axios';
+import {kakaoAppAdminKey} from '../../constants/constants';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../stores/store';
+import {useKakaopayApprove} from '../../queries/order';
 const OrderDate = styled(TextSub)`
   font-size: 12px;
 `;
@@ -142,8 +147,19 @@ const testData: Array<IOrder> = [
   },
 ];
 
-const PaymentHistory = ({navigation: {navigate}}: NavigationProps) => {
+const PaymentHistory = ({navigation, route}: NavigationProps) => {
+  const {pgToken, tid, foodPrice} = useSelector(
+    (state: RootState) => state.order.orderSummary,
+  );
+
+  const {isLoading, isError, error, getPaymentResult} = useKakaopayApprove();
+
+  useEffect(() => {
+    getPaymentResult();
+  }, []);
+
   type IMenu = {id: string; foods: number[]; menuCalories: string};
+
   const renderMenuList = ({item}: {item: IMenu}) => {
     return (
       <Col>
@@ -179,7 +195,7 @@ const PaymentHistory = ({navigation: {navigate}}: NavigationProps) => {
       </Row>
       <HorizontalLine style={{marginTop: 8}} />
       <Row>
-        <Arrow source={require('../assets/icons/20_leftArrow.png')} />
+        <Arrow source={require('../../assets/icons/20_leftArrow.png')} />
         <FlatList
           horizontal={true}
           data={item.menu}
@@ -192,13 +208,13 @@ const PaymentHistory = ({navigation: {navigate}}: NavigationProps) => {
             />
           )}
         />
-        <Arrow source={require('../assets/icons/20_rightArrow.png')} />
+        <Arrow source={require('../../assets/icons/20_rightArrow.png')} />
       </Row>
       <TotalPrice>{item.totalPrice} 원</TotalPrice>
     </>
   );
   return (
-    <Container>
+    <SafeAreaView style={{flex: 1, marginHorizontal: 16}}>
       <HorizontalSpace height={24} />
       <FlatList
         data={testData}
@@ -206,7 +222,7 @@ const PaymentHistory = ({navigation: {navigate}}: NavigationProps) => {
         ItemSeparatorComponent={() => <HorizontalSpace height={24} />}
         keyExtractor={item => item.id}
       />
-    </Container>
+    </SafeAreaView>
   );
 };
 
