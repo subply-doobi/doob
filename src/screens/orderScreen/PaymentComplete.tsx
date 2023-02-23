@@ -7,8 +7,6 @@ import {SCREENWIDTH} from '../../constants/constants';
 
 // 결제 완료, 구매완료 페이지
 const PaymentComplete = ({navigation, route}: NavigationProps) => {
-  console.log('navigation:', navigation);
-  console.log('route:', route);
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.mainText}>구매 완료!</Text>
