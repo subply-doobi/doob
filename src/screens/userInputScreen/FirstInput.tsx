@@ -27,7 +27,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
 import {saveUserInfo} from '../../stores/slices/userInfoSlice';
 import {useGetBaseLine} from '../../queries/baseLine';
-
+import {useGetCommonCode} from '../../queries/code';
+import {DIET_COMMON_CODE} from '../../queries/urls';
+import axios from 'axios';
+import {validateToken} from '../../queries/token';
 interface IFormData {
   gender: string;
   age: string;
@@ -116,17 +119,43 @@ const renderWeightInput = (
 
 const FirstInput = ({navigation: {navigate}}: NavigationProps) => {
   const {data} = useGetBaseLine();
-  console.log('firstInput:', data);
+  const dietPuroposeCd = useGetCommonCode(DIET_COMMON_CODE);
+  const dietPurposeCdCategory = dietPuroposeCd.data;
+  const newDietPurposeCdCategory = dietPurposeCdCategory?.map(item => {
+    return {value: item.cd, label: item.cdNm};
+  });
+
+  console.log('firstInput:', newDietPurposeCdCategory);
+  // console.log('firstInput/data:', data);
+
+  // const checkCode = async () => {
+  //   const {isTokenValid, validToken} = await validateToken();
+  //   if (!isTokenValid) return null;
+
+  //   const testCode = axios
+  //     .get('http://52.79.208.191:8080/api/member/code/list-code/SP002', {
+  //       headers: {authorization: `Bearer ${validToken}`},
+  //     })
+  //     .then(res => console.log('testData:', res.data));
+  //   console.log(testCode);
+  // };
+  // checkCode();
+
   // state
   // redux
   const {userInfo} = useSelector((state: RootState) => state.userInfo);
   const dispatch = useDispatch();
-  console.log('userInfo1: userInfo: ', userInfo);
+  // console.log('userInfo1: userInfo: ', userInfo);
 
   // refs
   const scrollRef = useRef<ScrollView>(null);
   const userInfo1Refs = useRef([]);
-  /** 유저정보 체크 후 값이 있으면, 기존 값 올려두기
+  /**
+   * 먼저 서버 정보 공통 코드목록으로 API호출하기 설정
+   * cd => value
+   * cdNm => label
+   * 로 바꾸는 작업을 해야함
+   * 유저정보 체크 후 값이 있으면, 기존 값 올려두기
    *  없다면 설정할 필요없이 기존 코드 그대로
    *
    */
@@ -153,10 +182,6 @@ const FirstInput = ({navigation: {navigate}}: NavigationProps) => {
   const dietPurposeValue = useWatch({control, name: 'dietPurposecd'});
 
   console.log('userInfo1: errors: ', errors);
-
-  useEffect(() => {
-    handleSubmit(() => console.log('submit!'))();
-  }, []);
 
   return (
     <Container>
@@ -227,7 +252,7 @@ const FirstInput = ({navigation: {navigate}}: NavigationProps) => {
         {/* --- purpose --- */}
         <Dropdown
           placeholder="식단의 목적"
-          items={purposeCategory}
+          items={newDietPurposeCdCategory}
           value={dietPurposeValue}
           setValue={setValue}
           scrollRef={scrollRef}

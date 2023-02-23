@@ -27,6 +27,7 @@ import {
   saveUserTarget,
 } from '../../stores/slices/userInfoSlice';
 import {calculateNutrTarget} from '../../util/targetCalculation';
+import {useGetCommonCode} from '../../queries/code';
 
 interface IFormData {
   bmrKnown: string;
@@ -115,6 +116,11 @@ const onHandlePress = (
 const SecondInput = ({navigation: {navigate}, route}: NavigationProps) => {
   const {userInfo} = useSelector((state: RootState) => state.userInfo);
   console.log('userInfo2: userInfo:', userInfo);
+  const dietPuroposeCd = useGetCommonCode();
+  const dietPurposeCdCategory = dietPuroposeCd.data;
+  const newDietPurposeCdCategory = dietPurposeCdCategory.map(item => {
+    return {value: item.cd, label: item.cdNm};
+  });
   // redux
   const dispatch = useDispatch();
 

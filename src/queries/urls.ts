@@ -22,4 +22,9 @@ export const LIST_DIET = `${BASE_URL}/api/member/diet/list-diet`; //끼니 정�
 export const PRODUCT_LIST = `${BASE_URL}/api/member/product/list-product`;
 
 //공통 코드 목록 조회
-export const COMMON_CODE = `${BASE_URL}api/member/code/list-code/`;
+//SP002 : 식단의 목적
+//SP003 : 웨이트 목적
+//SP004 : 유산소 목적
+export const DIET_COMMON_CODE = `${BASE_URL}/api/member/code/list-code/SP002`;
+export const WEIGHT_COMMON_CODE = `${BASE_URL}/api/member/code/list-code/SP003`;
+export const AEROBIC_COMMON_CODE = `${BASE_URL}/api/member/code/list-code/SP004`;
