@@ -8,7 +8,7 @@ import {
   HorizontalLine,
 } from '../../styles/styledConsts';
 import {IProduct, NavigationProps} from '../../constants/constants';
-import {BASE_URL} from '../../queries/urls';
+import {BASE_URL} from '../../query/urls';
 import colors from '../../styles/colors';
 
 const MenuTitle = styled(TextMain)`

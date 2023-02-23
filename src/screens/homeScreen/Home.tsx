@@ -13,10 +13,11 @@ import {
   TextMain,
   TextSub,
 } from '../../styles/styledConsts';
-// import {addProductToMenu, deleteProduct} from '../../stores/slices/cartSlice';
+import {addProductToMenu, deleteProduct} from '../../stores/slices/cartSlice';
 import NutrientsProgress from '../../components/common/NutrientsProgress';
 import colors from '../../styles/colors';
 import {FlatList, Text, View} from 'react-native';
+import {getTestData, getDoobiToken, getKakaoToken} from '../../query/query';
 import FoodList from '../../components/home/FoodList';
 import BottomSheetTestScreen from '../../components/home/homeFilter/HomeFilter';
 import SortModal from '../../components/home/homeFilter/SortModal';
@@ -24,7 +25,7 @@ import MenuSelect from '../../components/common/MenuSelect';
 import MenuHeader from '../../components/common/MenuHeader';
 
 import axios from 'axios';
-import {NavigationProps} from '../../constants/constants';
+import {PRODUCT_LIST, TOKEN_CONTROLLER} from '../../query/urls';
 
 const MenuAndSearchBox = styled.View`
   flex-direction: row;
@@ -92,7 +93,7 @@ const FilterMenuContainer = styled.View`
   margin-left: 10px;
 `;
 
-const Home = ({navigation}: NavigationProps) => {
+const Home = ({navigation}) => {
   // redux
   const {userInfo, userTarget} = useSelector(
     (state: RootState) => state.userInfo,
@@ -100,7 +101,7 @@ const Home = ({navigation}: NavigationProps) => {
   const dispatch = useDispatch();
 
   // state
-  const {menuIndex} = useSelector((state: RootState) => state.cart);
+  const {menuIndex, cart} = useSelector((state: RootState) => state.cart);
   const [searchText, setSearchText] = useState('');
   const [testData, setTestData] = useState([]);
   const [menuSelectOpen, setMenuSelectOpen] = useState(false);
@@ -110,7 +111,13 @@ const Home = ({navigation}: NavigationProps) => {
     {id: 3, text: '가격'},
     {id: 4, text: '끼니구성'},
   ];
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const getInitialFoods = async () => {
+      const res = await getTestData();
+      setTestData(res);
+    };
+    getInitialFoods().then(res => console.log(res));
+  }, []);
   return (
     <Container>
       <MenuAndSearchBox>
@@ -143,7 +150,7 @@ const Home = ({navigation}: NavigationProps) => {
           </BottomSheetTestScreen>
         ))}
       </FilterMenuContainer>
-      {/* <FlatList
+      <FlatList
         style={{marginTop: 24}}
         data={testData}
         renderItem={item => (
@@ -153,8 +160,13 @@ const Home = ({navigation}: NavigationProps) => {
         keyExtractor={item => item.productNo}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{paddingBottom: 80}}
-      /> */}
-      <BtnCTA btnStyle="activated" onPress={async () => {}}>
+      />
+      <BtnCTA
+        btnStyle="activated"
+        onPress={async () => {
+          const res = await getTestData();
+          setTestData(res);
+        }}>
         <BtnText>테스트 데이터</BtnText>
       </BtnCTA>
       {menuSelectOpen && <MenuSelect setOpen={setMenuSelectOpen} />}

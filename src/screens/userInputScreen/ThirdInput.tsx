@@ -18,8 +18,7 @@ import {
   StyledProps,
   TextMain,
 } from '../../styles/styledConsts';
-import {convertDataByMethod} from '../../util/userInfoSubmit';
-import {useUpdateBaseLine} from '../../queries/baseLine';
+import {submitActionsByMethod} from '../../util/userInfoSubmit';
 
 interface IFormData {
   ratioType: string;
@@ -30,13 +29,11 @@ interface IFormData {
 }
 
 const ThirdInput = ({navigation: {navigate}}: NavigationProps) => {
-  // react-query
-  const mutation = useUpdateBaseLine();
-
   // redux
   const {userInfo, userTarget} = useSelector(
     (state: RootState) => state.userInfo,
   );
+  const dispatch = useDispatch();
   console.log('userInfo3: userInfo:', userInfo);
   console.log('userInfo3: userTarget:', userTarget);
 
@@ -136,23 +133,6 @@ const ThirdInput = ({navigation: {navigate}}: NavigationProps) => {
       : false;
   const btnStyle = btnIsActive ? 'activated' : 'inactivated';
 
-  const onSubmit = () => {
-    const calculationMethod = activeSections[0];
-    const dataToConvert = {
-      userInfo,
-      userTarget,
-      ratioType,
-      caloriePerMeal,
-      carbManual,
-      proteinManual,
-      fatManual,
-    };
-    const requestBody = convertDataByMethod[calculationMethod](dataToConvert);
-
-    mutation.mutate(requestBody, {
-      onSuccess: navigate('BottomTabNav', {screen: 'Home'}),
-    });
-  };
   // TBD | 스크롤뷰 ref를 Manual에 넘겨서 단백질입력 활성화시 스크롤 내려주기
   return (
     <Container>
@@ -174,7 +154,21 @@ const ThirdInput = ({navigation: {navigate}}: NavigationProps) => {
       <BtnBottomCTA
         btnStyle={btnStyle}
         disabled={btnIsActive ? false : true}
-        onPress={onSubmit}>
+        onPress={() => {
+          const calculationMethod = activeSections[0];
+          const submitArgs = {
+            userInfo: userInfo,
+            userTarget: userTarget,
+            ratioType: ratioType,
+            caloriePerMeal: caloriePerMeal,
+            carbManual: carbManual,
+            proteinManual: proteinManual,
+            fatManual: fatManual,
+            dispatch: dispatch,
+          };
+          submitActionsByMethod[calculationMethod](submitArgs);
+          navigate('BottomTabNav', {screen: 'Home'});
+        }}>
         <BtnText>완료</BtnText>
       </BtnBottomCTA>
     </Container>

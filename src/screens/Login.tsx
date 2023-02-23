@@ -1,23 +1,26 @@
 import styled from 'styled-components/native';
 import {BtnCTA, BtnText} from '../styles/styledConsts';
 import colors from '../styles/colors';
+import {validateToken} from '../query/query';
 import {NavigationProps} from '../constants/constants';
-import React, {useEffect} from 'react';
-import {useGetBaseLine} from '../queries/baseLine';
-import {validateToken} from '../queries/token';
+import React from 'react';
+import {getProfile} from '@react-native-seoul/kakao-login';
 
 const Login = ({navigation: {navigate}}: NavigationProps) => {
-  // 기존 사용자정보 있는지 확인
-  // TBD | isLoading 인 경우 indicator 추가?!
-
-  const {data, isLoading} = useGetBaseLine();
-  useEffect(() => {
-    if (data != undefined) navigate('BottomTabNav', {screen: 'Home'});
-  }, [data]);
-
+  // 실제 로그인. 테스트때만 주석처리
   const signInWithKakao = async (): Promise<void> => {
-    const {isTokenValid} = await validateToken();
-    if (isTokenValid) navigate('InputNav', {screen: 'FirstInput'});
+    // TBD: 서버에 로그인 정보 (!!!닉네임!!!, 키 몸무게 등)있으면 redux-state에 저장 후
+    // or 서버말고 asyncStorage에서 확인하고 있으면 redux에 저장 후
+    // 바로 메인페이지로 이동시키기
+    // TBD: ios 로그인 설정
+    const isTokenValid = await validateToken();
+    const profile = await getProfile();
+    // console.log('profile', profile);
+    console.log(isTokenValid);
+    if (isTokenValid || profile) {
+      navigate('InputNav', {screen: 'FirstInput'});
+    }
+    //메인페이지 이동
   };
 
   return (

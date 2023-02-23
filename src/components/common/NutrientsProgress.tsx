@@ -1,12 +1,12 @@
+import {View, Text} from 'react-native';
 import React from 'react';
 import styled from 'styled-components/native';
 import colors from '../../styles/colors';
-import {VerticalSpace} from '../../styles/styledConsts';
+import {Col, Row, VerticalSpace} from '../../styles/styledConsts';
 import * as Progress from 'react-native-progress';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
-import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
-import {useGetBaseLine} from '../../queries/baseLine';
+import {calculateCartNutr} from '../../util/targetCalculation';
 
 const ProgressBarContainer = styled.View`
   flex: 1;
@@ -78,34 +78,34 @@ const ProgressBar = ({title, numerator, denominator}: INutrientProgress) => {
   );
 };
 
-const NutrientsProgress = ({menuIndex}: {menuIndex: string}) => {
-  // react-query test
-  const {isLoading, error, data} = useGetBaseLine();
-  const {calorie, carb, protein, fat} = data;
+const NutrientsProgress = ({menuIndex}: {menuIndex: number}) => {
+  const {userTarget} = useSelector((state: RootState) => state.userInfo);
+  const {cart} = useSelector((state: RootState) => state?.cart);
+  const {calorie, carb, protein, fat} = calculateCartNutr(cart[menuIndex]);
   return (
     <Container>
       <ProgressBar
         title="칼로리(g)"
-        numerator={parseInt('0')}
-        denominator={parseInt(calorie)}
+        numerator={calorie}
+        denominator={parseInt(userTarget.calorie)}
       />
       <VerticalSpace width={8} />
       <ProgressBar
         title="탄수화물(g)"
-        numerator={parseInt('0')}
-        denominator={parseInt(carb)}
+        numerator={carb}
+        denominator={parseInt(userTarget.carb)}
       />
       <VerticalSpace width={8} />
       <ProgressBar
         title="단백질(g)"
-        numerator={parseInt('0')}
-        denominator={parseInt(protein)}
+        numerator={protein}
+        denominator={parseInt(userTarget.protein)}
       />
       <VerticalSpace width={8} />
       <ProgressBar
         title="지방(g)"
-        numerator={parseInt('0')}
-        denominator={parseInt(fat)}
+        numerator={fat}
+        denominator={parseInt(userTarget.fat)}
       />
     </Container>
   );

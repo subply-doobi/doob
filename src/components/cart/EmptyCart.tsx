@@ -7,7 +7,7 @@ import {RootState} from '../../stores/store';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import colors from '../../styles/colors';
 import {SCREENWIDTH} from '../../constants/constants';
-import {BASE_URL} from '../../queries/urls';
+import {BASE_URL} from '../../query/urls';
 import {addProductToMenu, deleteProduct} from '../../stores/slices/cartSlice';
 
 import {

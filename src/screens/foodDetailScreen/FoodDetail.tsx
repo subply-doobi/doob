@@ -15,7 +15,7 @@ import {
   TextSub,
 } from '../../styles/styledConsts';
 import colors from '../../styles/colors';
-import {BASE_URL} from '../../queries/urls';
+import {BASE_URL} from '../../query/urls';
 import {SCREENWIDTH} from '../../constants/constants';
 
 import NutrientsProgress from '../../components/common/NutrientsProgress';

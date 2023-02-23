@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components/native';
 import colors from '../../styles/colors';
 import {Col, Row, TextMain, TextSub} from '../../styles/styledConsts';
-import {BASE_URL} from '../../queries/urls';
+import {BASE_URL} from '../../query/urls';
 import {hasProduct} from '../../util/reduxUtil';
 import {useDispatch, useSelector, batch} from 'react-redux';
 import {AppDispatch, RootState} from '../../stores/store';

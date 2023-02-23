@@ -1,5 +1,5 @@
 // export const BASE_URL = `http://13.125.244.117:8080`;
-// export const BASE_URL = 'http://15.165.159.244:8080';
+//export const BASE_URL = 'http://15.165.159.244:8080';
 export const BASE_URL = 'http://52.79.208.191:8080';
 // >>>>>>> feature/home
 export const GET_TOKEN = `${BASE_URL}/api/every/token/get-token`; //토큰 조회
@@ -9,9 +9,6 @@ export const GET_USER = `${BASE_URL}/api/member/user/get-user`; //사용자 정�
 export const CREATE_BASE_LINE =
   //기본 정보 생성
   `${BASE_URL}/api/member/baseline/create-base-line`;
-
-//기본 정보 업데이트
-export const UPDATE_BASE_LINE = `${BASE_URL}/api/member/baseline/update-base-line`;
 export const GET_BASE_LINE =
   //기본 정보 조회
   `${BASE_URL}/api/member/baseline/get-base-line`;

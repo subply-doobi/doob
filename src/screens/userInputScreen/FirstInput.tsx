@@ -15,6 +15,7 @@ import {
   VerticalSpace,
 } from '../../styles/styledConsts';
 import {
+  IDropdownField,
   NavigationProps,
   purposeCategory,
   validationRules,
@@ -26,7 +27,6 @@ import {calculateBMR} from '../../util/targetCalculation';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
 import {saveUserInfo} from '../../stores/slices/userInfoSlice';
-import {useGetBaseLine} from '../../queries/baseLine';
 
 interface IFormData {
   gender: string;
@@ -65,7 +65,7 @@ const InputHeader = styled(InputHeaderText)`
 const Input = styled(UserInfoTextInput)``;
 
 const renderAgeInput = (
-  {field: {onChange, value}}: any,
+  {field: {onChange, value}}: IDropdownField,
   userInfo1Refs?: React.MutableRefObject<any[]>,
 ) => {
   return (
@@ -89,7 +89,7 @@ const renderAgeInput = (
   );
 };
 const renderHeightInput = (
-  {field: {onChange, onBlur, value}}: any,
+  {field: {onChange, onBlur, value}}: IDropdownField,
   userInfo1Refs?: React.MutableRefObject<any[]>,
   scrollRef?: any, // TBD | scrollView ref type?!
 ) => {
@@ -117,7 +117,7 @@ const renderHeightInput = (
   );
 };
 const renderWeightInput = (
-  {field: {onChange, onBlur, value}}: any,
+  {field: {onChange, onBlur, value}}: IDropdownField,
   userInfo1Refs?: React.MutableRefObject<any[]>,
   scrollRef?: any, // TBD | scrollView ref type?!
 ) => {
@@ -143,8 +143,6 @@ const renderWeightInput = (
 };
 
 const FirstInput = ({navigation: {navigate}}: NavigationProps) => {
-  const {data} = useGetBaseLine();
-  console.log(data);
   // state
   // redux
   const {userInfo} = useSelector((state: RootState) => state.userInfo);
