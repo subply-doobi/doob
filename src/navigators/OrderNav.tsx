@@ -28,10 +28,9 @@ const OrderNav = ({navigation: {navigate}}: NavigationProps) => {
             color: colors.textMain,
           },
           headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => navigate('BottomTabNav', {screen: 'Cart'})}>
-              <BackArrow />
-            </TouchableOpacity>
+            <BackArrow
+              goBackFn={() => navigate('BottomTabNav', {screen: 'Cart'})}
+            />
           ),
         }}
       />
@@ -49,7 +48,7 @@ const OrderNav = ({navigation: {navigate}}: NavigationProps) => {
                   params: {from: 'AddressEdit'},
                 })
               }>
-              <BackArrow />
+              <BackArrow goBackFn={() => console.log('goBack')} />
             </TouchableOpacity>
           ),
         }}

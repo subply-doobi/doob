@@ -9,6 +9,7 @@ import Cart from '../screens/Cart';
 import colors from '../styles/colors';
 import BackArrow from '../components/common/BackArrow';
 import Home from '../screens/homeScreen/Home';
+import {NavigationProps} from '../constants/constants';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,7 +18,8 @@ const BottomTabIcon = styled.Image`
   height: 36px;
 `;
 
-const BottomTabNav = () => {
+const BottomTabNav = ({navigation: {goBack}}: NavigationProps) => {
+  console.log(goBack);
   return (
     <Tab.Navigator>
       <Tab.Screen
@@ -80,7 +82,7 @@ const BottomTabNav = () => {
             fontWeight: 'bold',
             color: colors.textMain,
           },
-          headerLeft: () => <BackArrow />,
+          headerLeft: () => <BackArrow goBackFn={goBack} />,
         }}
       />
       <Tab.Screen
@@ -107,7 +109,7 @@ const BottomTabNav = () => {
             fontWeight: 'bold',
             color: colors.textMain,
           },
-          headerLeft: () => <BackArrow />,
+          headerLeft: () => <BackArrow goBackFn={goBack} />,
         }}
       />
     </Tab.Navigator>
