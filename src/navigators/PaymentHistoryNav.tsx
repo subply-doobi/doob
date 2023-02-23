@@ -25,10 +25,9 @@ const PaymentHistoryNav = ({navigation: {navigate}}: NavigationProps) => {
           },
           headerShadowVisible: false,
           headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => navigate('BottomTabNav', {screen: 'Mypage'})}>
-              <BackArrow />
-            </TouchableOpacity>
+            <BackArrow
+              goBackFn={() => navigate('BottomTabNav', {screen: 'Mypage'})}
+            />
           ),
         }}
       />
@@ -45,9 +44,7 @@ const PaymentHistoryNav = ({navigation: {navigate}}: NavigationProps) => {
           },
           headerShadowVisible: false,
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigate('PaymentHistory')}>
-              <BackArrow />
-            </TouchableOpacity>
+            <BackArrow goBackFn={() => navigate('PaymentHistory')} />
           ),
         }}
       />

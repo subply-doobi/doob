@@ -21,15 +21,11 @@ interface IBaseLine {
 }
 
 // PUT
-export const useCreateBaseLine = async () => {
-  const {isTokenValid, validToken} = await validateToken();
-  if (!isTokenValid) return;
-
-  const requestConfig = {headers: {authorization: `Bearer ${validToken}`}};
+export const useCreateBaseLine = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (baseLine: IBaseLine) =>
-      axios.put(CREATE_BASE_LINE, baseLine, requestConfig),
+      mutationFn<IBaseLine>(UPDATE_BASE_LINE, 'put', baseLine),
     onSuccess: data => queryClient.invalidateQueries({queryKey: ['baseLine']}),
     onError: e => console.log('useSaveBaseLine error: ', e),
   });
@@ -53,7 +49,7 @@ export const useGetBaseLine = (options?: IQueryOptions) => {
 };
 
 // POST
-export const useUpdateBaseLine = (options?: IQueryOptions) => {
+export const useUpdateBaseLine = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (baseLine: IBaseLine) =>

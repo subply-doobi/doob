@@ -30,10 +30,9 @@ const HistoryNav = ({navigation: {navigate, goBack}}: NavigationProps) => {
             color: colors.textMain,
           },
           headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => navigate('BottomTabNav', {screen: 'Mypage'})}>
-              <BackArrow />
-            </TouchableOpacity>
+            <BackArrow
+              goBackFn={() => navigate('BottomTabNav', {screen: 'Mypage'})}
+            />
           ),
         }}
       />
@@ -50,10 +49,9 @@ const HistoryNav = ({navigation: {navigate, goBack}}: NavigationProps) => {
             color: colors.textMain,
           },
           headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => navigate('HistoryNav', {screen: 'History'})}>
-              <BackArrow />
-            </TouchableOpacity>
+            <BackArrow
+              goBackFn={() => navigate('HistoryNav', {screen: 'History'})}
+            />
           ),
         }}
       />
