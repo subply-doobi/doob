@@ -106,6 +106,7 @@ const Cart = () => {
 export default Cart;
 
 // style //
+
 const Container = styled.View`
   flex: 1;
   padding: 0px 8px 0px 8px;

@@ -1,12 +1,13 @@
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {SetStateAction, useEffect, useState} from 'react';
 import {Modal, AppState} from 'react-native';
 import {Text} from 'react-native-svg';
 import WebView from 'react-native-webview';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import styled from 'styled-components/native';
 import {setOrderSummary} from '../../stores/slices/orderSlice';
-
+import {RootState} from '../../stores/store';
+import {useKakaopayApprove} from '../../query/queries/order';
 const Cancel = styled.TouchableOpacity`
   width: 30px;
   height: 30px;
@@ -17,13 +18,13 @@ const Cancel = styled.TouchableOpacity`
 `;
 
 interface IPaymentWebView {
-  uri: string;
+  paymentUrl: string;
   isPaymentModalVisible: boolean;
   setIsPaymentModalVisible: React.Dispatch<SetStateAction<boolean>>;
 }
 
 const PaymentWebView = ({
-  uri,
+  paymentUrl,
   isPaymentModalVisible,
   setIsPaymentModalVisible,
 }: IPaymentWebView) => {
@@ -34,16 +35,25 @@ const PaymentWebView = ({
 
   const navigation = useNavigation();
 
-  const handleWebViewError = () => {
-    setIsPaymentModalVisible(false);
-    navigation.navigate('PaymentComplete');
-  };
+  const {isLoading, isError, error, getPaymentResult} = useKakaopayApprove();
 
-  const handleNavigationStateChange = event => {
-    const url = event.url;
+  useEffect(() => {
+    getPaymentResult();
+  }, []);
+
+  const handleNavigationStateChange = navState => {
+    const {url} = navState;
+    if (url.includes('http:')) {
+      console.log('changed: ', url);
+    }
     const newToken = url.match(/pg_token=([\w]+)/);
     const pgToken = newToken ? newToken[1] : null;
-    dispatch(setOrderSummary({pgToken: pgToken}));
+    if (pgToken) {
+      setIsPaymentModalVisible(false);
+      dispatch(setOrderSummary({pgToken: pgToken}));
+      getPaymentResult();
+      navigation.navigate('PaymentComplete');
+    }
   };
 
   return (
@@ -53,8 +63,9 @@ const PaymentWebView = ({
         transparent={true}
         visible={isPaymentModalVisible ? true : false}>
         <WebView
-          source={{uri: uri}}
-          onError={handleWebViewError}
+          source={{uri: paymentUrl}}
+          // onError={handleWebViewError}
+          // onHttpError={handleWebViewError}
           onNavigationStateChange={handleNavigationStateChange}
         />
         <Cancel onPress={() => setIsPaymentModalVisible(false)}>

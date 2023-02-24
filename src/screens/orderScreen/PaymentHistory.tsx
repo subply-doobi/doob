@@ -20,49 +20,6 @@ import {kakaoAppAdminKey} from '../../constants/constants';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
 import {useKakaopayApprove} from '../../query/queries/order';
-const OrderDate = styled(TextSub)`
-  font-size: 12px;
-`;
-
-const DetailBtn = styled.TouchableOpacity`
-  width: 64px;
-  height: 24px;
-  border-radius: 5px;
-  border-width: 1px;
-  border-color: ${colors.lineLight};
-  align-items: center;
-  justify-content: center;
-`;
-
-const DetailBtnText = styled(TextMain)`
-  font-size: 14px;
-`;
-
-const CaloriesText = styled(TextMain)`
-  margin-top: 8px;
-  font-size: 14px;
-`;
-
-const Arrow = styled.Image`
-  margin-top: 32px;
-  width: 20px;
-  height: 20px;
-`;
-
-const ThumbnailBtn = styled.TouchableOpacity``;
-const ThumbnailImage = styled.View`
-  background-color: ${colors.backgroundLight};
-  width: 56px;
-  height: 56px;
-  border-radius: 2px;
-`;
-
-const TotalPrice = styled(TextMain)`
-  margin-top: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  align-self: flex-end;
-`;
 
 interface IOrder {
   id: string;
@@ -152,12 +109,6 @@ const PaymentHistory = ({navigation, route}: NavigationProps) => {
     (state: RootState) => state.order.orderSummary,
   );
 
-  const {isLoading, isError, error, getPaymentResult} = useKakaopayApprove();
-
-  useEffect(() => {
-    getPaymentResult();
-  }, []);
-
   type IMenu = {id: string; foods: number[]; menuCalories: string};
 
   const renderMenuList = ({item}: {item: IMenu}) => {
@@ -227,3 +178,47 @@ const PaymentHistory = ({navigation, route}: NavigationProps) => {
 };
 
 export default PaymentHistory;
+
+const OrderDate = styled(TextSub)`
+  font-size: 12px;
+`;
+
+const DetailBtn = styled.TouchableOpacity`
+  width: 64px;
+  height: 24px;
+  border-radius: 5px;
+  border-width: 1px;
+  border-color: ${colors.lineLight};
+  align-items: center;
+  justify-content: center;
+`;
+
+const DetailBtnText = styled(TextMain)`
+  font-size: 14px;
+`;
+
+const CaloriesText = styled(TextMain)`
+  margin-top: 8px;
+  font-size: 14px;
+`;
+
+const Arrow = styled.Image`
+  margin-top: 32px;
+  width: 20px;
+  height: 20px;
+`;
+
+const ThumbnailBtn = styled.TouchableOpacity``;
+const ThumbnailImage = styled.View`
+  background-color: ${colors.backgroundLight};
+  width: 56px;
+  height: 56px;
+  border-radius: 2px;
+`;
+
+const TotalPrice = styled(TextMain)`
+  margin-top: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  align-self: flex-end;
+`;

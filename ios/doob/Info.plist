@@ -2,8 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSAllowsArbitraryLoads</key>
-	<true/>
+	<!-- <key>NSAllowsArbitraryLoads</key>
+	<true/> -->
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -48,15 +48,14 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
-	<!-- <true/> -->
 	<dict>
-		<key>NSExceptionDomains</key>
+	<key>NSExceptionDomains</key>
+	<dict>
+		<key>localhost</key>
 		<dict>
-			<key>localhost</key>
-			<dict>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-			</dict>
+			<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+			<true/>
+		</dict>
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>

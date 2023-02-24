@@ -23,7 +23,6 @@ const KakaoPayBtnText = styled(TextMain)`
 const KakaoLogo = styled.Image`
   width: 48px;
   height: 20px;
-  resize: contain;
 `;
 const GuideText = styled(TextMain)`
   margin-top: 16px;

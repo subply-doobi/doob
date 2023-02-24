@@ -26,7 +26,7 @@ export const useKakaoPayReady = () => {
     },
   };
 
-  const kakaoPayMutation = useMutation(async (price: number) => {
+  const mutation = useMutation(async (price: number) => {
     const res = await axios.post(
       'https://kapi.kakao.com/v1/payment/ready',
       null,
@@ -47,18 +47,18 @@ export const useKakaoPayReady = () => {
   });
 
   return {
-    isLoading: kakaoPayMutation.isLoading,
-    isError: kakaoPayMutation.isError,
-    error: kakaoPayMutation.error,
-    paymentUrl: kakaoPayMutation.isSuccess
-      ? kakaoPayMutation.data.next_redirect_mobile_url
+    isLoading: mutation.isLoading,
+    isError: mutation.isError,
+    error: mutation.error,
+    paymentUrl: mutation.isSuccess
+      ? mutation.data.next_redirect_pc_url
       : undefined,
-    pay: kakaoPayMutation.mutate,
+    pay: mutation.mutate,
   };
 };
 
 export const useKakaopayApprove = () => {
-  const {tid, foodPrice, shippingFee} = useSelector(
+  const {tid, foodPrice, shippingFee, pgToken} = useSelector(
     (state: RootState) => state.order.orderSummary,
   );
   const kakaoPayConfig = {
@@ -72,11 +72,11 @@ export const useKakaopayApprove = () => {
       partner_user_id: 'partner_user_id',
       total_amount: foodPrice,
       tid: tid, //tid,pgtoken은 매번 달라진다.
-      pg_token: 'c516c0a9cf0e306e7197',
+      pg_token: pgToken,
     },
   };
 
-  const kakaoPayMutation = useMutation(async () => {
+  const mutation = useMutation(async () => {
     const res = await axios.post(
       'https://kapi.kakao.com/v1/payment/approve',
       null,
@@ -87,10 +87,10 @@ export const useKakaopayApprove = () => {
   });
 
   return {
-    isLoading: kakaoPayMutation.isLoading,
-    isError: kakaoPayMutation.isError,
-    error: kakaoPayMutation.error,
-    getPaymentResult: kakaoPayMutation.mutate,
-    data: kakaoPayMutation.data,
+    isLoading: mutation.isLoading,
+    isError: mutation.isError,
+    error: mutation.error,
+    getPaymentResult: mutation.mutate,
+    data: mutation.data,
   };
 };
