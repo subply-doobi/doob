@@ -3,7 +3,7 @@ import {BtnCTA, BtnText} from '../styles/styledConsts';
 import colors from '../styles/colors';
 import {NavigationProps} from '../constants/constants';
 import React, {useEffect} from 'react';
-import {useGetBaseLine} from '../queries/baseLine';
+import {useGetBaseLine} from '../query/queries/baseLine';
 import {validateToken} from '../queries/token';
 
 const Login = ({navigation: {navigate}}: NavigationProps) => {

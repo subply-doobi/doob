@@ -20,6 +20,14 @@ interface IBaseLine {
   aerobicTimeCd: string;
 }
 
+interface ICreateBaseLineMutate {
+  params?: {
+    dietNo: string;
+    productNo: string;
+  };
+  data: IBaseLine;
+}
+
 // PUT
 export const useCreateBaseLine = () => {
   const queryClient = useQueryClient();

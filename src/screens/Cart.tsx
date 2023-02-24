@@ -18,7 +18,13 @@ import {Text} from 'react-native';
 import NutrientsProgress from '../components/common/NutrientsProgress';
 import MenuHeader from '../components/common/MenuHeader';
 import MenuSelect from '../components/common/MenuSelect';
-import {useCreateDiet, useListDiet, useListDietDetail} from '../queries/diet';
+import {
+  useCreateDiet,
+  useCreateDietDetail,
+  useListDiet,
+  useListDietDetail,
+} from '../query/queries/diet';
+import AutoMenuBtn from '../components/cart/AutoMenuBtn';
 
 const Cart = () => {
   const {data: dietData, refetch: refetchDietData} = useListDiet({
@@ -27,6 +33,7 @@ const Cart = () => {
   const {data: dietDetailData, refetch: refetchDietDetailData} =
     useListDietDetail({enabled: false});
   const createDietMutation = useCreateDiet();
+  const createDietDetailMutation = useCreateDietDetail();
 
   console.log('dietData: ', dietData);
   console.log('dietDetailData: ', dietDetailData);
@@ -34,39 +41,6 @@ const Cart = () => {
   const {menuIndex} = useSelector((state: RootState) => state.cart);
   const [menuSelectOpen, setMenuSelectOpen] = useState(false);
   const [checkAllClicked, setCheckAllClicked] = useState(false);
-  // const checkPrice = () =>
-  //   cart[menuIndex].length === 0 ? setTotalPrice(0) : totalPrice;
-  // useEffect(() => {
-  //   checkPrice();
-  // }, [cart[menuIndex].length]);
-  // const menuInfo = arg =>
-  //   arg.map((el, index) => {
-  //     return `끼니 ${index + 1}`;
-  //   });
-  // let cardMenuArray = menuInfo(cart).map(el => {
-  //   return el;
-  // });
-  // const getPlatformNm = () =>
-  //   cart[0].map((el, index) => {
-  //     return el.platformNm;
-  //   });
-  // const set = new Set(getPlatformNm());
-  // const platformArray = [...set];
-
-  //결제정보 관련
-  // const getProductInfo = (index: number) =>
-  //   cart[index]?.map(el => {
-  //     return {
-  //       cartIndex: index,
-  //       productNo: el.productNo,
-  //       qty: el.qty,
-  //       price: el.price,
-  //     };
-  //   });
-  // let productInfoArray = [];
-  // for (let i = 0; i < 3; i++) {
-  //   productInfoArray.push(getProductInfo(i));
-  // }
 
   return (
     <Container>
@@ -103,18 +77,8 @@ const Cart = () => {
           <MenuSelect setOpen={setMenuSelectOpen} center={true} />
         )}
 
-        {/* 식품 비어있거나 리스트 보여주거나 */}
-        <GuideText>식품을 추가해보세요</GuideText>
-        <BtnCTA height={108} btnStyle="borderActivated" style={{marginTop: 8}}>
-          <Row>
-            <PlusBtnImage
-              source={require(`../assets/icons/24_autoMenu_activated.png`)}
-            />
-            <AutoMenuText>귀찮을 땐 자동구성</AutoMenuText>
-          </Row>
-        </BtnCTA>
+        <AutoMenuBtn status="empty" />
         <MenuTotalPrice>합계 0원</MenuTotalPrice>
-        {/* 식품 비어있거나 리스트 보여주거나 end */}
       </Card>
 
       <BtnSmall onPress={() => createDietMutation.mutate()}>
@@ -122,6 +86,18 @@ const Cart = () => {
       </BtnSmall>
       <BtnSmall onPress={() => refetchDietData()}>
         <Text> 끼니조회 </Text>
+      </BtnSmall>
+      <BtnSmall onPress={() => refetchDietDetailData()}>
+        <Text> 세부조회 </Text>
+      </BtnSmall>
+      <BtnSmall
+        onPress={() =>
+          createDietDetailMutation.mutate({
+            dietNo: 'DT20230223000000002',
+            productNo: 'PD20220713000000017',
+          })
+        }>
+        <Text> 식품추가 </Text>
       </BtnSmall>
     </Container>
   );
@@ -166,20 +142,6 @@ const Card = styled.View`
 const CardMenuHeader = styled.View`
   margin-top: 16px;
   align-self: center;
-`;
-
-const GuideText = styled(TextSub)`
-  margin-top: 24px;
-  font-size: 14px;
-`;
-
-const PlusBtnImage = styled.Image`
-  width: 24px;
-  height: 24px;
-`;
-const AutoMenuText = styled(TextSub)`
-  margin-left: 8px;
-  font-size: 14px;
 `;
 
 const MenuTotalPrice = styled(TextMain)`

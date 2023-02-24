@@ -21,17 +21,10 @@ export const useCreateDiet = () => {
   return mutation;
 };
 
-interface ICreateDietDetailParamsc {
-  dietNo: string;
-  productNo: string;
-}
-export const useCreateDietDetail = ({
-  dietNo,
-  productNo,
-}: ICreateDietDetailParamsc) => {
+export const useCreateDietDetail = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: () =>
+    mutationFn: ({dietNo, productNo}: {dietNo: string; productNo: string}) =>
       mutationFn(
         `${CREATE_DIET_DETAIL}?dietNo=${dietNo}&productNo=${productNo}`,
         'put',
