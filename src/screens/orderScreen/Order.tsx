@@ -33,7 +33,7 @@ import {
 } from '../../constants/constants';
 import axios from 'axios';
 import PaymentWebView from '../../components/order/PaymentWebView';
-import {useKakaoPayReady} from '../../queries/order';
+import {useKakaoPayReady} from '../../query/queries/order';
 import {setOrderSummary} from '../../stores/slices/orderSlice';
 
 const Order = ({navigation: {navigate}, route}: NavigationProps) => {

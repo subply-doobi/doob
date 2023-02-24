@@ -60,6 +60,7 @@ interface IDAlert {
   onConfirm: Function;
   onCancel: Function;
   confirmLabel?: string;
+  NoOfBtn?: 1 | 2;
 }
 const DAlert = ({
   alertShow,
@@ -67,6 +68,7 @@ const DAlert = ({
   onConfirm,
   onCancel,
   confirmLabel,
+  NoOfBtn,
 }: IDAlert) => {
   return alertShow != null ? (
     <Modal
@@ -80,13 +82,16 @@ const DAlert = ({
         <PopUpContainer>
           <ContentContainer>{renderContent()}</ContentContainer>
           <Row>
-            <BtnLeft
-              onPress={() => {
-                console.log('취소');
-                onCancel ? onCancel() : null;
-              }}>
-              <CancelBtnText>취소</CancelBtnText>
-            </BtnLeft>
+            {NoOfBtn !== 1 && (
+              <BtnLeft
+                onPress={() => {
+                  console.log('취소');
+                  onCancel ? onCancel() : null;
+                }}>
+                <CancelBtnText>취소</CancelBtnText>
+              </BtnLeft>
+            )}
+
             <BtnRight
               onPress={() => {
                 console.log('확인');

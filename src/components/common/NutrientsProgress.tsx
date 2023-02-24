@@ -75,7 +75,7 @@ const ProgressBar = ({title, numerator, denominator}: INutrientProgress) => {
   );
 };
 
-const NutrientsProgress = ({menuIndex}: {menuIndex: string}) => {
+const NutrientsProgress = ({menuIndex}: {menuIndex: number}) => {
   // react-query test
   const {isLoading, error, data} = useGetBaseLine();
   const {calorie, carb, protein, fat} = data;

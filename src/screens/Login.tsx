@@ -4,7 +4,7 @@ import colors from '../styles/colors';
 import {NavigationProps} from '../constants/constants';
 import React, {useEffect} from 'react';
 import {useGetBaseLine} from '../query/queries/baseLine';
-import {validateToken} from '../queries/token';
+import {validateToken} from '../query/queries/token';
 
 const Login = ({navigation: {navigate}}: NavigationProps) => {
   // 기존 사용자정보 있는지 확인

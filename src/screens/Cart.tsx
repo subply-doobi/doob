@@ -35,8 +35,8 @@ const Cart = () => {
   const createDietMutation = useCreateDiet();
   const createDietDetailMutation = useCreateDietDetail();
 
-  console.log('dietData: ', dietData);
-  console.log('dietDetailData: ', dietDetailData);
+  console.log('Cart: dietData: ', dietData);
+  console.log('Cart: dietDetailData: ', dietDetailData);
 
   const {menuIndex} = useSelector((state: RootState) => state.cart);
   const [menuSelectOpen, setMenuSelectOpen] = useState(false);
@@ -73,12 +73,12 @@ const Cart = () => {
         </CardMenuHeader>
         <HorizontalSpace height={24} />
         <NutrientsProgress menuIndex={menuIndex} />
-        {menuSelectOpen && (
-          <MenuSelect setOpen={setMenuSelectOpen} center={true} />
-        )}
 
         <AutoMenuBtn status="empty" />
         <MenuTotalPrice>합계 0원</MenuTotalPrice>
+        {menuSelectOpen && (
+          <MenuSelect setOpen={setMenuSelectOpen} center={true} />
+        )}
       </Card>
 
       <BtnSmall onPress={() => createDietMutation.mutate()}>

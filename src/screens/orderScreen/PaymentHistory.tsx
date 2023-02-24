@@ -19,7 +19,7 @@ import axios, {all} from 'axios';
 import {kakaoAppAdminKey} from '../../constants/constants';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
-import {useKakaopayApprove} from '../../queries/order';
+import {useKakaopayApprove} from '../../query/queries/order';
 const OrderDate = styled(TextSub)`
   font-size: 12px;
 `;

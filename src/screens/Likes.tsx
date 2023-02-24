@@ -1,7 +1,6 @@
 import {View, Text, FlatList, ScrollView} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
-import {getTestData} from '../queries/requestFn';
 import MenuSelect from '../components/common/MenuSelect';
 import {
   BtnCTA,
@@ -69,14 +68,6 @@ const Likes = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{paddingBottom: 80}}
       />
-      <BtnCTA
-        btnStyle="activated"
-        onPress={async () => {
-          const res = await getTestData();
-          dispatch(setLikeFoods(res));
-        }}>
-        <BtnText>테스트 데이터</BtnText>
-      </BtnCTA>
       {menuSelectOpen && <MenuSelect setOpen={setMenuSelectOpen} />}
     </Container>
   );

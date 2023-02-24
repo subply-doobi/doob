@@ -5,18 +5,18 @@ import {IProduct} from '../../constants/constants';
 
 // cart -> menu -> product
 export interface ICartState {
-  menuIndex: string;
+  menuIndex: number;
 }
 
 const initialState: ICartState = {
-  menuIndex: '',
+  menuIndex: 0,
 };
 
 export const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    setMenuIndex: (state, action: PayloadAction<string>) => {
+    setMenuIndex: (state, action: PayloadAction<number>) => {
       state.menuIndex = action.payload;
     },
   },
