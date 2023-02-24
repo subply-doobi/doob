@@ -1,30 +1,106 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
 import {
   BtnCTA,
   BtnText,
-  Col,
   Container,
   HorizontalLine,
-  HorizontalSpace,
   Row,
   TextMain,
   TextSub,
 } from '../../styles/styledConsts';
-// import {addProductToMenu, deleteProduct} from '../../stores/slices/cartSlice';
+
 import NutrientsProgress from '../../components/common/NutrientsProgress';
 import colors from '../../styles/colors';
-import {FlatList, Text, View} from 'react-native';
-import FoodList from '../../components/home/FoodList';
 import BottomSheetTestScreen from '../../components/home/homeFilter/HomeFilter';
 import SortModal from '../../components/home/homeFilter/SortModal';
 import MenuSelect from '../../components/common/MenuSelect';
 import MenuHeader from '../../components/common/MenuHeader';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {USER_PROFILE} from '../../query/keys';
+import {getUserInfo} from '../../query/queries/member';
 
-import axios from 'axios';
-import {NavigationProps} from '../../constants/constants';
+const Home = () => {
+  const queryClient = useQueryClient();
+
+  const {data} = useQuery([USER_PROFILE], getUserInfo);
+
+  const {mutate} = useMutation(getUserInfo, {
+    onMutate: () => {
+      queryClient.cancelQueries([USER_PROFILE]);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries([USER_PROFILE]);
+    },
+    onError: e => {
+      throw e;
+    },
+  });
+
+  // state
+  const {menuIndex} = useSelector((state: RootState) => state.cart);
+  const [searchText, setSearchText] = useState('');
+  const [menuSelectOpen, setMenuSelectOpen] = useState(false);
+  const filterMenus = [
+    {id: 1, text: '카테고리'},
+    {id: 2, text: '영양성분'},
+    {id: 3, text: '가격'},
+    {id: 4, text: '끼니구성'},
+  ];
+  return (
+    <Container>
+      <MenuAndSearchBox>
+        <MenuHeader
+          menuSelectOpen={menuSelectOpen}
+          setMenuSelectOpen={setMenuSelectOpen}
+        />
+        <SearchInput
+          onChangeText={setSearchText}
+          value={searchText}
+          placeholder="검색어 입력"
+          onSubmitEditing={() => console.log('search!!')}
+        />
+      </MenuAndSearchBox>
+      <NutrientsProgress menuIndex={menuIndex} />
+      <Row style={{justifyContent: 'space-between', marginTop: 32}}>
+        <Row>
+          <ListTitle>전체 식품</ListTitle>
+          <NoOfFoods>87개</NoOfFoods>
+        </Row>
+        <SortBtn>
+          <SortModal />
+        </SortBtn>
+      </Row>
+      <HorizontalLine style={{marginTop: 8}} />
+      <FilterMenuContainer>
+        {filterMenus.map((i, index) => (
+          <BottomSheetTestScreen key={i.id} list={filterMenus} index={index}>
+            {i.text}
+          </BottomSheetTestScreen>
+        ))}
+      </FilterMenuContainer>
+      {/* <FlatList
+        style={{marginTop: 24}}
+        data={testData}
+        renderItem={item => (
+          <FoodList item={item} menuIndex={menuIndex} navigation={navigation} />
+        )}
+        ItemSeparatorComponent={() => <HorizontalSpace height={16} />}
+        keyExtractor={item => item.productNo}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{paddingBottom: 80}}
+      /> */}
+      <BtnCTA btnStyle="activated" onPress={async () => {}}>
+        <BtnText>테스트 데이터</BtnText>
+      </BtnCTA>
+      {menuSelectOpen && <MenuSelect setOpen={setMenuSelectOpen} />}
+    </Container>
+  );
+};
+
+export default Home;
 
 const MenuAndSearchBox = styled.View`
   flex-direction: row;
@@ -91,75 +167,3 @@ const FilterMenuContainer = styled.View`
   margin-top: 10px;
   margin-left: 10px;
 `;
-
-const Home = ({navigation}: NavigationProps) => {
-  // redux
-  const {userInfo, userTarget} = useSelector(
-    (state: RootState) => state.userInfo,
-  );
-  const dispatch = useDispatch();
-
-  // state
-  const {menuIndex} = useSelector((state: RootState) => state.cart);
-  const [searchText, setSearchText] = useState('');
-  const [testData, setTestData] = useState([]);
-  const [menuSelectOpen, setMenuSelectOpen] = useState(false);
-  const filterMenus = [
-    {id: 1, text: '카테고리'},
-    {id: 2, text: '영양성분'},
-    {id: 3, text: '가격'},
-    {id: 4, text: '끼니구성'},
-  ];
-  useEffect(() => {}, []);
-  return (
-    <Container>
-      <MenuAndSearchBox>
-        <MenuHeader
-          menuSelectOpen={menuSelectOpen}
-          setMenuSelectOpen={setMenuSelectOpen}
-        />
-        <SearchInput
-          onChangeText={setSearchText}
-          value={searchText}
-          placeholder="검색어 입력"
-          onSubmitEditing={() => console.log('search!!')}
-        />
-      </MenuAndSearchBox>
-      <NutrientsProgress menuIndex={menuIndex} />
-      <Row style={{justifyContent: 'space-between', marginTop: 32}}>
-        <Row>
-          <ListTitle>전체 식품</ListTitle>
-          <NoOfFoods>87개</NoOfFoods>
-        </Row>
-        <SortBtn>
-          <SortModal />
-        </SortBtn>
-      </Row>
-      <HorizontalLine style={{marginTop: 8}} />
-      <FilterMenuContainer>
-        {filterMenus.map((i, index) => (
-          <BottomSheetTestScreen key={i.id} list={filterMenus} index={index}>
-            {i.text}
-          </BottomSheetTestScreen>
-        ))}
-      </FilterMenuContainer>
-      {/* <FlatList
-        style={{marginTop: 24}}
-        data={testData}
-        renderItem={item => (
-          <FoodList item={item} menuIndex={menuIndex} navigation={navigation} />
-        )}
-        ItemSeparatorComponent={() => <HorizontalSpace height={16} />}
-        keyExtractor={item => item.productNo}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{paddingBottom: 80}}
-      /> */}
-      <BtnCTA btnStyle="activated" onPress={async () => {}}>
-        <BtnText>테스트 데이터</BtnText>
-      </BtnCTA>
-      {menuSelectOpen && <MenuSelect setOpen={setMenuSelectOpen} />}
-    </Container>
-  );
-};
-
-export default Home;

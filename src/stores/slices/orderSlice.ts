@@ -24,8 +24,10 @@ interface IOrderState {
     paymentMethod: string;
   };
   orderSummary: {
-    foodPrice: string;
-    shippingFee: string;
+    foodPrice: number;
+    shippingFee: number;
+    tid: string;
+    pgToken: string;
   };
   selectedAddressId: number;
 }
@@ -41,8 +43,10 @@ const initialState: IOrderState = {
     paymentMethod: '',
   },
   orderSummary: {
-    foodPrice: '',
-    shippingFee: '',
+    foodPrice: 0,
+    shippingFee: 0,
+    tid: '',
+    pgToken: '',
   },
   selectedAddressId: 0,
 };
@@ -106,7 +110,12 @@ export const orderSlice = createSlice({
     // orderSummary
     setOrderSummary: (
       state,
-      action: PayloadAction<{foodPrice?: string; shippingFee?: string}>,
+      action: PayloadAction<{
+        foodPrice?: number;
+        shippingFee?: number;
+        tid?: string;
+        pgToken?: string;
+      }>,
     ) => {
       state.orderSummary = {
         ...state.orderSummary,

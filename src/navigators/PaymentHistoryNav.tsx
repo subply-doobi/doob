@@ -2,7 +2,7 @@ import {View, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import PaymentDetail from '../screens/PaymentDetail';
-import PaymentHistory from '../screens/PaymentHistory';
+import PaymentHistory from '../screens/orderScreen/PaymentHistory';
 import BackArrow from '../components/common/BackArrow';
 import {NavigationProps} from '../constants/constants';
 import colors from '../styles/colors';
@@ -25,10 +25,9 @@ const PaymentHistoryNav = ({navigation: {navigate}}: NavigationProps) => {
           },
           headerShadowVisible: false,
           headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => navigate('BottomTabNav', {screen: 'Mypage'})}>
-              <BackArrow />
-            </TouchableOpacity>
+            <BackArrow
+              goBackFn={() => navigate('BottomTabNav', {screen: 'Mypage'})}
+            />
           ),
         }}
       />
@@ -45,9 +44,7 @@ const PaymentHistoryNav = ({navigation: {navigate}}: NavigationProps) => {
           },
           headerShadowVisible: false,
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigate('PaymentHistory')}>
-              <BackArrow />
-            </TouchableOpacity>
+            <BackArrow goBackFn={() => navigate('PaymentHistory')} />
           ),
         }}
       />

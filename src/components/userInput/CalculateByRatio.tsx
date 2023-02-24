@@ -58,7 +58,7 @@ const renderCaloriePerMealInput = (
         placeholder={`한 끼 칼로리 입력 (추천: ${calorieRecommended})`}
         value={value}
         onChangeText={onChange}
-        onFocus={() => handleSubmit()()}
+        onFocus={() => handleSubmit()}
         isActivated={value ? true : false}
         keyboardType="numeric"
         maxLength={4}

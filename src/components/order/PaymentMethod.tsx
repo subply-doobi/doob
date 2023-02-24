@@ -23,7 +23,6 @@ const KakaoPayBtnText = styled(TextMain)`
 const KakaoLogo = styled.Image`
   width: 48px;
   height: 20px;
-  resize: contain;
 `;
 const GuideText = styled(TextMain)`
   margin-top: 16px;
@@ -41,14 +40,13 @@ interface IPaymentMethod {
 }
 const PaymentMethod = ({control, setValue}: IPaymentMethod) => {
   const paymentMethodValue = useWatch({control, name: 'paymentMethod'});
-
   const renderKakaoPayBtn = ({field: {onChange, value}}: IFormField) => {
     return (
       <KakaoPayBtn
         btnStyle="border"
         isActivated={true}
         onPress={() => {
-          // setValue("paymentMethod", paymentMethodValue ? "" : "kakao");
+          setValue('paymentMethod', paymentMethodValue ? '' : 'kakao');
         }}>
         <Row>
           <KakaoLogo source={require('../../assets/icons/kakaoPay.png')} />

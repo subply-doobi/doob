@@ -1,27 +1,20 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
 import {NavigationContainer} from '@react-navigation/native';
 import RootStackNav from './src/navigators/RootStackNav';
 import React from 'react';
 import {store} from './src/stores/store';
 import {Provider} from 'react-redux';
-import {QueryClientProvider, QueryClient} from '@tanstack/react-query';
-
-const queryClient = new QueryClient();
+import {QueryClientProvider} from '@tanstack/react-query';
+import {queryClient} from './src/query/store';
 
 function App(): JSX.Element {
   return (
-    <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
         <NavigationContainer>
           <RootStackNav />
         </NavigationContainer>
-      </QueryClientProvider>
-    </Provider>
+      </Provider>
+    </QueryClientProvider>
   );
 }
 

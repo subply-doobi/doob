@@ -1,12 +1,14 @@
 import {View, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import Order from '../screens/Order';
+import Order from '../screens/orderScreen/Order';
 import colors from '../styles/colors';
 import styled from 'styled-components/native';
 import {NavigationProps} from '../constants/constants';
-import AddressEdit from '../screens/AddressEdit';
+import AddressEdit from '../screens/orderScreen/AddressEdit';
 import BackArrow from '../components/common/BackArrow';
+import PaymentComplete from '../screens/orderScreen/PaymentComplete';
+import PaymentHistory from '../screens/orderScreen/PaymentHistory';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,10 +28,9 @@ const OrderNav = ({navigation: {navigate}}: NavigationProps) => {
             color: colors.textMain,
           },
           headerLeft: () => (
-            <TouchableOpacity
-              onPress={() => navigate('BottomTabNav', {screen: 'Cart'})}>
-              <BackArrow />
-            </TouchableOpacity>
+            <BackArrow
+              goBackFn={() => navigate('BottomTabNav', {screen: 'Cart'})}
+            />
           ),
         }}
       />
@@ -47,9 +48,23 @@ const OrderNav = ({navigation: {navigate}}: NavigationProps) => {
                   params: {from: 'AddressEdit'},
                 })
               }>
-              <BackArrow />
+              <BackArrow goBackFn={() => console.log('goBack')} />
             </TouchableOpacity>
           ),
+        }}
+      />
+      <Stack.Screen
+        name="PaymentComplete"
+        component={PaymentComplete}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="PaymentHistory"
+        component={PaymentHistory}
+        options={{
+          headerShown: true,
         }}
       />
     </Stack.Navigator>

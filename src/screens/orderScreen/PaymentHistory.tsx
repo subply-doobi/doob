@@ -1,4 +1,4 @@
-import {View, Text, FlatList} from 'react-native';
+import {Linking, FlatList, SafeAreaView, Alert} from 'react-native';
 import React from 'react';
 import {
   Col,
@@ -10,54 +10,16 @@ import {
   TextSub,
   VerticalLine,
   VerticalSpace,
-} from '../styles/styledConsts';
+} from '../../styles/styledConsts';
 import styled from 'styled-components/native';
-import colors from '../styles/colors';
-import {NavigationProps} from '../constants/constants';
-
-const OrderDate = styled(TextSub)`
-  font-size: 12px;
-`;
-
-const DetailBtn = styled.TouchableOpacity`
-  width: 64px;
-  height: 24px;
-  border-radius: 5px;
-  border-width: 1px;
-  border-color: ${colors.lineLight};
-  align-items: center;
-  justify-content: center;
-`;
-
-const DetailBtnText = styled(TextMain)`
-  font-size: 14px;
-`;
-
-const CaloriesText = styled(TextMain)`
-  margin-top: 8px;
-  font-size: 14px;
-`;
-
-const Arrow = styled.Image`
-  margin-top: 32px;
-  width: 20px;
-  height: 20px;
-`;
-
-const ThumbnailBtn = styled.TouchableOpacity``;
-const ThumbnailImage = styled.View`
-  background-color: ${colors.backgroundLight};
-  width: 56px;
-  height: 56px;
-  border-radius: 2px;
-`;
-
-const TotalPrice = styled(TextMain)`
-  margin-top: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  align-self: flex-end;
-`;
+import colors from '../../styles/colors';
+import {NavigationProps} from '../../constants/constants';
+import {useEffect} from 'react';
+import axios, {all} from 'axios';
+import {kakaoAppAdminKey} from '../../constants/constants';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../stores/store';
+import {useKakaopayApprove} from '../../queries/order';
 
 interface IOrder {
   id: string;
@@ -142,8 +104,13 @@ const testData: Array<IOrder> = [
   },
 ];
 
-const PaymentHistory = ({navigation: {navigate}}: NavigationProps) => {
+const PaymentHistory = ({navigation, route}: NavigationProps) => {
+  const {pgToken, tid, foodPrice} = useSelector(
+    (state: RootState) => state.order.orderSummary,
+  );
+
   type IMenu = {id: string; foods: number[]; menuCalories: string};
+
   const renderMenuList = ({item}: {item: IMenu}) => {
     return (
       <Col>
@@ -179,7 +146,7 @@ const PaymentHistory = ({navigation: {navigate}}: NavigationProps) => {
       </Row>
       <HorizontalLine style={{marginTop: 8}} />
       <Row>
-        <Arrow source={require('../assets/icons/20_leftArrow.png')} />
+        <Arrow source={require('../../assets/icons/20_leftArrow.png')} />
         <FlatList
           horizontal={true}
           data={item.menu}
@@ -192,13 +159,13 @@ const PaymentHistory = ({navigation: {navigate}}: NavigationProps) => {
             />
           )}
         />
-        <Arrow source={require('../assets/icons/20_rightArrow.png')} />
+        <Arrow source={require('../../assets/icons/20_rightArrow.png')} />
       </Row>
       <TotalPrice>{item.totalPrice} 원</TotalPrice>
     </>
   );
   return (
-    <Container>
+    <SafeAreaView style={{flex: 1, marginHorizontal: 16}}>
       <HorizontalSpace height={24} />
       <FlatList
         data={testData}
@@ -206,8 +173,52 @@ const PaymentHistory = ({navigation: {navigate}}: NavigationProps) => {
         ItemSeparatorComponent={() => <HorizontalSpace height={24} />}
         keyExtractor={item => item.id}
       />
-    </Container>
+    </SafeAreaView>
   );
 };
 
 export default PaymentHistory;
+
+const OrderDate = styled(TextSub)`
+  font-size: 12px;
+`;
+
+const DetailBtn = styled.TouchableOpacity`
+  width: 64px;
+  height: 24px;
+  border-radius: 5px;
+  border-width: 1px;
+  border-color: ${colors.lineLight};
+  align-items: center;
+  justify-content: center;
+`;
+
+const DetailBtnText = styled(TextMain)`
+  font-size: 14px;
+`;
+
+const CaloriesText = styled(TextMain)`
+  margin-top: 8px;
+  font-size: 14px;
+`;
+
+const Arrow = styled.Image`
+  margin-top: 32px;
+  width: 20px;
+  height: 20px;
+`;
+
+const ThumbnailBtn = styled.TouchableOpacity``;
+const ThumbnailImage = styled.View`
+  background-color: ${colors.backgroundLight};
+  width: 56px;
+  height: 56px;
+  border-radius: 2px;
+`;
+
+const TotalPrice = styled(TextMain)`
+  margin-top: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  align-self: flex-end;
+`;
