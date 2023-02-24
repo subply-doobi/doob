@@ -1,5 +1,6 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import axios from 'axios';
+import {BASE_LINE} from '../keys';
 import {queryFn, mutationFn} from './requestFn';
 import {validateToken} from './token';
 import {CREATE_BASE_LINE, GET_BASE_LINE, UPDATE_BASE_LINE} from './urls';
@@ -39,7 +40,7 @@ interface IQueryOptions {
 export const useGetBaseLine = (options?: IQueryOptions) => {
   const enabled = options?.enabled ?? true;
   return useQuery({
-    queryKey: ['baseLine'],
+    queryKey: [BASE_LINE],
     queryFn: () => queryFn(GET_BASE_LINE),
     enabled,
     onSuccess: data => {
@@ -56,7 +57,7 @@ export const useUpdateBaseLine = () => {
     mutationFn: (baseLine: IBaseLine) =>
       mutationFn<IBaseLine>(UPDATE_BASE_LINE, 'post', baseLine),
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ['baseLine']});
+      queryClient.invalidateQueries({queryKey: [BASE_LINE]});
     },
     onError: e => console.log('useUpdateBaseLine error: ', e),
   });

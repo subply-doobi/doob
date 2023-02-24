@@ -12,7 +12,6 @@ import {calculateBMR, calculateNutrTarget} from '../util/targetCalculation';
 import {updateUserInfo} from '../stores/slices/userInfoSlice';
 import {changeNutrByWeight} from '../util/alertActions';
 import {BtnBottomCTA, BtnText} from '../styles/styledConsts';
-import {getUserBaseLine} from '../queries/requestFn';
 
 const Container = styled.View`
   flex: 1;
@@ -80,7 +79,6 @@ const History = ({navigation: {navigate}}: NavigationProps) => {
       // TBD | store, 서버에 weight, tmr정보만 Put
       dispatch(updateUserInfo({tmr: res.tmr, weight: weightValue}));
     }
-    getUserBaseLine();
     setAlertShow(false);
     navigate('HistoryNav', {
       screen: 'HistoryDetail',

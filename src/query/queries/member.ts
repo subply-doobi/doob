@@ -1,8 +1,7 @@
 import axios from 'axios';
-
-import {GET_USER} from '../../queries/urls';
 import {TUserInfo} from '../types/member';
-import {validateToken} from '../../queries/token';
+import {validateToken} from './token';
+import {GET_USER} from './urls';
 
 export const getUserInfo = async () => {
   const {validToken} = await validateToken();

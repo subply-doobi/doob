@@ -18,7 +18,13 @@ import {Text} from 'react-native';
 import NutrientsProgress from '../components/common/NutrientsProgress';
 import MenuHeader from '../components/common/MenuHeader';
 import MenuSelect from '../components/common/MenuSelect';
-import {useCreateDiet, useListDiet, useListDietDetail} from '../queries/diet';
+import {
+  useCreateDiet,
+  useCreateDietDetail,
+  useListDiet,
+  useListDietDetail,
+} from '../query/queries/diet';
+import AutoMenuBtn from '../components/cart/AutoMenuBtn';
 
 const Cart = () => {
   const {data: dietData, refetch: refetchDietData} = useListDiet({
@@ -27,9 +33,10 @@ const Cart = () => {
   const {data: dietDetailData, refetch: refetchDietDetailData} =
     useListDietDetail({enabled: false});
   const createDietMutation = useCreateDiet();
+  const createDietDetailMutation = useCreateDietDetail();
 
-  console.log('dietData: ', dietData);
-  console.log('dietDetailData: ', dietDetailData);
+  console.log('Cart: dietData: ', dietData);
+  console.log('Cart: dietDetailData: ', dietDetailData);
 
   const {menuIndex} = useSelector((state: RootState) => state.cart);
   const [menuSelectOpen, setMenuSelectOpen] = useState(false);
@@ -66,22 +73,12 @@ const Cart = () => {
         </CardMenuHeader>
         <HorizontalSpace height={24} />
         <NutrientsProgress menuIndex={menuIndex} />
+
+        <AutoMenuBtn status="empty" />
+        <MenuTotalPrice>합계 0원</MenuTotalPrice>
         {menuSelectOpen && (
           <MenuSelect setOpen={setMenuSelectOpen} center={true} />
         )}
-
-        {/* 식품 비어있거나 리스트 보여주거나 */}
-        <GuideText>식품을 추가해보세요</GuideText>
-        <BtnCTA height={108} btnStyle="borderActivated" style={{marginTop: 8}}>
-          <Row>
-            <PlusBtnImage
-              source={require(`../assets/icons/24_autoMenu_activated.png`)}
-            />
-            <AutoMenuText>귀찮을 땐 자동구성</AutoMenuText>
-          </Row>
-        </BtnCTA>
-        <MenuTotalPrice>합계 0원</MenuTotalPrice>
-        {/* 식품 비어있거나 리스트 보여주거나 end */}
       </Card>
 
       <BtnSmall onPress={() => createDietMutation.mutate()}>
@@ -89,6 +86,18 @@ const Cart = () => {
       </BtnSmall>
       <BtnSmall onPress={() => refetchDietData()}>
         <Text> 끼니조회 </Text>
+      </BtnSmall>
+      <BtnSmall onPress={() => refetchDietDetailData()}>
+        <Text> 세부조회 </Text>
+      </BtnSmall>
+      <BtnSmall
+        onPress={() =>
+          createDietDetailMutation.mutate({
+            dietNo: 'DT20230223000000002',
+            productNo: 'PD20220713000000017',
+          })
+        }>
+        <Text> 식품추가 </Text>
       </BtnSmall>
     </Container>
   );
@@ -102,7 +111,6 @@ const Container = styled.View`
   flex: 1;
   padding: 0px 8px 0px 8px;
   background-color: ${colors.backgroundLight};
-
 `;
 
 const SelectedDeleteRow = styled(Row)`
@@ -137,24 +145,9 @@ const CardMenuHeader = styled.View`
   align-self: center;
 `;
 
-const GuideText = styled(TextSub)`
-  margin-top: 24px;
-  font-size: 14px;
-`;
-
-const PlusBtnImage = styled.Image`
-  width: 24px;
-  height: 24px;
-`;
-const AutoMenuText = styled(TextSub)`
-  margin-left: 8px;
-  font-size: 14px;
-`;
-
 const MenuTotalPrice = styled(TextMain)`
   margin-top: 24px;
   font-size: 16px;
   font-weight: bold;
   align-self: flex-end;
 `;
-=======

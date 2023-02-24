@@ -3,10 +3,7 @@ import styled from 'styled-components/native';
 import colors from '../../styles/colors';
 import {VerticalSpace} from '../../styles/styledConsts';
 import * as Progress from 'react-native-progress';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../stores/store';
-import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
-import {useGetBaseLine} from '../../queries/baseLine';
+import {useGetBaseLine} from '../../query/queries/baseLine';
 
 const ProgressBarContainer = styled.View`
   flex: 1;
@@ -78,7 +75,7 @@ const ProgressBar = ({title, numerator, denominator}: INutrientProgress) => {
   );
 };
 
-const NutrientsProgress = ({menuIndex}: {menuIndex: string}) => {
+const NutrientsProgress = ({menuIndex}: {menuIndex: number}) => {
   // react-query test
   const {isLoading, error, data} = useGetBaseLine();
   const {calorie, carb, protein, fat} = data;

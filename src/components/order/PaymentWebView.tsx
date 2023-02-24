@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import styled from 'styled-components/native';
 import {setOrderSummary} from '../../stores/slices/orderSlice';
 import {RootState} from '../../stores/store';
-import {useKakaopayApprove} from '../../queries/order';
+import {useKakaopayApprove} from '../../query/queries/order';
 const Cancel = styled.TouchableOpacity`
   width: 30px;
   height: 30px;

@@ -3,7 +3,7 @@ export const BASE_URL = 'http://52.79.208.191:8080';
 
 export const GET_TOKEN = `${BASE_URL}/api/every/token/get-token`; //토큰 조회
 export const GET_AUTH = `${BASE_URL}/api/member/auth/get-auth`; //인증 여부 조회
-export const RE_ISSUE_TOKEN = `${BASE_URL}/api/member/auth/re-issue-token`;
+export const RE_ISSUE_TOKEN = `${BASE_URL}/api/every/token/re-issue-token`;
 export const GET_USER = `${BASE_URL}/api/member/user/get-user`; //사용자 정보 조회
 
 // base-line-controller

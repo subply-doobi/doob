@@ -1,9 +1,9 @@
 import axios from 'axios';
 import {useMutation} from '@tanstack/react-query';
-import {kakaoAppAdminKey} from '../constants/constants';
-import {setOrderSummary} from '../stores/slices/orderSlice';
+import {kakaoAppAdminKey} from '../../constants/constants';
+import {setOrderSummary} from '../../stores/slices/orderSlice';
 import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../stores/store';
+import {RootState} from '../../stores/store';
 //기존 testKakaoPay
 
 export const useKakaoPayReady = () => {

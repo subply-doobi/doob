@@ -1,4 +1,6 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {DIET, DIET_DETAIL} from '../keys';
+import {TdietData} from '../types/diet';
 import {mutationFn, queryFn} from './requestFn';
 import {
   CREATE_DIET,
@@ -15,29 +17,21 @@ export const useCreateDiet = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: () => mutationFn(CREATE_DIET, 'put'),
-    onSuccess: data => queryClient.invalidateQueries({queryKey: ['diet']}),
+    onSuccess: data => queryClient.invalidateQueries({queryKey: [DIET]}),
     onError: e => console.log('useCreateDiet error: ', e),
   });
   return mutation;
 };
 
-interface ICreateDietDetailParamsc {
-  dietNo: string;
-  productNo: string;
-}
-export const useCreateDietDetail = ({
-  dietNo,
-  productNo,
-}: ICreateDietDetailParamsc) => {
+export const useCreateDietDetail = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: () =>
+    mutationFn: ({dietNo, productNo}: {dietNo: string; productNo: string}) =>
       mutationFn(
         `${CREATE_DIET_DETAIL}?dietNo=${dietNo}&productNo=${productNo}`,
         'put',
       ),
-    onSuccess: data =>
-      queryClient.invalidateQueries({queryKey: ['dietDetail']}),
+    onSuccess: data => queryClient.invalidateQueries({queryKey: [DIET_DETAIL]}),
     onError: e => console.log('useCreateDietDetail error: ', e),
   });
   return mutation;
@@ -49,8 +43,8 @@ interface IQueryOptions {
 }
 export const useListDiet = (options?: IQueryOptions) => {
   const enabled = options?.enabled ?? true;
-  return useQuery({
-    queryKey: ['diet'],
+  return useQuery<TdietData>({
+    queryKey: [DIET],
     queryFn: () => queryFn(LIST_DIET),
     enabled,
     onSuccess: data => {
@@ -61,7 +55,7 @@ export const useListDiet = (options?: IQueryOptions) => {
 export const useListDietDetail = (options?: IQueryOptions) => {
   const enabled = options?.enabled ?? true;
   return useQuery({
-    queryKey: ['dietDetail'],
+    queryKey: [DIET_DETAIL],
     queryFn: () => queryFn(LIST_DIET_DETAIL),
     enabled,
     onSuccess: data => {
@@ -71,12 +65,12 @@ export const useListDietDetail = (options?: IQueryOptions) => {
 };
 
 // POST //
-export const useUpdateDietDetail = (options?: IQueryOptions) => {
+export const useUpdateDietDetail = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: () => mutationFn(UPDATE_DIET_DETAIL, 'post'),
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ['dietDetail']});
+      queryClient.invalidateQueries({queryKey: [DIET_DETAIL]});
     },
     onError: e => console.log('useUpdateBaseLine error: ', e),
   });
@@ -84,24 +78,25 @@ export const useUpdateDietDetail = (options?: IQueryOptions) => {
 };
 
 // DELETE //
-export const useDeleteDiet = (options?: IQueryOptions) => {
+export const useDeleteDiet = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: () => mutationFn(DELETE_DIET, 'post'),
+    mutationFn: ({dietNo}: {dietNo: string}) =>
+      mutationFn(`${DELETE_DIET}/${dietNo}`, 'delete'),
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ['diet']});
+      queryClient.invalidateQueries({queryKey: [DIET]});
     },
     onError: e => console.log('useUpdateBaseLine error: ', e),
   });
   return mutation;
 };
 
-export const useDeleteDietDetail = (options?: IQueryOptions) => {
+export const useDeleteDietDetail = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: () => mutationFn(DELETE_DIET_DETAIL, 'post'),
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ['dietDetail']});
+      queryClient.invalidateQueries({queryKey: [DIET_DETAIL]});
     },
     onError: e => console.log('useUpdateBaseLine error: ', e),
   });

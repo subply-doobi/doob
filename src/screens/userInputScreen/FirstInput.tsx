@@ -26,7 +26,7 @@ import {calculateBMR} from '../../util/targetCalculation';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
 import {saveUserInfo} from '../../stores/slices/userInfoSlice';
-import {useGetBaseLine} from '../../queries/baseLine';
+import {useGetBaseLine} from '../../query/queries/baseLine';
 
 interface IFormData {
   gender: string;
