@@ -34,39 +34,6 @@ const Cart = () => {
   const {menuIndex} = useSelector((state: RootState) => state.cart);
   const [menuSelectOpen, setMenuSelectOpen] = useState(false);
   const [checkAllClicked, setCheckAllClicked] = useState(false);
-  // const checkPrice = () =>
-  //   cart[menuIndex].length === 0 ? setTotalPrice(0) : totalPrice;
-  // useEffect(() => {
-  //   checkPrice();
-  // }, [cart[menuIndex].length]);
-  // const menuInfo = arg =>
-  //   arg.map((el, index) => {
-  //     return `끼니 ${index + 1}`;
-  //   });
-  // let cardMenuArray = menuInfo(cart).map(el => {
-  //   return el;
-  // });
-  // const getPlatformNm = () =>
-  //   cart[0].map((el, index) => {
-  //     return el.platformNm;
-  //   });
-  // const set = new Set(getPlatformNm());
-  // const platformArray = [...set];
-
-  //결제정보 관련
-  // const getProductInfo = (index: number) =>
-  //   cart[index]?.map(el => {
-  //     return {
-  //       cartIndex: index,
-  //       productNo: el.productNo,
-  //       qty: el.qty,
-  //       price: el.price,
-  //     };
-  //   });
-  // let productInfoArray = [];
-  // for (let i = 0; i < 3; i++) {
-  //   productInfoArray.push(getProductInfo(i));
-  // }
 
   return (
     <Container>
@@ -130,10 +97,12 @@ const Cart = () => {
 export default Cart;
 
 // style //
+
 const Container = styled.View`
   flex: 1;
   padding: 0px 8px 0px 8px;
   background-color: ${colors.backgroundLight};
+
 `;
 
 const SelectedDeleteRow = styled(Row)`
@@ -188,3 +157,4 @@ const MenuTotalPrice = styled(TextMain)`
   font-weight: bold;
   align-self: flex-end;
 `;
+=======
