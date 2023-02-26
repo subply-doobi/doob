@@ -86,7 +86,6 @@ const MenuSelect = ({setOpen, center}: IMenuSelect) => {
     return (
       <Menu
         onPress={() => {
-          console.log(`${item.dietSeq} 선택`);
           dispatch(setMenuIndex(index));
           setOpen(false);
         }}>

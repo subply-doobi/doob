@@ -7,7 +7,6 @@ export const queryFn = async (url: string) => {
 
   const requestConfig = {headers: {authorization: `Bearer ${validToken}`}};
   const res = await axios.get(url, requestConfig);
-  console.log('queryFn res: ', res.data);
 
   return res.data;
 };

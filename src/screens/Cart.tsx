@@ -25,16 +25,21 @@ import {
   useListDietDetail,
 } from '../query/queries/diet';
 import AutoMenuBtn from '../components/cart/AutoMenuBtn';
+import {useQuery} from '@tanstack/react-query';
+import axios from 'axios';
+import {RE_ISSUE_TOKEN} from '../query/queries/urls';
+import {queryFn} from '../query/queries/requestFn';
+import {getStoredToken, validateToken} from '../query/queries/token';
 
 const Cart = () => {
   const {data: dietData, refetch: refetchDietData} = useListDiet({
     enabled: false,
   });
+
   const {data: dietDetailData, refetch: refetchDietDetailData} =
     useListDietDetail({enabled: false});
   const createDietMutation = useCreateDiet();
   const createDietDetailMutation = useCreateDietDetail();
-
   console.log('Cart: dietData: ', dietData);
   console.log('Cart: dietDetailData: ', dietDetailData);
 
@@ -81,7 +86,7 @@ const Cart = () => {
         )}
       </Card>
 
-      <BtnSmall onPress={() => createDietMutation.mutate()}>
+      {/* <BtnSmall onPress={() => createDietMutation.mutate()}>
         <Text> 끼니생성 </Text>
       </BtnSmall>
       <BtnSmall onPress={() => refetchDietData()}>
@@ -98,6 +103,12 @@ const Cart = () => {
           })
         }>
         <Text> 식품추가 </Text>
+      </BtnSmall> */}
+      <BtnSmall onPress={() => refetchDietDetailData()}>
+        <Text> 세부조회 </Text>
+      </BtnSmall>
+      <BtnSmall onPress={() => {}}>
+        <Text>reIssue</Text>
       </BtnSmall>
     </Container>
   );
@@ -106,7 +117,6 @@ const Cart = () => {
 export default Cart;
 
 // style //
-
 const Container = styled.View`
   flex: 1;
   padding: 0px 8px 0px 8px;

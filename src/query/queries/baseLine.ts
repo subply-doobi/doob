@@ -43,15 +43,12 @@ export const useGetBaseLine = (options?: IQueryOptions) => {
     queryKey: [BASE_LINE],
     queryFn: () => queryFn(GET_BASE_LINE),
     enabled,
-    onSuccess: data => {
-      console.log('useGetBaseLine onSuccess');
-    },
+    onSuccess: data => {},
   });
 };
 
 // POST
 export const useUpdateBaseLine = () => {
-
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (baseLine: IBaseLine) =>

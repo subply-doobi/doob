@@ -37,8 +37,6 @@ const ThirdInput = ({navigation: {navigate}}: NavigationProps) => {
   const {userInfo, userTarget} = useSelector(
     (state: RootState) => state.userInfo,
   );
-  console.log('userInfo3: userInfo:', userInfo);
-  console.log('userInfo3: userTarget:', userTarget);
 
   // ref
   const scrollRef = useRef<ScrollView>(null);
@@ -123,7 +121,6 @@ const ThirdInput = ({navigation: {navigate}}: NavigationProps) => {
   const updateSections = (actives: Array<number>) => {
     setActiveSections(actives);
   };
-  console.log('userInfo3: errors: ', errors);
 
   const btnIsActive =
     activeSections[0] === 0 ||

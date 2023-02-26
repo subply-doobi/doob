@@ -144,12 +144,10 @@ const renderWeightInput = (
 
 const FirstInput = ({navigation: {navigate}}: NavigationProps) => {
   const {data} = useGetBaseLine();
-  console.log(data);
   // state
   // redux
   const {userInfo} = useSelector((state: RootState) => state.userInfo);
   const dispatch = useDispatch();
-  console.log('userInfo1: userInfo: ', userInfo);
 
   // refs
   const scrollRef = useRef<ScrollView>(null);
@@ -177,10 +175,8 @@ const FirstInput = ({navigation: {navigate}}: NavigationProps) => {
   const weightValue = useWatch({control, name: 'weight'});
   const dietPurposeValue = useWatch({control, name: 'dietPurposecd'});
 
-  console.log('userInfo1: errors: ', errors);
-
   useEffect(() => {
-    handleSubmit(() => console.log('submit!'))();
+    handleSubmit(() => {})();
   }, []);
 
   return (

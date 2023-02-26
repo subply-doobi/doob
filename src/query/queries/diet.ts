@@ -47,9 +47,7 @@ export const useListDiet = (options?: IQueryOptions) => {
     queryKey: [DIET],
     queryFn: () => queryFn(LIST_DIET),
     enabled,
-    onSuccess: data => {
-      console.log('useGetBaseLine onSuccess');
-    },
+    onSuccess: data => () => {},
   });
 };
 export const useListDietDetail = (options?: IQueryOptions) => {
@@ -58,9 +56,7 @@ export const useListDietDetail = (options?: IQueryOptions) => {
     queryKey: [DIET_DETAIL],
     queryFn: () => queryFn(LIST_DIET_DETAIL),
     enabled,
-    onSuccess: data => {
-      console.log('useGetBaseLine onSuccess');
-    },
+    onSuccess: data => {},
   });
 };
 
@@ -72,7 +68,7 @@ export const useUpdateDietDetail = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: [DIET_DETAIL]});
     },
-    onError: e => console.log('useUpdateBaseLine error: ', e),
+    onError: e => console.log('useUpdateDietDetail error: ', e),
   });
   return mutation;
 };
@@ -86,7 +82,7 @@ export const useDeleteDiet = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: [DIET]});
     },
-    onError: e => console.log('useUpdateBaseLine error: ', e),
+    onError: e => console.log('useDeleteDiet error: ', e),
   });
   return mutation;
 };
@@ -98,7 +94,7 @@ export const useDeleteDietDetail = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: [DIET_DETAIL]});
     },
-    onError: e => console.log('useUpdateBaseLine error: ', e),
+    onError: e => console.log('useDeleteDietDetail error: ', e),
   });
   return mutation;
 };

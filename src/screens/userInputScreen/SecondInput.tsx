@@ -57,7 +57,6 @@ const renderBmrKnownInput = (
   handleSubmit: Function,
   userInfo1Refs?: React.MutableRefObject<any[]>,
 ) => {
-  // const onSubmit = (data) => console.log("dddd", data);
   return (
     <>
       <InputHeader isActivated={value ? true : false}>
@@ -114,7 +113,6 @@ const onHandlePress = (
 
 const SecondInput = ({navigation: {navigate}, route}: NavigationProps) => {
   const {userInfo} = useSelector((state: RootState) => state.userInfo);
-  console.log('userInfo2: userInfo:', userInfo);
   // redux
   const dispatch = useDispatch();
 
@@ -136,7 +134,7 @@ const SecondInput = ({navigation: {navigate}, route}: NavigationProps) => {
   const weightTimeCdValue = useWatch({control, name: 'weightTimeCd'});
   const aerobicTimeCdValue = useWatch({control, name: 'aerobicTimeCd'});
   useEffect(() => {
-    handleSubmit(() => console.log('submit!'))();
+    handleSubmit(() => {})();
   }, []);
   return (
     <Container>

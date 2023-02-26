@@ -256,7 +256,6 @@ const HistoryDetail = ({
       </AddOptionBtn>
     </AddAlertContainer>
   );
-  console.log('HistoryDetail: imagePicked: ', imagePicked);
   return (
     <Container>
       <Card>

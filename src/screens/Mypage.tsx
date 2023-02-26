@@ -277,8 +277,6 @@ const Mypage = ({navigation: {navigate}}: NavigationProps) => {
     setAlertShow(false);
   };
 
-  console.log('Mypage: userInfo: ', userInfo);
-  console.log('Mypage: userTarget: ', userTarget);
   return (
     <Container>
       <DAlert
