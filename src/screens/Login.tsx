@@ -24,13 +24,13 @@ const Login = ({navigation: {navigate}}: NavigationProps) => {
   //     navigate('BottomTabNav', {screen: 'Home'});
   //   }
   // };
-  useEffect(() => {
-    if (data != undefined) navigate('BottomTabNav', {screen: 'Home'});
-  }, [data]);
+  // useEffect(() => {
+  //   if (data != undefined) navigate('BottomTabNav', {screen: 'Home'});
+  // }, [data]);
 
   const signInWithKakao = async (): Promise<void> => {
-    const {isTokenValid} = await validateToken();
-    if (isTokenValid) navigate('InputNav', {screen: 'FirstInput'});
+    const isTokenValid = await validateToken();
+    if (isTokenValid) return navigate('InputNav', {screen: 'FirstInput'});
   };
   return (
     <Container>

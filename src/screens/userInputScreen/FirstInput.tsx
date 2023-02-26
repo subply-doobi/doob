@@ -252,7 +252,7 @@ const FirstInput = ({navigation: {navigate}}: NavigationProps) => {
         {/* --- purpose --- */}
         <Dropdown
           placeholder="식단의 목적"
-          items={newDietPurposeCdCategory}
+          items={purposeCategory}
           value={dietPurposeValue}
           setValue={setValue}
           scrollRef={scrollRef}
