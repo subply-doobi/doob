@@ -6,14 +6,10 @@ import {IProduct} from '../../constants/constants';
 // cart -> menu -> product
 export interface ICartState {
   menuIndex: number;
-  cart: Array<Array<IProduct>>;
-  pickedCart: [];
 }
 
 const initialState: ICartState = {
   menuIndex: 0,
-  cart: [[]],
-  pickedCart: [],
 };
 
 export const cartSlice = createSlice({

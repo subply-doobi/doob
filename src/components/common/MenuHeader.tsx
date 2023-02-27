@@ -4,6 +4,7 @@ import styled from 'styled-components/native';
 import {TextMain} from '../../styles/styledConsts';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
+import {useListDiet} from '../../query/queries/diet';
 
 const Header = styled.TouchableOpacity`
   flex-direction: row;
@@ -24,10 +25,13 @@ interface IMenuHeader {
   setMenuSelectOpen: React.Dispatch<SetStateAction<boolean>>;
 }
 const MenuHeader = ({menuSelectOpen, setMenuSelectOpen}: IMenuHeader) => {
+  // react-query
+  const {data: dietData} = useListDiet();
+  // redux
   const {menuIndex} = useSelector((state: RootState) => state.cart);
   return (
     <Header onPress={() => setMenuSelectOpen(v => !v)}>
-      <HeaderText>{`끼니${menuIndex + 1}`}</HeaderText>
+      <HeaderText>{dietData ? dietData[menuIndex].dietSeq : ''}</HeaderText>
       {menuSelectOpen ? (
         <Arrow source={require('../../assets/icons/24_dropdown_up.png')} />
       ) : (

@@ -2,11 +2,10 @@ import React from 'react';
 import styled from 'styled-components/native';
 import colors from '../../styles/colors';
 import {Col, Row, TextMain, TextSub} from '../../styles/styledConsts';
-import {BASE_URL} from '../../queries/urls';
+import {BASE_URL} from '../../query/queries/urls';
 import {hasProduct} from '../../util/reduxUtil';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../../stores/store';
-import {addProductToMenu, deleteProduct} from '../../stores/slices/cartSlice';
 import {PayloadAction} from '@reduxjs/toolkit';
 import {SCREENWIDTH} from '../../constants/constants';
 import {deleteLikeFood} from '../../stores/slices/likeSlice';
@@ -99,7 +98,7 @@ interface IFoodList {
 }
 
 const FoodList = ({item, menuIndex}: IFoodList) => {
-  const {cart} = useSelector((state: RootState) => state.cart);
+  // const {cart} = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch();
   const itemExist = hasProduct(cart[menuIndex], item.item.productNo);
   const deleteFood = () => {
@@ -133,11 +132,7 @@ const FoodList = ({item, menuIndex}: IFoodList) => {
           }}>
           <AddOrDeleteBtn
             onPress={() => {
-              itemExist
-                ? dispatch(
-                    deleteProduct({menuIndex, productNo: item.item.productNo}),
-                  )
-                : dispatch(addProductToMenu({menuIndex, product: item.item}));
+              itemExist ? console.log('item삭제') : console.log('item추가');
             }}>
             {itemExist ? (
               <AddToCartBtnImage

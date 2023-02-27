@@ -1,28 +1,167 @@
-import {View, Text, FlatList, Alert} from 'react-native';
 import React, {useState} from 'react';
-import styled from 'styled-components/native';
-import colors from '../../styles/colors';
+import {FlatList, Text} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {RootState} from '../../stores/store';
+import styled from 'styled-components/native';
 import {
-  addMenuToCart,
-  deleteMenu,
-  setMenuIndex,
-} from '../../stores/slices/cartSlice';
+  useCreateDiet,
+  useDeleteDiet,
+  useListDiet,
+} from '../../query/queries/diet';
+import {setMenuIndex} from '../../stores/slices/cartSlice';
+import {RootState} from '../../stores/store';
+import colors from '../../styles/colors';
 import {Col, HorizontalLine, TextMain} from '../../styles/styledConsts';
-import {IProduct} from '../../constants/constants';
+import {checkMenuEmpty} from '../../util/checkEmptyMenu';
 import DAlert from './DAlert';
+
+interface IMenuSelect {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  center?: boolean;
+}
+const MenuSelect = ({setOpen, center}: IMenuSelect) => {
+  // react-query
+  const {data: dietData} = useListDiet();
+  const createDietMutation = useCreateDiet();
+  const deleteDietMutation = useDeleteDiet();
+
+  // redux
+  const {menuIndex} = useSelector((state: RootState) => state.cart);
+  const dispatch = useDispatch();
+  const [deleteAlertShow, setDeleteAlertShow] = useState(false);
+  const [createAlertShow, setCreateAlertShow] = useState(false);
+
+  const addAlertStatus = dietData
+    ? checkMenuEmpty(dietData) === undefined
+      ? dietData?.length >= 3
+        ? 'limit'
+        : 'none'
+      : 'empty'
+    : 'none';
+
+  const deleteAlertContent = (index: number) => {
+    return (
+      <Container>
+        <Col style={{marginTop: 28, alignItems: 'center'}}>
+          <AlertText>끼니 {index + 1}</AlertText>
+          <AlertText>삭제하시겠어요?</AlertText>
+        </Col>
+      </Container>
+    );
+  };
+
+  const createLimitAlertContent = () => {
+    return (
+      <Container>
+        <Col style={{marginTop: 28, alignItems: 'center'}}>
+          <AlertText>끼니는 3개 까지만 추가가 가능해요</AlertText>
+        </Col>
+      </Container>
+    );
+  };
+  const menuEmptyAlertContent = () => {
+    const emptyMenuIndex = checkMenuEmpty(dietData);
+    return (
+      <Container>
+        <Col style={{marginTop: 28, alignItems: 'center'}}>
+          <AlertText>{`끼니${emptyMenuIndex - 1}을 먼저 구성하고`}</AlertText>
+          <AlertText>{`이용해보세요`}</AlertText>
+        </Col>
+      </Container>
+    );
+  };
+
+  interface IMenuList {
+    companyCd: string;
+    dietNo: string;
+    dietSeq: string;
+    statusCd: string;
+    statusNm: string;
+    userId: string;
+  }
+  const renderMenuList = ({index, item}: {index: number; item: IMenuList}) => {
+    const onDeleteDiet = () => {
+      deleteDietMutation.mutate({dietNo: item.dietNo});
+      setDeleteAlertShow(true);
+    };
+    return (
+      <Menu
+        onPress={() => {
+          console.log(`${item.dietSeq} 선택`);
+          dispatch(setMenuIndex(index));
+          setOpen(false);
+        }}>
+        <MenuText isActivated={index === menuIndex}>{item.dietSeq}</MenuText>
+        {index == 0 || (
+          <DeleteBtn onPress={onDeleteDiet}>
+            <DeleteImg
+              source={require('../../assets/icons/24_icon=close.png')}
+            />
+          </DeleteBtn>
+        )}
+      </Menu>
+    );
+  };
+
+  const onCreateDiet = () => {
+    if (addAlertStatus === 'none') {
+      createDietMutation.mutate();
+      return;
+    }
+    setCreateAlertShow(true);
+  };
+
+  return (
+    <SelectContainer center={center}>
+      <FlatList
+        data={dietData}
+        renderItem={renderMenuList}
+        keyExtractor={item => item.dietNo}
+        ItemSeparatorComponent={() => <HorizontalLine />}
+      />
+
+      <HorizontalLine />
+      <Menu onPress={onCreateDiet}>
+        <MenuText>끼니 추가하기</MenuText>
+      </Menu>
+
+      <DAlert
+        alertShow={deleteAlertShow}
+        renderContent={() => deleteAlertContent(menuIndex)}
+        onConfirm={() => setDeleteAlertShow(false)}
+        onCancel={() => setDeleteAlertShow(false)}
+      />
+      <DAlert
+        alertShow={createAlertShow}
+        renderContent={() =>
+          addAlertStatus === 'limit' ? (
+            createLimitAlertContent()
+          ) : addAlertStatus === 'empty' ? (
+            menuEmptyAlertContent()
+          ) : (
+            <></>
+          )
+        }
+        onConfirm={() => setCreateAlertShow(false)}
+        onCancel={() => setCreateAlertShow(false)}
+        NoOfBtn={1}
+      />
+    </SelectContainer>
+  );
+};
+
+export default MenuSelect;
+
 const Container = styled.View`
   padding: 0px 16px 24px 16px;
 `;
 
-const DeleteText = styled(TextMain)`
+const AlertText = styled(TextMain)`
   font-size: 16px;
 `;
 const SelectContainer = styled.View`
   position: absolute;
   top: 48px;
-  left: 16px;
+  left: ${({center}: {center?: boolean}) => (center ? `32%` : `16px`)};
   width: 144px;
   background-color: ${colors.white};
   border-radius: 3px;
@@ -53,96 +192,3 @@ const DeleteImg = styled.Image`
   width: 24px;
   height: 24px;
 `;
-
-const menuToDropdownValues = (cart: Array<Array<IProduct>>) => {
-  const dropdownCategory = cart?.map((v, index) => {
-    return {label: `끼니 ${index + 1}`, index: index};
-  });
-  return dropdownCategory;
-};
-
-interface IMenuSelect {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}
-const MenuSelect = ({setOpen}: IMenuSelect) => {
-  // redux
-  const {menuIndex, cart} = useSelector((state: RootState) => state.cart);
-  const dispatch = useDispatch();
-  const [alertShow, setAlertShow] = useState(false);
-
-  const dropdownCategory = menuToDropdownValues(cart);
-  const deleteAlertContent = props => {
-    return (
-      <Container>
-        <Col style={{marginTop: 24, marginLeft: 24}}>
-          <DeleteText>끼니 {props + 1}를 삭제하시겠어요?</DeleteText>
-        </Col>
-      </Container>
-    );
-  };
-  const ShowAlert = props => {
-    const {index} = props.pick;
-    return (
-      <DAlert
-        alertShow={alertShow}
-        renderContent={() => deleteAlertContent(index)}
-        onConfirm={() => (
-          dispatch(setMenuIndex(index - 1)),
-          dispatch(deleteMenu(index)),
-          setAlertShow(false)
-        )}
-        onCancel={() => setAlertShow(false)}
-      />
-    );
-  };
-  return (
-    <SelectContainer>
-      <FlatList
-        data={dropdownCategory}
-        renderItem={({item}) => (
-          <Menu
-            onPress={() => {
-              dispatch(setMenuIndex(item.index));
-              setOpen(false);
-            }}>
-            <MenuText isActivated={item.index === menuIndex}>
-              {item.label}
-            </MenuText>
-            {item.index == 0 || (
-              <>
-                <DeleteBtn
-                  onPress={() => {
-                    setAlertShow(true);
-                  }}>
-                  <DeleteImg
-                    source={require('../../assets/icons/24_icon=close.png')}
-                  />
-                  <ShowAlert pick={item} />
-                </DeleteBtn>
-              </>
-            )}
-          </Menu>
-        )}
-        keyExtractor={item => item.label}
-        ItemSeparatorComponent={() => <HorizontalLine />}
-      />
-      <HorizontalLine />
-      <Menu
-        onPress={() => {
-          if (cart[menuIndex]?.length === 0) {
-            Alert.alert('현재 끼니에 식품을 추가하고 이용해보세요');
-            return;
-          }
-          if (cart.length > 2) {
-            Alert.alert('끼니는 3개까지만 추가 가능합니다');
-            return;
-          }
-          dispatch(addMenuToCart());
-        }}>
-        <MenuText>끼니 추가하기</MenuText>
-      </Menu>
-    </SelectContainer>
-  );
-};
-
-export default MenuSelect;

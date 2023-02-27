@@ -82,7 +82,7 @@ export const validateToken = async () => {
     // const kakaoToken: KakaoOAuthToken = await loginWithKakaoAccount();
     console.log('kakaoLogin kakaoToken: ', JSON.stringify(kakaoToken));
     const {accessToken, refreshToken} = await getDoobiToken(
-      kakaoToken.accessToken,
+      kakaoToken?.accessToken,
     );
     if (accessToken && refreshToken) {
       await storeToken(accessToken, refreshToken);

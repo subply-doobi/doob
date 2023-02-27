@@ -1,5 +1,6 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import axios from 'axios';
+import {BASE_LINE} from '../keys';
 import {queryFn, mutationFn} from './requestFn';
 import {validateToken} from './token';
 import {CREATE_BASE_LINE, GET_BASE_LINE, UPDATE_BASE_LINE} from './urls';
@@ -21,18 +22,14 @@ interface IBaseLine {
 }
 
 // PUT
-export const useCreateBaseLine = async () => {
+export const useCreateBaseLine = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (baseLine: IBaseLine) =>
-      axios.put(CREATE_BASE_LINE, baseLine, requestConfig),
+      mutationFn<IBaseLine>(UPDATE_BASE_LINE, 'put', baseLine),
     onSuccess: data => queryClient.invalidateQueries({queryKey: ['baseLine']}),
     onError: e => console.log('useSaveBaseLine error: ', e),
   });
-  const {isTokenValid, validToken} = await validateToken();
-  if (!isTokenValid) return;
-
-  const requestConfig = {headers: {authorization: `Bearer ${validToken}`}};
   return mutation;
 };
 
@@ -43,7 +40,7 @@ interface IQueryOptions {
 export const useGetBaseLine = (options?: IQueryOptions) => {
   const enabled = options?.enabled ?? true;
   return useQuery({
-    queryKey: ['baseLine'],
+    queryKey: [BASE_LINE],
     queryFn: () => queryFn(GET_BASE_LINE),
     enabled,
     onSuccess: data => {
@@ -53,13 +50,13 @@ export const useGetBaseLine = (options?: IQueryOptions) => {
 };
 
 // POST
-export const useUpdateBaseLine = (options?: IQueryOptions) => {
+export const useUpdateBaseLine = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (baseLine: IBaseLine) =>
       mutationFn<IBaseLine>(UPDATE_BASE_LINE, 'post', baseLine),
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ['baseLine']});
+      queryClient.invalidateQueries({queryKey: [BASE_LINE]});
     },
     onError: e => console.log('useUpdateBaseLine error: ', e),
   });

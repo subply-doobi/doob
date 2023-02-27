@@ -19,7 +19,7 @@ import {
   TextMain,
 } from '../../styles/styledConsts';
 import {convertDataByMethod} from '../../util/userInfoSubmit';
-import {useUpdateBaseLine} from '../../queries/baseLine';
+import {useUpdateBaseLine} from '../../query/queries/baseLine';
 
 interface IFormData {
   ratioType: string;

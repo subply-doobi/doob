@@ -27,7 +27,10 @@ import {
   saveUserTarget,
 } from '../../stores/slices/userInfoSlice';
 import {calculateNutrTarget} from '../../util/targetCalculation';
-import {useGetCommonCode} from '../../queries/code';
+import {
+  useWeightPurposeCode,
+  useAerobicPurposeCode,
+} from '../../query/queries/code';
 
 interface IFormData {
   bmrKnown: string;
@@ -115,12 +118,20 @@ const onHandlePress = (
 
 const SecondInput = ({navigation: {navigate}, route}: NavigationProps) => {
   const {userInfo} = useSelector((state: RootState) => state.userInfo);
-  console.log('userInfo2: userInfo:', userInfo);
-  const dietPuroposeCd = useGetCommonCode();
-  const dietPurposeCdCategory = dietPuroposeCd.data;
-  const newDietPurposeCdCategory = dietPurposeCdCategory.map(item => {
+  // console.log('userInfo2: userInfo:', userInfo);
+  const weightTimeCd = useWeightPurposeCode('SP003');
+  const weightTimeCdCategory = weightTimeCd.data;
+  const newWeightTimeCdCategory = weightTimeCdCategory?.map(item => {
     return {value: item.cd, label: item.cdNm};
   });
+  console.log('SecondInput/weight:', weightTimeCd);
+
+  const aerobicTimeCd = useAerobicPurposeCode('SP004');
+  const aerobicTimeCdCategory = aerobicTimeCd.data;
+  const newAerobicTimeCdCategory = aerobicTimeCdCategory?.map(item => {
+    return {value: item.cd, label: item.cdNm};
+  });
+  console.log('SecondInput/aerobic:', aerobicTimeCd);
   // redux
   const dispatch = useDispatch();
 
@@ -163,14 +174,14 @@ const SecondInput = ({navigation: {navigate}, route}: NavigationProps) => {
         )}
         <Dropdown
           placeholder="웨이트 운동시간"
-          items={weightTrainingCategrory}
+          items={weightTimeCd.isLoading ? [] : newWeightTimeCdCategory}
           value={weightTimeCdValue}
           setValue={setValue}
           reactHookFormName="weightTimeCd"
         />
         <Dropdown
           placeholder="유산소 운동시간"
-          items={aerobicTrainingCategrory}
+          items={aerobicTimeCd.isLoading ? [] : newAerobicTimeCdCategory}
           value={aerobicTimeCdValue}
           setValue={setValue}
           reactHookFormName="aerobicTimeCd"

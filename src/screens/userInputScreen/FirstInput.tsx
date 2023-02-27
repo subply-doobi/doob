@@ -1,5 +1,5 @@
 import {View, Text, ScrollView} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState, useCallback} from 'react';
 import styled from 'styled-components/native';
 import {
   BtnBottomCTA,
@@ -26,11 +26,10 @@ import {calculateBMR} from '../../util/targetCalculation';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
 import {saveUserInfo} from '../../stores/slices/userInfoSlice';
-import {useGetBaseLine} from '../../queries/baseLine';
-import {useGetCommonCode} from '../../queries/code';
-import {DIET_COMMON_CODE} from '../../queries/urls';
+import {useGetBaseLine} from '../../query/queries/baseLine';
+import {useDietPurposeCode} from '../../query/queries/code';
+import {COMMON_CODE} from '../../query/queries/urls';
 import axios from 'axios';
-import {validateToken} from '../../queries/token';
 interface IFormData {
   gender: string;
   age: string;
@@ -118,28 +117,15 @@ const renderWeightInput = (
 };
 
 const FirstInput = ({navigation: {navigate}}: NavigationProps) => {
-  const {data} = useGetBaseLine();
-  const dietPuroposeCd = useGetCommonCode(DIET_COMMON_CODE);
-  const dietPurposeCdCategory = dietPuroposeCd.data;
+  const {data, isLoading} = useGetBaseLine();
+  const dietPurposeCd = useDietPurposeCode('SP002');
+  const dietPurposeCdCategory = dietPurposeCd.data;
   const newDietPurposeCdCategory = dietPurposeCdCategory?.map(item => {
     return {value: item.cd, label: item.cdNm};
   });
 
-  console.log('firstInput:', newDietPurposeCdCategory);
+  console.log('firstInput:', dietPurposeCd.isLoading);
   // console.log('firstInput/data:', data);
-
-  // const checkCode = async () => {
-  //   const {isTokenValid, validToken} = await validateToken();
-  //   if (!isTokenValid) return null;
-
-  //   const testCode = axios
-  //     .get('http://52.79.208.191:8080/api/member/code/list-code/SP002', {
-  //       headers: {authorization: `Bearer ${validToken}`},
-  //     })
-  //     .then(res => console.log('testData:', res.data));
-  //   console.log(testCode);
-  // };
-  // checkCode();
 
   // state
   // redux
@@ -252,7 +238,7 @@ const FirstInput = ({navigation: {navigate}}: NavigationProps) => {
         {/* --- purpose --- */}
         <Dropdown
           placeholder="식단의 목적"
-          items={purposeCategory}
+          items={dietPurposeCd.isLoading ? [] : newDietPurposeCdCategory}
           value={dietPurposeValue}
           setValue={setValue}
           scrollRef={scrollRef}
