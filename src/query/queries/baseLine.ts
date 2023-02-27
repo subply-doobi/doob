@@ -1,42 +1,26 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import axios from 'axios';
 import {BASE_LINE} from '../keys';
+import {queryClient} from '../store';
+import {IBaseLine} from '../types/baseLine';
+import {IQueryOptions} from '../types/common';
 import {queryFn, mutationFn} from './requestFn';
 import {validateToken} from './token';
 import {CREATE_BASE_LINE, GET_BASE_LINE, UPDATE_BASE_LINE} from './urls';
 
-interface IBaseLine {
-  companyCd: string;
-  userId: string;
-  calorie: string;
-  carb: string;
-  protein: string;
-  fat: string;
-  gender: string;
-  age: string;
-  height: string;
-  weight: string;
-  dietPurposeCd: string;
-  weightTimeCd: string;
-  aerobicTimeCd: string;
-}
-
 // PUT
 export const useCreateBaseLine = () => {
-  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (baseLine: IBaseLine) =>
       mutationFn<IBaseLine>(UPDATE_BASE_LINE, 'put', baseLine),
     onSuccess: data => queryClient.invalidateQueries({queryKey: ['baseLine']}),
-    onError: e => console.log('useSaveBaseLine error: ', e),
+    onError: e => console.log('useCreateBaseLine error: ', e),
   });
   return mutation;
 };
 
 // GET
-interface IQueryOptions {
-  enabled?: boolean;
-}
+
 export const useGetBaseLine = (options?: IQueryOptions) => {
   const enabled = options?.enabled ?? true;
   return useQuery({
@@ -49,7 +33,6 @@ export const useGetBaseLine = (options?: IQueryOptions) => {
 
 // POST
 export const useUpdateBaseLine = () => {
-  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (baseLine: IBaseLine) =>
       mutationFn<IBaseLine>(UPDATE_BASE_LINE, 'post', baseLine),

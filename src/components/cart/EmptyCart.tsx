@@ -67,8 +67,8 @@ const AutoButton = styled.TouchableOpacity`
 `;
 
 import Modal from 'react-native-modal';
-import {Slider} from '../../components/home/homeFilter/slider/Slider';
-import {SliderContainer} from '../../components/home/homeFilter/slider/SliderContainer';
+import {Slider} from '../common/slider/Slider';
+import {SliderContainer} from '../common/slider/SliderContainer';
 
 const styles = StyleSheet.create({
   wrapper: {

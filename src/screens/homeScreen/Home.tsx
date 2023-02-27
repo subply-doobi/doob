@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {TouchableWithoutFeedback} from 'react-native';
 import styled from 'styled-components/native';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
@@ -50,38 +51,42 @@ const Home = () => {
     {id: 4, text: '끼니구성'},
   ];
   return (
-    <Container>
-      <MenuAndSearchBox>
-        <MenuHeader
-          menuSelectOpen={menuSelectOpen}
-          setMenuSelectOpen={setMenuSelectOpen}
-        />
-        <SearchInput
-          onChangeText={setSearchText}
-          value={searchText}
-          placeholder="검색어 입력"
-          onSubmitEditing={() => console.log('search!!')}
-        />
-      </MenuAndSearchBox>
-      <NutrientsProgress menuIndex={menuIndex} />
-      <Row style={{justifyContent: 'space-between', marginTop: 32}}>
-        <Row>
-          <ListTitle>전체 식품</ListTitle>
-          <NoOfFoods>87개</NoOfFoods>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        setMenuSelectOpen(false);
+      }}>
+      <Container>
+        <MenuAndSearchBox>
+          <MenuHeader
+            menuSelectOpen={menuSelectOpen}
+            setMenuSelectOpen={setMenuSelectOpen}
+          />
+          <SearchInput
+            onChangeText={setSearchText}
+            value={searchText}
+            placeholder="검색어 입력"
+            onSubmitEditing={() => console.log('search!!')}
+          />
+        </MenuAndSearchBox>
+        <NutrientsProgress menuIndex={menuIndex} />
+        <Row style={{justifyContent: 'space-between', marginTop: 32}}>
+          <Row>
+            <ListTitle>전체 식품</ListTitle>
+            <NoOfFoods>87개</NoOfFoods>
+          </Row>
+          <SortBtn>
+            <SortModal />
+          </SortBtn>
         </Row>
-        <SortBtn>
-          <SortModal />
-        </SortBtn>
-      </Row>
-      <HorizontalLine style={{marginTop: 8}} />
-      <FilterMenuContainer>
-        {filterMenus.map((i, index) => (
-          <BottomSheetTestScreen key={i.id} list={filterMenus} index={index}>
-            {i.text}
-          </BottomSheetTestScreen>
-        ))}
-      </FilterMenuContainer>
-      {/* <FlatList
+        <HorizontalLine style={{marginTop: 8}} />
+        <FilterMenuContainer>
+          {filterMenus.map((i, index) => (
+            <BottomSheetTestScreen key={i.id} list={filterMenus} index={index}>
+              {i.text}
+            </BottomSheetTestScreen>
+          ))}
+        </FilterMenuContainer>
+        {/* <FlatList
         style={{marginTop: 24}}
         data={testData}
         renderItem={item => (
@@ -92,11 +97,12 @@ const Home = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{paddingBottom: 80}}
       /> */}
-      <BtnCTA btnStyle="activated" onPress={async () => {}}>
-        <BtnText>테스트 데이터</BtnText>
-      </BtnCTA>
-      {menuSelectOpen && <MenuSelect setOpen={setMenuSelectOpen} />}
-    </Container>
+        <BtnCTA btnStyle="activated" onPress={async () => {}}>
+          <BtnText>테스트 데이터</BtnText>
+        </BtnCTA>
+        {menuSelectOpen && <MenuSelect setOpen={setMenuSelectOpen} />}
+      </Container>
+    </TouchableWithoutFeedback>
   );
 };
 

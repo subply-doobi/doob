@@ -11,7 +11,7 @@ import {
 } from '../styles/styledConsts';
 import styled from 'styled-components/native';
 import colors from '../styles/colors';
-import DAlert from '../components/common/DAlert';
+import DAlert from '../components/common/alert/DAlert';
 import {myPageBtns, NavigationProps} from '../constants/constants';
 import NutrTarget from '../components/common/NutrientTarget';
 import {useDispatch, useSelector} from 'react-redux';

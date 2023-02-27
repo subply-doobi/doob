@@ -6,4 +6,4 @@ export type TMenu = {
   statusNm: string;
   userId: string;
 };
-export type TdietData = Array<TMenu>;
+export type TDietData = Array<TMenu>;

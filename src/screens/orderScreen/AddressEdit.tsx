@@ -30,7 +30,7 @@ import {
   setSelectedAddressId,
   updateAddress,
 } from '../../stores/slices/orderSlice';
-import DAlert from '../../components/common/DAlert';
+import DAlert from '../../components/common/alert/DAlert';
 
 const PostalCode = styled(TextSub)`
   font-size: 16px;

@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
+import {TouchableWithoutFeedback, ScrollView} from 'react-native';
 import styled from 'styled-components/native';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -11,113 +12,98 @@ import {
   Row,
   HorizontalSpace,
   TextSub,
-  BtnCTA,
 } from '../styles/styledConsts';
-import {Text} from 'react-native';
 
 import NutrientsProgress from '../components/common/NutrientsProgress';
 import MenuHeader from '../components/common/MenuHeader';
 import MenuSelect from '../components/common/MenuSelect';
-import {
-  useCreateDiet,
-  useCreateDietDetail,
-  useListDiet,
-  useListDietDetail,
-} from '../query/queries/diet';
+import {useListDiet} from '../query/queries/diet';
 import AutoMenuBtn from '../components/cart/AutoMenuBtn';
-import {useQuery} from '@tanstack/react-query';
-import axios from 'axios';
-import {RE_ISSUE_TOKEN} from '../query/queries/urls';
-import {queryFn} from '../query/queries/requestFn';
-import {getStoredToken, validateToken} from '../query/queries/token';
+import BottomMenuSelect from '../components/cart/BottomMenuSelect';
+import {useGetBaseLine} from '../query/queries/baseLine';
 
 const Cart = () => {
-  const {data: dietData, refetch: refetchDietData} = useListDiet({
-    enabled: false,
-  });
+  // react-query
+  const {data: dietData} = useListDiet();
+  const menuTotalText = dietData?.reduce(
+    (acc, cur, idx) =>
+      (acc += idx === 0 ? `${cur.dietSeq}` : `+${cur.dietSeq}`),
+    '',
+  );
 
-  const {data: dietDetailData, refetch: refetchDietDetailData} =
-    useListDietDetail({enabled: false});
-  const createDietMutation = useCreateDiet();
-  const createDietDetailMutation = useCreateDietDetail();
-  console.log('Cart: dietData: ', dietData);
-  console.log('Cart: dietDetailData: ', dietDetailData);
-
+  // redux
   const {menuIndex} = useSelector((state: RootState) => state.cart);
+  const dispatch = useDispatch();
+
+  // useState
   const [menuSelectOpen, setMenuSelectOpen] = useState(false);
   const [checkAllClicked, setCheckAllClicked] = useState(false);
+  const [createDietAlertShow, setCreateDietAlertShow] = useState(false);
 
   return (
-    <Container>
-      <SelectedDeleteRow>
-        <SelectAllBox>
-          <SelectAllCheckbox
-            onPress={() => setCheckAllClicked(clicked => !clicked)}>
-            {checkAllClicked ? (
-              <CheckboxImage
-                source={require('../assets/icons/24_checkbox_selected.png')}
-              />
-            ) : (
-              <CheckboxImage
-                source={require('../assets/icons/24_checkbox.png')}
-              />
+    <TouchableWithoutFeedback onPress={() => setMenuSelectOpen(false)}>
+      <Container>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <SelectedDeleteRow>
+            <SelectAllBox>
+              <SelectAllCheckbox
+                onPress={() => setCheckAllClicked(clicked => !clicked)}>
+                {checkAllClicked ? (
+                  <CheckboxImage
+                    source={require('../assets/icons/24_checkbox_selected.png')}
+                  />
+                ) : (
+                  <CheckboxImage
+                    source={require('../assets/icons/24_checkbox.png')}
+                  />
+                )}
+              </SelectAllCheckbox>
+
+              <SelectAllText>전체 선택</SelectAllText>
+            </SelectAllBox>
+            <BtnSmall onPress={() => console.log('선택삭제')}>
+              <BtnSmallText isActivated={true}>선택 삭제</BtnSmallText>
+            </BtnSmall>
+          </SelectedDeleteRow>
+          <Card>
+            <CardMenuHeader>
+              <MenuHeader
+                menuSelectOpen={menuSelectOpen}
+                setMenuSelectOpen={setMenuSelectOpen}></MenuHeader>
+            </CardMenuHeader>
+            <HorizontalSpace height={24} />
+            <NutrientsProgress menuIndex={menuIndex} />
+
+            <AutoMenuBtn status="empty" />
+            <MenuTotalPrice>합계 0원</MenuTotalPrice>
+            {menuSelectOpen && (
+              <MenuSelect setOpen={setMenuSelectOpen} center={true} />
             )}
-          </SelectAllCheckbox>
+          </Card>
 
-          <SelectAllText>전체 선택</SelectAllText>
-        </SelectAllBox>
-        <BtnSmall onPress={() => console.log('선택삭제')}>
-          <BtnSmallText isActivated={true}>선택 삭제</BtnSmallText>
-        </BtnSmall>
-      </SelectedDeleteRow>
-      <Card>
-        <CardMenuHeader>
-          <MenuHeader
-            menuSelectOpen={menuSelectOpen}
-            setMenuSelectOpen={setMenuSelectOpen}></MenuHeader>
-        </CardMenuHeader>
-        <HorizontalSpace height={24} />
-        <NutrientsProgress menuIndex={menuIndex} />
+          {/* 카드 하단 끼니 선택 및 추가 */}
+          <BottomMenuSelect
+            createDietAlertShow={createDietAlertShow}
+            setCreateDietAlertShow={setCreateDietAlertShow}
+          />
 
-        <AutoMenuBtn status="empty" />
-        <MenuTotalPrice>합계 0원</MenuTotalPrice>
-        {menuSelectOpen && (
-          <MenuSelect setOpen={setMenuSelectOpen} center={true} />
-        )}
-      </Card>
-
-      {/* <BtnSmall onPress={() => createDietMutation.mutate()}>
-        <Text> 끼니생성 </Text>
-      </BtnSmall>
-      <BtnSmall onPress={() => refetchDietData()}>
-        <Text> 끼니조회 </Text>
-      </BtnSmall>
-      <BtnSmall onPress={() => refetchDietDetailData()}>
-        <Text> 세부조회 </Text>
-      </BtnSmall>
-      <BtnSmall
-        onPress={() =>
-          createDietDetailMutation.mutate({
-            dietNo: 'DT20230223000000002',
-            productNo: 'PD20220713000000017',
-          })
-        }>
-        <Text> 식품추가 </Text>
-      </BtnSmall> */}
-      <BtnSmall onPress={() => refetchDietDetailData()}>
-        <Text> 세부조회 </Text>
-      </BtnSmall>
-      <BtnSmall onPress={() => {}}>
-        <Text>reIssue</Text>
-      </BtnSmall>
-    </Container>
+          {/* 끼니 정보 요약 */}
+          <MenuTotalText>{menuTotalText}</MenuTotalText>
+          <SellerText>존맛식품</SellerText>
+          <SellerProductPrice>식품: 5,700원</SellerProductPrice>
+          <SellerShippingPrice>
+            배송비: 3,000원 (10,000원 이상 무료배송)
+          </SellerShippingPrice>
+        </ScrollView>
+      </Container>
+    </TouchableWithoutFeedback>
   );
 };
 
 export default Cart;
 
 // style //
-const Container = styled.View`
+const Container = styled.SafeAreaView`
   flex: 1;
   padding: 0px 8px 0px 8px;
   background-color: ${colors.backgroundLight};
@@ -160,4 +146,25 @@ const MenuTotalPrice = styled(TextMain)`
   font-size: 16px;
   font-weight: bold;
   align-self: flex-end;
+`;
+
+const MenuTotalText = styled(TextMain)`
+  align-self: center;
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 16px;
+`;
+
+const SellerText = styled(TextMain)`
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 16px;
+`;
+
+const SellerProductPrice = styled(TextMain)`
+  font-size: 14px;
+  margin-top: 4px;
+`;
+const SellerShippingPrice = styled(TextSub)`
+  font-size: 14px;
 `;

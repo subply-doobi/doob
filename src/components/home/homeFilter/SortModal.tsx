@@ -24,8 +24,8 @@ import {
 import colors from '../../../styles/colors';
 
 const SortIconImage = styled.Image`
-width:24px
-height:24px
+  width: 24px;
+  height: 24px;
 `;
 const CategoryListContainer = styled.View`
   flex-direction: column;

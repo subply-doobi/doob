@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {FlatList, Text} from 'react-native';
+import {FlatList, Text, TouchableWithoutFeedback} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import styled from 'styled-components/native';
 import {
@@ -12,7 +12,8 @@ import {RootState} from '../../stores/store';
 import colors from '../../styles/colors';
 import {Col, HorizontalLine, TextMain} from '../../styles/styledConsts';
 import {checkMenuEmpty} from '../../util/checkEmptyMenu';
-import DAlert from './DAlert';
+import CreateLimitAlertContent from './alert/CreateLimitAlertContent';
+import DAlert from './alert/DAlert';
 
 interface IMenuSelect {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -50,13 +51,7 @@ const MenuSelect = ({setOpen, center}: IMenuSelect) => {
   };
 
   const createLimitAlertContent = () => {
-    return (
-      <Container>
-        <Col style={{marginTop: 28, alignItems: 'center'}}>
-          <AlertText>끼니는 3개 까지만 추가가 가능해요</AlertText>
-        </Col>
-      </Container>
-    );
+    return <CreateLimitAlertContent />;
   };
   const menuEmptyAlertContent = () => {
     const emptyMenuIndex = checkMenuEmpty(dietData);
@@ -110,41 +105,43 @@ const MenuSelect = ({setOpen, center}: IMenuSelect) => {
   };
 
   return (
-    <SelectContainer center={center}>
-      <FlatList
-        data={dietData}
-        renderItem={renderMenuList}
-        keyExtractor={item => item.dietNo}
-        ItemSeparatorComponent={() => <HorizontalLine />}
-      />
+    <TouchableWithoutFeedback onPress={() => {}}>
+      <SelectContainer center={center}>
+        <FlatList
+          data={dietData}
+          renderItem={renderMenuList}
+          keyExtractor={item => item.dietNo}
+          ItemSeparatorComponent={() => <HorizontalLine />}
+        />
 
-      <HorizontalLine />
-      <Menu onPress={onCreateDiet}>
-        <MenuText>끼니 추가하기</MenuText>
-      </Menu>
+        <HorizontalLine />
+        <Menu onPress={onCreateDiet}>
+          <MenuText>끼니 추가하기</MenuText>
+        </Menu>
 
-      <DAlert
-        alertShow={deleteAlertShow}
-        renderContent={() => deleteAlertContent(menuIndex)}
-        onConfirm={() => setDeleteAlertShow(false)}
-        onCancel={() => setDeleteAlertShow(false)}
-      />
-      <DAlert
-        alertShow={createAlertShow}
-        renderContent={() =>
-          addAlertStatus === 'limit' ? (
-            createLimitAlertContent()
-          ) : addAlertStatus === 'empty' ? (
-            menuEmptyAlertContent()
-          ) : (
-            <></>
-          )
-        }
-        onConfirm={() => setCreateAlertShow(false)}
-        onCancel={() => setCreateAlertShow(false)}
-        NoOfBtn={1}
-      />
-    </SelectContainer>
+        <DAlert
+          alertShow={deleteAlertShow}
+          renderContent={() => deleteAlertContent(menuIndex)}
+          onConfirm={() => setDeleteAlertShow(false)}
+          onCancel={() => setDeleteAlertShow(false)}
+        />
+        <DAlert
+          alertShow={createAlertShow}
+          renderContent={() =>
+            addAlertStatus === 'limit' ? (
+              createLimitAlertContent()
+            ) : addAlertStatus === 'empty' ? (
+              menuEmptyAlertContent()
+            ) : (
+              <></>
+            )
+          }
+          onConfirm={() => setCreateAlertShow(false)}
+          onCancel={() => setCreateAlertShow(false)}
+          NoOfBtn={1}
+        />
+      </SelectContainer>
+    </TouchableWithoutFeedback>
   );
 };
 

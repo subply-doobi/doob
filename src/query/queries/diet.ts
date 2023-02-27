@@ -1,6 +1,8 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {DIET, DIET_DETAIL} from '../keys';
-import {TdietData} from '../types/diet';
+import {queryClient} from '../store';
+import {IQueryOptions} from '../types/common';
+import {TDietData} from '../types/diet';
 import {mutationFn, queryFn} from './requestFn';
 import {
   CREATE_DIET,
@@ -14,7 +16,6 @@ import {
 
 // PUT //
 export const useCreateDiet = () => {
-  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: () => mutationFn(CREATE_DIET, 'put'),
     onSuccess: data => queryClient.invalidateQueries({queryKey: [DIET]}),
@@ -24,7 +25,6 @@ export const useCreateDiet = () => {
 };
 
 export const useCreateDietDetail = () => {
-  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: ({dietNo, productNo}: {dietNo: string; productNo: string}) =>
       mutationFn(
@@ -38,12 +38,10 @@ export const useCreateDietDetail = () => {
 };
 
 // GET //
-interface IQueryOptions {
-  enabled?: boolean;
-}
+
 export const useListDiet = (options?: IQueryOptions) => {
   const enabled = options?.enabled ?? true;
-  return useQuery<TdietData>({
+  return useQuery<TDietData>({
     queryKey: [DIET],
     queryFn: () => queryFn(LIST_DIET),
     enabled,
@@ -75,7 +73,6 @@ export const useUpdateDietDetail = () => {
 
 // DELETE //
 export const useDeleteDiet = () => {
-  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: ({dietNo}: {dietNo: string}) =>
       mutationFn(`${DELETE_DIET}/${dietNo}`, 'delete'),
@@ -88,7 +85,6 @@ export const useDeleteDiet = () => {
 };
 
 export const useDeleteDietDetail = () => {
-  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: () => mutationFn(DELETE_DIET_DETAIL, 'post'),
     onSuccess: () => {

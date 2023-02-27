@@ -87,6 +87,7 @@ export const validateToken = async () => {
         },
       });
       await storeToken(reIssue.data.accessToken, reIssue.data.refreshToken);
+      console.log('reIssue res: ', reIssue.data);
       isTokenValid = true;
       validToken = reIssue.data.accessToken;
     } catch (e) {

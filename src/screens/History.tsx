@@ -6,7 +6,7 @@ import {NavigationProps, SCREENWIDTH} from '../constants/constants';
 import {useForm, useWatch} from 'react-hook-form';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../stores/store';
-import DAlert from '../components/common/DAlert';
+import DAlert from '../components/common/alert/DAlert';
 import WeightChangeAlert from '../components/myPage/WeightChangeAlert';
 import {calculateBMR, calculateNutrTarget} from '../util/targetCalculation';
 import {updateUserInfo} from '../stores/slices/userInfoSlice';

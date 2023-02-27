@@ -1,9 +1,9 @@
 import {View, Text, Modal} from 'react-native';
 import React from 'react';
 import styled from 'styled-components/native';
-import colors from '../../styles/colors';
-import {SCREENWIDTH} from '../../constants/constants';
-import {Row, StyledProps, TextMain} from '../../styles/styledConsts';
+import colors from '../../../styles/colors';
+import {SCREENWIDTH} from '../../../constants/constants';
+import {Row, StyledProps, TextMain} from '../../../styles/styledConsts';
 
 const ModalBackGround = styled.View`
   flex: 1;

@@ -1,28 +1,28 @@
-import React, { useState } from "react";
-import { SafeAreaView, ScrollView, Text, View, StyleSheet } from "react-native";
-import styled from "styled-components/native";
+import React, {useState} from 'react';
+import {SafeAreaView, ScrollView, Text, View, StyleSheet} from 'react-native';
+import styled from 'styled-components/native';
 
-import { Slider } from "./slider/Slider";
-import { SliderContainer } from "./slider/SliderContainer";
+import {Slider} from '../../common/slider/Slider';
+import {SliderContainer} from '../../common/slider/SliderContainer';
 
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     flex: 1,
   },
 });
 
 const aboveThumbStyles = StyleSheet.create({
   gramContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     height: 20,
-    justifyContent: "center",
+    justifyContent: 'center',
     marginLeft: 2,
   },
   kcalContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     height: 20,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
 });
 const FilterButtonContainer = styled.View`
@@ -53,22 +53,22 @@ const renderBelowKcal = (value: number, index: number) => {
 };
 const customTrackStyle = StyleSheet.create({
   track: {
-    borderColor: "#E5E5E5",
+    borderColor: '#E5E5E5',
     borderWidth: 1,
   },
   trackOn: {
-    borderColor: "#590DE1",
+    borderColor: '#590DE1',
     borderWidth: 1,
   },
 });
 const start = () => {
-  console.log("성공");
+  console.log('성공');
 };
 const end = () => {
-  console.log("end");
+  console.log('end');
 };
 const change = () => {
-  console.log("change");
+  console.log('change');
 };
 const PriceFilter = () => {
   return (

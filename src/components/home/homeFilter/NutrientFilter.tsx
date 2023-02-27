@@ -1,36 +1,36 @@
-import React, { useState } from "react";
-import { SafeAreaView, ScrollView, Text, View, StyleSheet } from "react-native";
-import styled from "styled-components/native";
+import React, {useState} from 'react';
+import {SafeAreaView, ScrollView, Text, View, StyleSheet} from 'react-native';
+import styled from 'styled-components/native';
 
-import { Slider } from "./slider/Slider";
-import { SliderContainer } from "./slider/SliderContainer";
+import {Slider} from '../../common/slider/Slider';
+import {SliderContainer} from '../../common/slider/SliderContainer';
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
-import { useSelector, useDispatch } from "react-redux";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import {useSelector, useDispatch} from 'react-redux';
 
 const getToken = () => {
-  let token = AsyncStorage.getItem("ACCESS_TOKEN");
+  let token = AsyncStorage.getItem('ACCESS_TOKEN');
   return token;
 };
 const getRefreshToken = () => {
-  let refreshToken = AsyncStorage.getItem("REFRESH_TOKEN");
+  let refreshToken = AsyncStorage.getItem('REFRESH_TOKEN');
   return refreshToken;
 };
 
 const filterRange = () => {
   getRefreshToken()
-    .then((refreshToken) =>
+    .then(refreshToken =>
       axios.get(
-        "http://13.125.244.117:8080/api/member/product/get-product-filter-range/Carb",
+        'http://13.125.244.117:8080/api/member/product/get-product-filter-range/Carb',
         {
           headers: {
             Authentication: `Bearer ${refreshToken}`,
           },
-        }
-      )
+        },
+      ),
     )
-    .then((res) => console.log("filterRange:", res.data));
+    .then(res => console.log('filterRange:', res.data));
 };
 const FilterButtonContainer = styled.View`
   flex-direction: row;
@@ -56,32 +56,32 @@ const ButtonText = styled.Text`
 //하단에 숫자표시 스타일
 const aboveThumbStyles = StyleSheet.create({
   gramContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     height: 20,
-    justifyContent: "center",
+    justifyContent: 'center',
     marginLeft: 2,
   },
   kcalContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     height: 20,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
 });
 
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
   },
 });
 
 //기본 트랙 스타일
 const customTrackStyle = StyleSheet.create({
   track: {
-    borderColor: "#E5E5E5",
+    borderColor: '#E5E5E5',
     borderWidth: 1,
   },
   trackOn: {
-    borderColor: "#590DE1",
+    borderColor: '#590DE1',
     borderWidth: 1,
   },
 });
@@ -108,13 +108,13 @@ const renderBelowGram = (value: number, index: number) => {
 };
 
 const start = () => {
-  console.log("start");
+  console.log('start');
 };
 const end = () => {
-  console.log("end");
+  console.log('end');
 };
 const change = () => {
-  console.log("change");
+  console.log('change');
 };
 //성공
 const NutrientFilter = ({}) => {

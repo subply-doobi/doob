@@ -5,7 +5,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import styled from 'styled-components/native';
 import {Col, TextMain} from '../../../styles/styledConsts';
 
-import DAlert from '../../../components/common/DAlert';
+import DAlert from '../../common/alert/DAlert';
 
 const Container = styled.View`
   padding: 0px 16px 24px 16px;

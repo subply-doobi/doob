@@ -19,8 +19,9 @@ import styled from 'styled-components/native';
 import CheckBox from '@react-native-community/checkbox';
 import {useSelector, useDispatch} from 'react-redux';
 
-import {Slider} from '~/components/home/homeFilter/slider/Slider';
-import {SliderContainer} from '~/components/home/homeFilter/slider/SliderContainer';
+import {Slider} from '../common/slider/Slider';
+import {SliderContainer} from '../common/slider/SliderContainer';
+import {RootState} from '../../stores/store';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -154,10 +155,6 @@ const StyledModalOpenButton = styled.TouchableOpacity`
   border-color: rgba(0, 0, 0, 1);
 `;
 
-const StyledModalOutputText = styled.Text`
-  color: black;
-  font-size: 30px;
-`;
 const RowContainer = styled.View`
   flex-direction: row;
 `;
@@ -186,6 +183,7 @@ const EachCheckBoxAndroid = () => {
     </View>
   );
 };
+
 const start = () => {
   console.log('성공');
 };
@@ -195,11 +193,12 @@ const end = () => {
 const change = () => {
   console.log('change');
 };
-const AutoDiet = (Props: any): React.ReactElement => {
-  //State를 이용하여 Modal을 제어함
-  const [modalVisible, setModalVisible] = useState<boolean>(true);
-  //Output을 State로 받아서 화면에 표출하거나 정보 값으로 활용
-  const [modalOutput, setModalOutput] = useState<string>('Open Modal');
+
+interface IAutoDietModal {
+  modalVisible: boolean;
+  setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}
+const AutoDietModal = ({modalVisible, setModalVisible}: IAutoDietModal) => {
   return (
     <StyledSafeAreaView>
       {/* Modal이 StyledModalOpenButton의 아래에 있더라도 무관함. Container안에 들어가만 있으면 됨 */}
@@ -217,53 +216,35 @@ const AutoDiet = (Props: any): React.ReactElement => {
             </StyledModalGradeText>
           </StyledModalGradeWrapper>
           <RowContainer>
-            <StyledModalButton
-              onPress={() => {
-                setModalOutput('선택 1');
-              }}>
+            <StyledModalButton onPress={() => {}}>
               <EachCheckBoxAndroid />
               <StyledModalText>도시락</StyledModalText>
             </StyledModalButton>
 
-            <StyledModalButton
-              onPress={() => {
-                setModalOutput('선택 2');
-              }}>
+            <StyledModalButton onPress={() => {}}>
               <EachCheckBoxAndroid />
 
               <StyledModalText>닭가슴살</StyledModalText>
             </StyledModalButton>
 
-            <StyledModalButton
-              onPress={() => {
-                setModalOutput('선택 3');
-              }}>
+            <StyledModalButton onPress={() => {}}>
               <EachCheckBoxAndroid />
 
               <StyledModalText>샐러드</StyledModalText>
             </StyledModalButton>
           </RowContainer>
           <RowContainer>
-            <StyledModalButton
-              onPress={() => {
-                setModalOutput('선택 4');
-              }}>
+            <StyledModalButton onPress={() => {}}>
               <EachCheckBoxAndroid />
 
               <StyledModalText>영양간식</StyledModalText>
             </StyledModalButton>
-            <StyledModalButton
-              onPress={() => {
-                setModalOutput('선택 5');
-              }}>
+            <StyledModalButton onPress={() => {}}>
               <EachCheckBoxAndroid />
 
               <StyledModalText>과자</StyledModalText>
             </StyledModalButton>
-            <StyledModalButton
-              onPress={() => {
-                setModalOutput('선택 6');
-              }}>
+            <StyledModalButton onPress={() => {}}>
               <EachCheckBoxAndroid />
 
               <StyledModalText>음료</StyledModalText>
@@ -308,4 +289,4 @@ const AutoDiet = (Props: any): React.ReactElement => {
   );
 };
 
-export default AutoDiet;
+export default AutoDietModal;
