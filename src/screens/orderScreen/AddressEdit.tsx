@@ -1,4 +1,11 @@
-import {View, Pressable, ScrollView, Modal, Alert} from 'react-native';
+import {
+  View,
+  Pressable,
+  ScrollView,
+  Modal,
+  Alert,
+  SafeAreaView,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import {
@@ -15,6 +22,7 @@ import {
   HorizontalSpace,
   InputHeaderText,
   Row,
+  StickyFooter,
   TextMain,
   TextSub,
   UserInfoTextInput,
@@ -192,111 +200,107 @@ const AddressEdit = ({
 
   return (
     <>
-      <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
-        <Container>
-          {showDetails && (
-            <>
-              <Row style={{marginTop: 24, justifyContent: 'space-between'}}>
-                <PostalCode>우편번호: {postalCode}</PostalCode>
-                <AddressDeleteBtn
-                  onPress={() => {
-                    setAddressDeleteAlertShow(true);
+      <SafeAreaView style={{flex: 1}}>
+        <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
+          <Container>
+            {showDetails && (
+              <>
+                <Row style={{marginTop: 24, justifyContent: 'space-between'}}>
+                  <PostalCode>우편번호: {postalCode}</PostalCode>
+                  <AddressDeleteBtn
+                    onPress={() => {
+                      setAddressDeleteAlertShow(true);
+                    }}>
+                    <AddressDeleteIcon
+                      source={require('../../assets/icons/24_icon=close.png')}
+                    />
+                  </AddressDeleteBtn>
+                </Row>
+                <AddressBase>{addressBase}</AddressBase>
+                <HorizontalSpace height={8} />
+                <Controller
+                  control={control}
+                  rules={validationRules.addressDetail}
+                  render={field => renderDetailInput(field)}
+                  name="addressDetail"
+                />
+              </>
+            )}
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={postModalVisible}
+              onRequestClose={() => {
+                setPostModalVisible(!postModalVisible);
+              }}
+              style={{
+                flex: 1,
+                margin: 0,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <ModalBackground>
+                <View
+                  style={{
+                    width: SCREENWIDTH - 32,
+                    flexDirection: 'row',
+                    justifyContent: 'flex-start',
                   }}>
-                  <AddressDeleteIcon
-                    source={require('../../assets/icons/24_icon=close.png')}
-                  />
-                </AddressDeleteBtn>
-              </Row>
-              <AddressBase>{addressBase}</AddressBase>
-              <HorizontalSpace height={8} />
-              <Controller
-                control={control}
-                rules={validationRules.addressDetail}
-                render={field => renderDetailInput(field)}
-                name="addressDetail"
-              />
-            </>
-          )}
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={postModalVisible}
-            onRequestClose={() => {
-              setPostModalVisible(!postModalVisible);
-            }}
-            style={{
-              flex: 1,
-              margin: 0,
-              justifyContent: 'center',
-              alignItems: 'center',
+                  <Pressable onPress={() => setPostModalVisible(false)}>
+                    <BackBtn
+                      source={require('../../assets/icons/24_back.png')}
+                    />
+                  </Pressable>
+                </View>
+                <Postcode
+                  style={{width: SCREENWIDTH - 32, height: 410}}
+                  jsOptions={{animation: true, hideMapBtn: false}}
+                  onSelected={data => {
+                    setAddressBase(data.roadAddress);
+                    setPostalCode(String(data.zonecode));
+                    setShowDetails(true);
+                    setPostModalVisible(false);
+                  }}
+                  onError={() => console.log('오류')}
+                />
+              </ModalBackground>
+            </Modal>
+            <DAlert
+              alertShow={addressDeleteAlertShow}
+              onCancel={() => {
+                setAddressDeleteAlertShow(false);
+              }}
+              onConfirm={() => {
+                dispatch(deleteAddress(currentAddressId));
+                dispatch(
+                  setSelectedAddressId(
+                    currentAddressId === 0 ? 0 : currentAddressId - 1,
+                  ),
+                );
+                navigate('Order');
+              }}
+              renderContent={renderDeleteAlertContent}
+              confirmLabel={'삭제'}
+            />
+          </Container>
+        </ScrollView>
+        <StickyFooter>
+          <AddressEditBtn
+            btnStyle="border"
+            onPress={() => {
+              setPostModalVisible(true);
             }}>
-            <ModalBackground>
-              <View
-                style={{
-                  width: SCREENWIDTH - 32,
-                  flexDirection: 'row',
-                  justifyContent: 'flex-start',
-                }}>
-                <Pressable onPress={() => setPostModalVisible(false)}>
-                  <BackBtn source={require('../../assets/icons/24_back.png')} />
-                </Pressable>
-              </View>
-              <Postcode
-                style={{width: SCREENWIDTH - 32, height: 410}}
-                jsOptions={{animation: true, hideMapBtn: false}}
-                onSelected={data => {
-                  setAddressBase(data.roadAddress);
-                  setPostalCode(String(data.zonecode));
-                  setShowDetails(true);
-                  setPostModalVisible(false);
-                }}
-                onError={() => console.log('오류')}
-              />
-            </ModalBackground>
-          </Modal>
-          <DAlert
-            alertShow={addressDeleteAlertShow}
-            onCancel={() => {
-              setAddressDeleteAlertShow(false);
-            }}
-            onConfirm={() => {
-              dispatch(deleteAddress(currentAddressId));
-              dispatch(
-                setSelectedAddressId(
-                  currentAddressId === 0 ? 0 : currentAddressId - 1,
-                ),
-              );
-              navigate('Order');
-            }}
-            renderContent={renderDeleteAlertContent}
-            confirmLabel={'삭제'}
-          />
-        </Container>
-      </ScrollView>
-
-      <View
-        style={{
-          display: 'flex',
-          position: 'absolute',
-          bottom: 20, // 하단 위치 조정
-          width: SCREENWIDTH * 0.9,
-          marginLeft: SCREENWIDTH * 0.05,
-        }}>
-        <AddressEditBtn
-          btnStyle="border"
-          onPress={() => {
-            setPostModalVisible(true);
-          }}>
-          <BtnText style={{color: colors.textSub, fontSize: 16}}>
-            {showDetails ? '주소 전체변경' : ' + 주소 추가'}
-          </BtnText>
-        </AddressEditBtn>
-        <AddressConfirmBtn
-          btnStyle="activated"
-          onPress={() => handlePressConfirmBtn()}>
-          <BtnText>확인</BtnText>
-        </AddressConfirmBtn>
-      </View>
+            <BtnText style={{color: colors.textSub, fontSize: 16}}>
+              {showDetails ? '주소 전체변경' : ' + 주소 추가'}
+            </BtnText>
+          </AddressEditBtn>
+          <AddressConfirmBtn
+            btnStyle="activated"
+            onPress={() => handlePressConfirmBtn()}>
+            <BtnText>확인</BtnText>
+          </AddressConfirmBtn>
+        </StickyFooter>
+      </SafeAreaView>
     </>
   );
 };

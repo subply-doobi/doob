@@ -132,6 +132,16 @@ export const BtnBottomCTA = styled(BtnCTA)`
   elevation: 8;
 `;
 
+export const StickyFooter = styled.View`
+  display: flex;
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  margin-left: 16px;
+  margin-right: 16px;
+`;
+
 /** props1. isActivated -> boolean */
 export const BtnSmall = styled.TouchableOpacity`
   height: 32px;
@@ -181,4 +191,11 @@ export const VerticalSpace = styled.View`
   height: 100%;
   width: ${({width}: StyledProps) => `${width}px`};
   background-color: ${colors.white};
+`;
+
+export const Dot = styled.View`
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  background-color: ${({backgroundColor}: StyledProps) => `${backgroundColor}`};
 `;
