@@ -2,7 +2,6 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import axios from 'axios';
 import {BASE_LINE} from '../keys';
 import {queryFn, mutationFn} from './requestFn';
-import {validateToken} from './token';
 import {CREATE_BASE_LINE, GET_BASE_LINE, UPDATE_BASE_LINE} from './urls';
 
 interface IBaseLine {
@@ -26,7 +25,7 @@ export const useCreateBaseLine = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (baseLine: IBaseLine) =>
-      mutationFn<IBaseLine>(UPDATE_BASE_LINE, 'put', baseLine),
+      mutationFn<IBaseLine>(CREATE_BASE_LINE, 'put', baseLine),
     onSuccess: data => queryClient.invalidateQueries({queryKey: ['baseLine']}),
     onError: e => console.log('useSaveBaseLine error: ', e),
   });

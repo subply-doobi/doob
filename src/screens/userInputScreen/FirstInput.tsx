@@ -35,7 +35,7 @@ interface IFormData {
   age: string;
   height: string;
   weight: string;
-  dietPurposecd: string;
+  dietPurposeCd: string;
 }
 
 const renderAgeInput = (
@@ -123,10 +123,6 @@ const FirstInput = ({navigation: {navigate}}: NavigationProps) => {
   const newDietPurposeCdCategory = dietPurposeCdCategory?.map(item => {
     return {value: item.cd, label: item.cdNm};
   });
-
-  console.log('firstInput:', dietPurposeCd.isLoading);
-  // console.log('firstInput/data:', data);
-
   // state
   // redux
   const {userInfo} = useSelector((state: RootState) => state.userInfo);
@@ -154,20 +150,18 @@ const FirstInput = ({navigation: {navigate}}: NavigationProps) => {
   } = useForm<IFormData>({
     // 나중에 사용자 정보 있으면 초기값으로 넣어줘야함.
     defaultValues: {
-      gender: 'M',
-      age: '',
-      height: '',
-      weight: '',
-      dietPurposecd: purposeCategory[0].value,
+      gender: data?.gender ? data?.gender : '',
+      age: data?.age ? data?.age : '',
+      height: data?.height ? data?.height : '',
+      weight: data?.weight ? data?.weight : '',
+      dietPurposeCd: data?.dietPurposeCd ? data?.dietPurposeCd : '',
     },
   });
   const genderValue = useWatch({control, name: 'gender'});
   const ageValue = useWatch({control, name: 'age'});
   const heightValue = useWatch({control, name: 'height'});
   const weightValue = useWatch({control, name: 'weight'});
-  const dietPurposeValue = useWatch({control, name: 'dietPurposecd'});
-
-  console.log('userInfo1: errors: ', errors);
+  const dietPurposeValue = useWatch({control, name: 'dietPurposeCd'});
 
   return (
     <Container>
@@ -242,7 +236,7 @@ const FirstInput = ({navigation: {navigate}}: NavigationProps) => {
           value={dietPurposeValue}
           setValue={setValue}
           scrollRef={scrollRef}
-          reactHookFormName={'dietPurposecd'}
+          reactHookFormName={'dietPurposeCd'}
         />
       </ScrollView>
       <BtnBottomCTA
@@ -276,7 +270,7 @@ const FirstInput = ({navigation: {navigate}}: NavigationProps) => {
               age: ageValue,
               height: heightValue,
               weight: weightValue,
-              dietPurposecd: dietPurposeValue,
+              dietPurposeCd: dietPurposeValue,
               bmr: BMR,
             }),
           );

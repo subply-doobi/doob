@@ -18,26 +18,10 @@ import BottomSheetTestScreen from '../../components/home/homeFilter/HomeFilter';
 import SortModal from '../../components/home/homeFilter/SortModal';
 import MenuSelect from '../../components/common/MenuSelect';
 import MenuHeader from '../../components/common/MenuHeader';
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {USER_PROFILE} from '../../query/keys';
-import {getUserInfo} from '../../query/queries/member';
+import {useGetBaseLine} from '../../query/queries/baseLine';
 
 const Home = () => {
-  const queryClient = useQueryClient();
-
-  const {data} = useQuery([USER_PROFILE], getUserInfo);
-
-  const {mutate} = useMutation(getUserInfo, {
-    onMutate: () => {
-      queryClient.cancelQueries([USER_PROFILE]);
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries([USER_PROFILE]);
-    },
-    onError: e => {
-      throw e;
-    },
-  });
+  const {data} = useGetBaseLine();
 
   // state
 

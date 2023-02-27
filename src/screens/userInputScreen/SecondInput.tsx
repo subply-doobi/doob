@@ -31,6 +31,8 @@ import {
   useWeightPurposeCode,
   useAerobicPurposeCode,
 } from '../../query/queries/code';
+import {DrawerLayoutAndroid} from 'react-native';
+import {useGetBaseLine} from '../../query/queries/baseLine';
 
 interface IFormData {
   bmrKnown: string;
@@ -93,7 +95,7 @@ const onHandlePress = (
     userInfo.weight,
     weightTimeCdValue,
     aerobicTimeCdValue,
-    userInfo.dietPurposecd,
+    userInfo.dietPurposeCd,
     bmrMod,
   );
   dispatch(
@@ -119,19 +121,18 @@ const onHandlePress = (
 const SecondInput = ({navigation: {navigate}, route}: NavigationProps) => {
   const {userInfo} = useSelector((state: RootState) => state.userInfo);
   // console.log('userInfo2: userInfo:', userInfo);
+  const {data, isLoading} = useGetBaseLine();
   const weightTimeCd = useWeightPurposeCode('SP003');
   const weightTimeCdCategory = weightTimeCd.data;
   const newWeightTimeCdCategory = weightTimeCdCategory?.map(item => {
     return {value: item.cd, label: item.cdNm};
   });
-  console.log('SecondInput/weight:', weightTimeCd);
 
   const aerobicTimeCd = useAerobicPurposeCode('SP004');
   const aerobicTimeCdCategory = aerobicTimeCd.data;
   const newAerobicTimeCdCategory = aerobicTimeCdCategory?.map(item => {
     return {value: item.cd, label: item.cdNm};
   });
-  console.log('SecondInput/aerobic:', aerobicTimeCd);
   // redux
   const dispatch = useDispatch();
 
@@ -145,8 +146,8 @@ const SecondInput = ({navigation: {navigate}, route}: NavigationProps) => {
     // 나중에 사용자 정보 있으면 초기값으로 넣어줘야함.
     defaultValues: {
       bmrKnown: '',
-      weightTimeCd: weightTrainingCategrory[0].value,
-      aerobicTimeCd: aerobicTrainingCategrory[0].value,
+      weightTimeCd: data.weightTimeCd,
+      aerobicTimeCd: data.aerobicTimeCd,
     },
   });
   const bmrKnownValue = useWatch({control, name: 'bmrKnown'});

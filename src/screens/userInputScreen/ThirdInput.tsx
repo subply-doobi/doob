@@ -19,7 +19,11 @@ import {
   TextMain,
 } from '../../styles/styledConsts';
 import {convertDataByMethod} from '../../util/userInfoSubmit';
-import {useUpdateBaseLine} from '../../query/queries/baseLine';
+import {
+  useCreateBaseLine,
+  useGetBaseLine,
+  useUpdateBaseLine,
+} from '../../query/queries/baseLine';
 
 interface IFormData {
   ratioType: string;
@@ -31,14 +35,15 @@ interface IFormData {
 
 const ThirdInput = ({navigation: {navigate}}: NavigationProps) => {
   // react-query
-  const mutation = useUpdateBaseLine();
-
+  const updateMutation = useUpdateBaseLine();
+  const createMutation = useCreateBaseLine();
+  const {data} = useGetBaseLine();
   // redux
   const {userInfo, userTarget} = useSelector(
     (state: RootState) => state.userInfo,
   );
-  console.log('userInfo3: userInfo:', userInfo);
-  console.log('userInfo3: userTarget:', userTarget);
+
+  // console.log('userInfo3/requestBody:', {...userInfo, ...userTarget});
 
   // ref
   const scrollRef = useRef<ScrollView>(null);
@@ -123,7 +128,7 @@ const ThirdInput = ({navigation: {navigate}}: NavigationProps) => {
   const updateSections = (actives: Array<number>) => {
     setActiveSections(actives);
   };
-  console.log('userInfo3: errors: ', errors);
+  // console.log('userInfo3: errors: ', errors);
 
   const btnIsActive =
     activeSections[0] === 0 ||
@@ -137,6 +142,8 @@ const ThirdInput = ({navigation: {navigate}}: NavigationProps) => {
   const btnStyle = btnIsActive ? 'activated' : 'inactivated';
 
   const onSubmit = () => {
+    //기존 값이 존재하면 update 없으면 create
+
     const calculationMethod = activeSections[0];
     const dataToConvert = {
       userInfo,
@@ -148,10 +155,10 @@ const ThirdInput = ({navigation: {navigate}}: NavigationProps) => {
       fatManual,
     };
     const requestBody = convertDataByMethod[calculationMethod](dataToConvert);
-
-    mutation.mutate(requestBody, {
-      onSuccess: navigate('BottomTabNav', {screen: 'Home'}),
-    });
+    console.log('thirdInput/onSubmit:', data);
+    data === undefined
+      ? createMutation.mutate(requestBody)
+      : updateMutation.mutate(requestBody);
   };
   // TBD | 스크롤뷰 ref를 Manual에 넘겨서 단백질입력 활성화시 스크롤 내려주기
   return (

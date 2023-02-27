@@ -9,6 +9,7 @@ import {calculateCartNutr} from '../../util/targetCalculation';
 import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
 import {getUserBaseLine} from '../../query/query';
 import {ActivityIndicator} from 'react-native';
+import {useGetBaseLine} from '../../query/queries/baseLine';
 
 const ProgressBarContainer = styled.View`
   flex: 1;
@@ -82,11 +83,7 @@ const ProgressBar = ({title, numerator, denominator}: INutrientProgress) => {
 
 const NutrientsProgress = ({menuIndex}: {menuIndex: number}) => {
   // react-query test
-  const {isLoading, error, data, isFetching} = useQuery({
-    queryKey: ['baseLine'],
-    queryFn: getUserBaseLine,
-  });
-  console.log(isLoading, error, data, isFetching);
+  const {data, isLoading} = useGetBaseLine();
   // const {cart} = useSelector((state: RootState) => state?.cart);
   // const {calorie, carb, protein, fat} = calculateCartNutr(cart[menuIndex]);
 
@@ -99,28 +96,28 @@ const NutrientsProgress = ({menuIndex}: {menuIndex: number}) => {
         <>
           <ProgressBar
             title="칼로리(g)"
-            numerator={parseInt(data?.calorie)}
+            numerator={0}
             denominator={parseInt(data?.calorie)}
           />
           <VerticalSpace width={8} />
 
           <ProgressBar
             title="탄수화물(g)"
-            numerator={parseInt(data?.carb)}
+            numerator={0}
             denominator={parseInt(data?.carb)}
           />
           <VerticalSpace width={8} />
 
           <ProgressBar
             title="단백질(g)"
-            numerator={parseInt(data?.protein)}
+            numerator={0}
             denominator={parseInt(data?.protein)}
           />
           <VerticalSpace width={8} />
 
           <ProgressBar
             title="지방(g)"
-            numerator={parseInt(data?.fat)}
+            numerator={0}
             denominator={parseInt(data?.fat)}
           />
         </>
