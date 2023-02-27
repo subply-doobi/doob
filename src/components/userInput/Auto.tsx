@@ -22,11 +22,11 @@ const NutrientSummaryText = styled.Text`
 
 const Auto = () => {
   const {
-    userInfo: {dietPurposecd},
+    userInfo: {dietPurposeCd},
     userTarget: {tmr, calorie, carb, protein, fat},
   } = useSelector((state: RootState) => state.userInfo);
-  const purposeText = purposeCdToValue[dietPurposecd].targetText;
-  const calorieModText = purposeCdToValue[dietPurposecd].additionalCalorieText;
+  const purposeText = purposeCdToValue[dietPurposeCd].targetText;
+  const calorieModText = purposeCdToValue[dietPurposeCd].additionalCalorieText;
 
   return (
     <ContentsContainer>

@@ -2,10 +2,19 @@
   "extends": "@tsconfig/react-native/tsconfig.json",
   //이 아래로가 추가한것
   "compilerOptions": {
+<<<<<<< HEAD
+    "baseUrl": "./src",
+    "paths": {
+      "~/*": ["./*"]
+    },
+    "jsx": "react",
+
+=======
     // "baseUrl": "./src",
     // "paths": {
     //   "~/*": ["./*"]
     // },
+>>>>>>> e3e0e24c2c7fca9b367391af1fa8132ef6b1f8ba
     "types": ["@types/styled-components-react-native"]
   }
 }

@@ -65,6 +65,7 @@ const renderCalorieInput = ({field: {onChange, onBlur, value}}: IFormField) => {
   );
 };
 
+//mutation 넣고 계산까지
 const CalChangeAlert = ({
   type,
   control,

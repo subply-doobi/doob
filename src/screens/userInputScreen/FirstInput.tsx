@@ -1,5 +1,5 @@
 import {View, Text, ScrollView} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState, useCallback} from 'react';
 import styled from 'styled-components/native';
 import {
   BtnBottomCTA,
@@ -27,42 +27,16 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
 import {saveUserInfo} from '../../stores/slices/userInfoSlice';
 import {useGetBaseLine} from '../../query/queries/baseLine';
-
+import {useDietPurposeCode} from '../../query/queries/code';
+import {COMMON_CODE} from '../../query/queries/urls';
+import axios from 'axios';
 interface IFormData {
   gender: string;
   age: string;
   height: string;
   weight: string;
-  dietPurposecd: string;
+  dietPurposeCd: string;
 }
-
-const Title = styled(TextMain)`
-  font-size: 24px;
-  font-weight: bold;
-`;
-
-const BtnToggle = styled.TouchableOpacity`
-  flex: 1;
-  height: 48px;
-  margin-top: 48px;
-  justify-content: center;
-  align-items: center;
-  border-width: 1px;
-  border-radius: 4px;
-  border-color: ${({isActivated}: StyledProps) =>
-    isActivated ? colors.main : colors.inactivated};
-`;
-
-const ToggleText = styled.Text`
-  font-size: 16px;
-  color: ${({isActivated}: StyledProps) =>
-    isActivated ? colors.main : colors.inactivated};
-`;
-
-const InputHeader = styled(InputHeaderText)`
-  margin-top: 24px;
-`;
-const Input = styled(UserInfoTextInput)``;
 
 const renderAgeInput = (
   {field: {onChange, value}}: any,
@@ -143,16 +117,30 @@ const renderWeightInput = (
 };
 
 const FirstInput = ({navigation: {navigate}}: NavigationProps) => {
-  const {data} = useGetBaseLine();
+  const {data, isLoading} = useGetBaseLine();
+  const dietPurposeCd = useDietPurposeCode('SP002');
+  const dietPurposeCdCategory = dietPurposeCd.data;
+  const newDietPurposeCdCategory = dietPurposeCdCategory?.map(item => {
+    return {value: item.cd, label: item.cdNm};
+  });
   // state
   // redux
   const {userInfo} = useSelector((state: RootState) => state.userInfo);
   const dispatch = useDispatch();
+  // console.log('userInfo1: userInfo: ', userInfo);
 
   // refs
   const scrollRef = useRef<ScrollView>(null);
   const userInfo1Refs = useRef([]);
-
+  /**
+   * 먼저 서버 정보 공통 코드목록으로 API호출하기 설정
+   * cd => value
+   * cdNm => label
+   * 로 바꾸는 작업을 해야함
+   * 유저정보 체크 후 값이 있으면, 기존 값 올려두기
+   *  없다면 설정할 필요없이 기존 코드 그대로
+   *
+   */
   // react-hook-form
   const {
     control,
@@ -162,22 +150,18 @@ const FirstInput = ({navigation: {navigate}}: NavigationProps) => {
   } = useForm<IFormData>({
     // 나중에 사용자 정보 있으면 초기값으로 넣어줘야함.
     defaultValues: {
-      gender: 'M',
-      age: '',
-      height: '',
-      weight: '',
-      dietPurposecd: purposeCategory[0].value,
+      gender: data?.gender ? data?.gender : '',
+      age: data?.age ? data?.age : '',
+      height: data?.height ? data?.height : '',
+      weight: data?.weight ? data?.weight : '',
+      dietPurposeCd: data?.dietPurposeCd ? data?.dietPurposeCd : '',
     },
   });
   const genderValue = useWatch({control, name: 'gender'});
   const ageValue = useWatch({control, name: 'age'});
   const heightValue = useWatch({control, name: 'height'});
   const weightValue = useWatch({control, name: 'weight'});
-  const dietPurposeValue = useWatch({control, name: 'dietPurposecd'});
-
-  useEffect(() => {
-    handleSubmit(() => {})();
-  }, []);
+  const dietPurposeValue = useWatch({control, name: 'dietPurposeCd'});
 
   return (
     <Container>
@@ -248,11 +232,11 @@ const FirstInput = ({navigation: {navigate}}: NavigationProps) => {
         {/* --- purpose --- */}
         <Dropdown
           placeholder="식단의 목적"
-          items={purposeCategory}
+          items={dietPurposeCd.isLoading ? [] : newDietPurposeCdCategory}
           value={dietPurposeValue}
           setValue={setValue}
           scrollRef={scrollRef}
-          reactHookFormName={'dietPurposecd'}
+          reactHookFormName={'dietPurposeCd'}
         />
       </ScrollView>
       <BtnBottomCTA
@@ -286,7 +270,7 @@ const FirstInput = ({navigation: {navigate}}: NavigationProps) => {
               age: ageValue,
               height: heightValue,
               weight: weightValue,
-              dietPurposecd: dietPurposeValue,
+              dietPurposeCd: dietPurposeValue,
               bmr: BMR,
             }),
           );
@@ -299,3 +283,31 @@ const FirstInput = ({navigation: {navigate}}: NavigationProps) => {
 };
 
 export default FirstInput;
+
+const Title = styled(TextMain)`
+  font-size: 24px;
+  font-weight: bold;
+`;
+
+const BtnToggle = styled.TouchableOpacity`
+  flex: 1;
+  height: 48px;
+  margin-top: 48px;
+  justify-content: center;
+  align-items: center;
+  border-width: 1px;
+  border-radius: 4px;
+  border-color: ${({isActivated}: StyledProps) =>
+    isActivated ? colors.main : colors.inactivated};
+`;
+
+const ToggleText = styled.Text`
+  font-size: 16px;
+  color: ${({isActivated}: StyledProps) =>
+    isActivated ? colors.main : colors.inactivated};
+`;
+
+const InputHeader = styled(InputHeaderText)`
+  margin-top: 24px;
+`;
+const Input = styled(UserInfoTextInput)``;

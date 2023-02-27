@@ -100,7 +100,7 @@ interface IFoodList {
 const FoodList = ({item, menuIndex, navigation}: IFoodList) => {
   const {cart} = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch();
-  const itemExist = hasProduct(cart[menuIndex], item.item.productNo);
+  const itemExist = hasProduct(cart[menuIndex], item?.item?.productNo);
   return (
     <Container>
       <FoodDetailBtn

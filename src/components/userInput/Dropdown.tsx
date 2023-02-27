@@ -27,7 +27,6 @@ const Dropdown = (props: IDropdown) => {
   const [open, setOpen] = useState(false);
   const {placeholder, value, setValue, items, scrollRef, reactHookFormName} =
     props;
-
   return (
     <>
       <DropdownHeader isActivated={true}>{placeholder}</DropdownHeader>

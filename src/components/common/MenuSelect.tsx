@@ -58,7 +58,7 @@ const MenuSelect = ({setOpen, center}: IMenuSelect) => {
     return (
       <Container>
         <Col style={{marginTop: 28, alignItems: 'center'}}>
-          <AlertText>{`끼니${emptyMenuIndex}을 먼저 구성하고`}</AlertText>
+          <AlertText>{`끼니${emptyMenuIndex - 1}을 먼저 구성하고`}</AlertText>
           <AlertText>{`이용해보세요`}</AlertText>
         </Col>
       </Container>
