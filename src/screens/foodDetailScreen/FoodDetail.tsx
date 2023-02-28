@@ -1,9 +1,7 @@
 import React, {useState} from 'react';
 import {Text, ScrollView, SafeAreaView, Image, View} from 'react-native';
 import styled from 'styled-components/native';
-
 import {BASE_URL} from '../../query/queries/urls';
-
 import {
   BtnCTA,
   BtnText,
@@ -16,29 +14,17 @@ import {
 } from '../../styles/styledConsts';
 import colors from '../../styles/colors';
 import NutrientsProgress from '../../components/common/NutrientsProgress';
-import NutrientPart from './foodDetailSubScreen/NutrientPart';
 import {Food} from '../../util/dummyData';
 import {
   useCreateProductMark,
   useDeleteProductMark,
 } from '../../query/queries/product';
-import {
-  useCreateDietDetail,
-  useListDiet,
-  useListDietDetail,
-} from '../../query/queries/diet';
+import NutrientPart from './foodDetailSubScreen/NutrientPart';
+import ShippingPart from './foodDetailSubScreen/ShippingPart';
+import FoodPart from './foodDetailSubScreen/FoodPart';
+import ReviewPart from './foodDetailSubScreen/ReviewPart';
 
 const food = Food;
-
-const FoodPart = () => {
-  return <Text>식품 상세 표시</Text>;
-};
-const ReviewPart = () => {
-  return <Text>후기 표시</Text>;
-};
-const ShippingPart = () => {
-  return <Text>배송 표시</Text>;
-};
 
 const ShowPart = i => {
   return i.index === 0 ? (
@@ -81,7 +67,7 @@ const FoodDetail = () => {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <Container>
-        <ScrollView style={{marginBottom: 20}}>
+        <ScrollView style={{marginBottom: 20, flex: 1}}>
           <NutrientsProgress menuIndex={0} />
           <FoodImageContainer
             source={{
