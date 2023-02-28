@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Text, ScrollView, SafeAreaView} from 'react-native';
+import {Text, ScrollView, SafeAreaView, Image, View} from 'react-native';
 import styled from 'styled-components/native';
 
 import {BASE_URL} from '../../query/queries/urls';
@@ -7,7 +7,6 @@ import {BASE_URL} from '../../query/queries/urls';
 import {
   BtnCTA,
   BtnText,
-  BtnBottomCTA,
   Col,
   Container,
   Row,
@@ -16,10 +15,13 @@ import {
   StickyFooter,
 } from '../../styles/styledConsts';
 import colors from '../../styles/colors';
-
 import NutrientsProgress from '../../components/common/NutrientsProgress';
 import NutrientPart from './foodDetailSubScreen/NutrientPart';
 import {Food} from '../../util/dummyData';
+import {
+  useCreateProductMark,
+  useDeleteProductMark,
+} from '../../query/queries/product';
 
 const food = Food;
 
@@ -48,26 +50,19 @@ const ShowPart = i => {
 };
 
 const FoodDetail = () => {
-  // const index = arg.route.params.menuIndex;
-
+  //TODO : 상위컴포넌트에서 props로 받아서 식품명 header로 띄우기
   const detailMenu = ['영양성분', '식품상세', '후기', '배송정책'];
   const [clicked, setClicked] = useState(0);
-
-  // TODO : 이거 나중에 PRODUCT_LIST API가 나오면 GET_USER를 제거하고 PRODUCT_LIST를 받아와야함
-  // const {isLoading, error, data} = useQuery({
-  //   queryKey: ['PRODUCT_LIST'],
-  //   queryFn: () =>
-  //     queryFn(`${PRODUCT_LIST}?searchText=도시락&categoryCd=&sort`),
-  // });
-
-  // if (isLoading) {
-  //   return <Text>Loading...</Text>;
-  // }
-
-  // if (error) {
-  //   console.warn(error);
-  //   return <Text>Error </Text>;
-  // }
+  const createProductMarkMutation = useCreateProductMark();
+  const deleteProductMarkMutation = useDeleteProductMark();
+  const handlePressLikeBtn = () => {
+    //TODO : 찜된 목록인지 알 수 있는 API나오면 좋아요기능 완성하기
+    // createProductMarkMutation.mutate(food.productNo);
+    // deleteProductMarkMutation.mutate(food.productNo);
+  };
+  if (createProductMarkMutation.isLoading) {
+    return <Text>Loading</Text>;
+  }
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
@@ -109,11 +104,23 @@ const FoodDetail = () => {
           </PartContainer>
         </ScrollView>
       </Container>
-      <StickyFooter>
-        <BtnBottomCTA btnStyle={'activated'}>
-          <BtnText>장바구니 추가</BtnText>
-        </BtnBottomCTA>
-      </StickyFooter>
+      <View>
+        <StickyFooter style={{flexDirection: 'row'}}>
+          <BtnCTA
+            style={{marginRight: 8, width: 60}}
+            btnStyle="border"
+            onPress={handlePressLikeBtn}>
+            <Image
+              //TODO : 우선 heart이미지 bottomNavigator꺼 가져와서 안어울림
+              // source={require('../../assets/icons/36_likePage_selected.png')}
+              source={require('../../assets/icons/36_likePage.png')}
+            />
+          </BtnCTA>
+          <BtnCTA btnStyle={'activated'} style={{flex: 4}}>
+            <BtnText>장바구니 추가</BtnText>
+          </BtnCTA>
+        </StickyFooter>
+      </View>
     </SafeAreaView>
   );
 };

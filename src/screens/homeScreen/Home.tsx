@@ -21,10 +21,11 @@ import MenuHeader from '../../components/common/MenuHeader';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {USER_PROFILE} from '../../query/keys';
 import {getUserInfo} from '../../query/queries/member';
+import {useNavigation} from '@react-navigation/native';
 
 const Home = () => {
   const queryClient = useQueryClient();
-
+  const navigation = useNavigation();
   const {data} = useQuery([USER_PROFILE], getUserInfo);
 
   const {mutate} = useMutation(getUserInfo, {
@@ -92,7 +93,11 @@ const Home = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{paddingBottom: 80}}
       /> */}
-      <BtnCTA btnStyle="activated" onPress={async () => {}}>
+      <BtnCTA
+        btnStyle="activated"
+        onPress={async () => {
+          navigation.navigate('FoodDetail');
+        }}>
         <BtnText>테스트 데이터</BtnText>
       </BtnCTA>
       {menuSelectOpen && <MenuSelect setOpen={setMenuSelectOpen} />}

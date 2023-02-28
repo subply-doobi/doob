@@ -19,7 +19,6 @@ const BottomTabIcon = styled.Image`
 `;
 
 const BottomTabNav = ({navigation: {goBack}}: NavigationProps) => {
-  console.log(goBack);
   return (
     <Tab.Navigator>
       <Tab.Screen
