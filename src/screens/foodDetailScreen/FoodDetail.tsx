@@ -22,6 +22,11 @@ import {
   useCreateProductMark,
   useDeleteProductMark,
 } from '../../query/queries/product';
+import {
+  useCreateDietDetail,
+  useListDiet,
+  useListDietDetail,
+} from '../../query/queries/diet';
 
 const food = Food;
 
@@ -55,6 +60,7 @@ const FoodDetail = () => {
   const [clicked, setClicked] = useState(0);
   const createProductMarkMutation = useCreateProductMark();
   const deleteProductMarkMutation = useDeleteProductMark();
+
   const handlePressLikeBtn = () => {
     //TODO : 찜된 목록인지 알 수 있는 API나오면 좋아요기능 완성하기
     // createProductMarkMutation.mutate(food.productNo);
@@ -63,6 +69,14 @@ const FoodDetail = () => {
   if (createProductMarkMutation.isLoading) {
     return <Text>Loading</Text>;
   }
+
+  const handlePressAddCartBtn = () => {
+    //dietNo =
+    createDietDetailMutation.mutate({
+      dietNo: 'DT20230214000000001',
+      productNo: food.productNo,
+    });
+  };
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
@@ -116,7 +130,10 @@ const FoodDetail = () => {
               source={require('../../assets/icons/36_likePage.png')}
             />
           </BtnCTA>
-          <BtnCTA btnStyle={'activated'} style={{flex: 4}}>
+          <BtnCTA
+            btnStyle={'activated'}
+            style={{flex: 4}}
+            onPress={handlePressAddCartBtn}>
             <BtnText>장바구니 추가</BtnText>
           </BtnCTA>
         </StickyFooter>
