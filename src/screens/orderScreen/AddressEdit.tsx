@@ -119,7 +119,6 @@ const AddressEdit = ({
   const [addressDeleteAlertShow, setAddressDeleteAlertShow] = useState(false);
   const [postalCode, setPostalCode] = useState('');
   const [addressBase, setAddressBase] = useState('');
-  console.log('add', address);
 
   // react-hook-form
   const {
@@ -149,9 +148,7 @@ const AddressEdit = ({
   };
 
   const handlePressConfirmBtn = () => {
-    console.log('onPress', isCreate);
     if (isCreate) {
-      console.log('isCreate!');
       if (postalCode && addressBase && addressDetailValue) {
         dispatch(
           addAddress({
@@ -160,14 +157,12 @@ const AddressEdit = ({
             detail: addressDetailValue,
           }),
         );
-        console.log('onPress: address.length: ', address.length);
         dispatch(setSelectedAddressId(address.length));
         navigate('Order');
       } else {
         Alert.alert('정보를 모두 입력해주세요');
       }
     } else {
-      console.log('update!');
       dispatch(
         updateAddress({
           address: {
@@ -194,9 +189,6 @@ const AddressEdit = ({
       isCreate ? '' : address[currentAddressId]?.detail,
     );
   }, [currentAddressId, isCreate]);
-
-  console.log('AddressEdit: currentAddressId', currentAddressId);
-  console.log('AddressEdit: isCreate', isCreate);
 
   return (
     <>
@@ -261,7 +253,7 @@ const AddressEdit = ({
                     setShowDetails(true);
                     setPostModalVisible(false);
                   }}
-                  onError={() => console.log('오류')}
+                  onError={() => console.error('오류')}
                 />
               </ModalBackground>
             </Modal>

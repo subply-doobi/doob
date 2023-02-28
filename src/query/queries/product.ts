@@ -15,8 +15,7 @@ export const useCreateProductMark = () => {
   const mutation = useMutation({
     mutationFn: (productNo: string) =>
       mutationFn(`${CREATE_PRODUCT_MARK}/${productNo}`, 'put'),
-    onSuccess: data => console.log(data),
-    onError: e => console.log('useCreateProductMark error', e),
+    onError: e => console.error('useCreateProductMark error', e),
   });
   return mutation;
 };
