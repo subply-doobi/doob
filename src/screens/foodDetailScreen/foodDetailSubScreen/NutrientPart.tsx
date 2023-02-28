@@ -1,49 +1,18 @@
 import React from 'react';
 import {Text, StyleSheet, View} from 'react-native';
 import colors from '../../../styles/colors';
-import {Food} from '../../../util/dummyData';
 import {Dot} from '../../../styles/styledConsts';
 import {useGetBaseLine} from '../../../query/queries/baseLine';
 import {useUserProfile} from '../../../query/queries/member';
+import {TableItem} from '../FoodDetail';
 
-const food = Food;
-
-interface TableItem {
-  name: string;
-  column1: string;
-  column2: string;
-  color?: string;
+interface Props {
+  table: TableItem[];
 }
-
-const NutrientPart = () => {
+const NutrientPart = ({table}: Props) => {
   const userProfileQuery = useUserProfile();
   const {isLoading, data} = userProfileQuery;
-  const table: TableItem[] = [
-    {
-      name: 'calorie',
-      column1: '칼로리',
-      column2: `${Math.ceil(Number(food.calorie))}`,
-      color: colors.main,
-    },
-    {
-      name: 'carb',
-      column1: '탄수화물',
-      column2: `${Math.ceil(Number(food.carb))}`,
-      color: colors.blue,
-    },
-    {
-      name: 'protein',
-      column1: '단백질',
-      column2: `${Math.ceil(Number(food.protein))}`,
-      color: colors.green,
-    },
-    {
-      name: 'fat',
-      column1: '지방',
-      column2: `${Math.ceil(Number(food.fat))}`,
-      color: colors.orange,
-    },
-  ];
+
   if (isLoading) {
     return <Text>Loading</Text>;
   }
@@ -69,11 +38,11 @@ const NutrientPart = () => {
   );
 };
 
-interface Props {
+interface RenderProps {
   item: TableItem;
 }
 
-function RenderItem({item}: Props) {
+function RenderItem({item}: RenderProps) {
   const userBaseLine = useGetBaseLine();
   const {data, isLoading} = userBaseLine;
 

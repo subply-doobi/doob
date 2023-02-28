@@ -11,6 +11,8 @@ import {
   TextMain,
   TextSub,
   StickyFooter,
+  HorizontalSpace,
+  Dot,
 } from '../../styles/styledConsts';
 import colors from '../../styles/colors';
 import NutrientsProgress from '../../components/common/NutrientsProgress';
@@ -26,9 +28,43 @@ import ReviewPart from './foodDetailSubScreen/ReviewPart';
 
 const food = Food;
 
+export interface TableItem {
+  name: string;
+  column1: string;
+  column2: string;
+  color?: string;
+}
+
+const table: TableItem[] = [
+  {
+    name: 'calorie',
+    column1: '칼로리',
+    column2: `${Math.ceil(Number(food.calorie))}`,
+    color: colors.main,
+  },
+  {
+    name: 'carb',
+    column1: '탄수화물',
+    column2: `${Math.ceil(Number(food.carb))}`,
+    color: colors.blue,
+  },
+  {
+    name: 'protein',
+    column1: '단백질',
+    column2: `${Math.ceil(Number(food.protein))}`,
+    color: colors.green,
+  },
+  {
+    name: 'fat',
+    column1: '지방',
+    column2: `${Math.ceil(Number(food.fat))}`,
+    color: colors.orange,
+  },
+];
+
 const ShowPart = i => {
   return i.index === 0 ? (
-    <NutrientPart food={food} />
+    <NutrientPart table={table} />
   ) : i.index === 1 ? (
     <FoodPart />
   ) : i.index === 2 ? (
@@ -36,7 +72,7 @@ const ShowPart = i => {
   ) : i.index === 3 ? (
     <ShippingPart />
   ) : (
-    <NutrientPart />
+    <NutrientPart table={table} />
   );
 };
 
@@ -69,14 +105,43 @@ const FoodDetail = () => {
       <Container>
         <ScrollView style={{marginBottom: 20, flex: 1}}>
           <NutrientsProgress menuIndex={0} />
-          <FoodImageContainer
-            source={{
-              uri: `${BASE_URL}${food.mainAttUrl}`,
-            }}
-          />
-          <SellerText>[{food.platformNm}]</SellerText>
+          <View>
+            <FoodImageContainer
+              source={{
+                uri: `${BASE_URL}${food.mainAttUrl}`,
+              }}
+            />
+            <FoodImageBottom />
+            <NutritionInImage>
+              {table.slice(0, 4).map(el => {
+                return (
+                  <>
+                    <View
+                      key={el.name}
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        flex: 0.25,
+                      }}>
+                      <Dot
+                        style={{
+                          backgroundColor: el.color,
+                          marginHorizontal: 8,
+                        }}
+                      />
+                      <Text style={{color: 'white', fontSize: 12}}>
+                        {el.column2}
+                      </Text>
+                    </View>
+                  </>
+                );
+              })}
+            </NutritionInImage>
+          </View>
+
+          <SellerText style={{marginTop: 20}}>[{food.platformNm}]</SellerText>
           <ProductName>{food.productNm}</ProductName>
-          <Row>
+          <Row style={{marginTop: 16, justifyContent: 'space-between'}}>
             <Col>
               <ShippingText>20000원 이상 무료배송 </ShippingText>
               <ShippingText>최소수량: 2개</ShippingText>
@@ -178,3 +243,22 @@ const DetailMenuText = styled(TextMain)`
 `;
 
 const PartContainer = styled.View``;
+
+const NutritionInImage = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  opacity: 1;
+  width: 360px;
+  height: 24px;
+`;
+const FoodImageBottom = styled.View`
+  position: absolute;
+  bottom: 0;
+  background-color: black;
+  opacity: 0.4;
+  width: 360px;
+  height: 24px;
+`;
