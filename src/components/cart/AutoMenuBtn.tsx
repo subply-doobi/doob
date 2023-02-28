@@ -18,7 +18,13 @@ const AutoMenuText = styled(TextSub)`
   font-size: 14px;
 `;
 
-const AutoMenuBtn = ({status}: {status: 'empty' | 'notEnough' | 'exceed'}) => {
+const AutoMenuBtn = ({
+  status,
+  onPress,
+}: {
+  status: 'empty' | 'notEnough' | 'exceed';
+  onPress: Function;
+}) => {
   const btnHeight = status === 'empty' ? 108 : 48;
   const btnMarginTop = status === 'empty' ? 8 : 16;
   const btnStyle = status === 'empty' ? 'borderActivated' : 'border';
@@ -35,7 +41,8 @@ const AutoMenuBtn = ({status}: {status: 'empty' | 'notEnough' | 'exceed'}) => {
         <BtnCTA
           height={btnHeight}
           btnStyle={btnStyle}
-          style={{marginTop: btnMarginTop}}>
+          style={{marginTop: btnMarginTop}}
+          onPress={() => onPress()}>
           <Row>
             <PlusBtnImage source={btnImageRequire} />
             <AutoMenuText>{btnText}</AutoMenuText>

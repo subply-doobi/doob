@@ -21,6 +21,7 @@ import {useListDiet} from '../query/queries/diet';
 import AutoMenuBtn from '../components/cart/AutoMenuBtn';
 import BottomMenuSelect from '../components/cart/BottomMenuSelect';
 import {useGetBaseLine} from '../query/queries/baseLine';
+import AutoDietModal from '../components/cart/AutoDietModal';
 
 const Cart = () => {
   // react-query
@@ -39,9 +40,13 @@ const Cart = () => {
   const [menuSelectOpen, setMenuSelectOpen] = useState(false);
   const [checkAllClicked, setCheckAllClicked] = useState(false);
   const [createDietAlertShow, setCreateDietAlertShow] = useState(false);
+  const [autoDietModalShow, setAutoDietModalShow] = useState(false);
 
   return (
-    <TouchableWithoutFeedback onPress={() => setMenuSelectOpen(false)}>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        setMenuSelectOpen(false);
+      }}>
       <Container>
         <ScrollView showsVerticalScrollIndicator={false}>
           <SelectedDeleteRow>
@@ -65,6 +70,8 @@ const Cart = () => {
               <BtnSmallText isActivated={true}>선택 삭제</BtnSmallText>
             </BtnSmall>
           </SelectedDeleteRow>
+
+          {/* 끼니 카드 */}
           <Card>
             <CardMenuHeader>
               <MenuHeader
@@ -74,7 +81,14 @@ const Cart = () => {
             <HorizontalSpace height={24} />
             <NutrientsProgress menuIndex={menuIndex} />
 
-            <AutoMenuBtn status="empty" />
+            <AutoMenuBtn
+              status="empty"
+              onPress={() => setAutoDietModalShow(true)}
+            />
+            <AutoDietModal
+              modalVisible={autoDietModalShow}
+              setModalVisible={setAutoDietModalShow}
+            />
             <MenuTotalPrice>합계 0원</MenuTotalPrice>
             {menuSelectOpen && (
               <MenuSelect setOpen={setMenuSelectOpen} center={true} />
@@ -88,12 +102,14 @@ const Cart = () => {
           />
 
           {/* 끼니 정보 요약 */}
-          <MenuTotalText>{menuTotalText}</MenuTotalText>
-          <SellerText>존맛식품</SellerText>
-          <SellerProductPrice>식품: 5,700원</SellerProductPrice>
-          <SellerShippingPrice>
-            배송비: 3,000원 (10,000원 이상 무료배송)
-          </SellerShippingPrice>
+          <TotalSummaryContainer>
+            <MenuTotalText>{menuTotalText}</MenuTotalText>
+            <SellerText>존맛식품</SellerText>
+            <SellerProductPrice>식품: 5,700원</SellerProductPrice>
+            <SellerShippingPrice>
+              배송비: 3,000원 (10,000원 이상 무료배송)
+            </SellerShippingPrice>
+          </TotalSummaryContainer>
         </ScrollView>
       </Container>
     </TouchableWithoutFeedback>
@@ -139,6 +155,10 @@ const Card = styled.View`
 const CardMenuHeader = styled.View`
   margin-top: 16px;
   align-self: center;
+`;
+
+const TotalSummaryContainer = styled.View`
+  padding: 0px 8px 0px 8px;
 `;
 
 const MenuTotalPrice = styled(TextMain)`

@@ -15,8 +15,6 @@ import {
 
 import NutrientsProgress from '../../components/common/NutrientsProgress';
 import colors from '../../styles/colors';
-import BottomSheetTestScreen from '../../components/home/homeFilter/HomeFilter';
-import SortModal from '../../components/home/homeFilter/SortModal';
 import MenuSelect from '../../components/common/MenuSelect';
 import MenuHeader from '../../components/common/MenuHeader';
 import {useGetBaseLine} from '../../query/queries/baseLine';
@@ -26,7 +24,7 @@ const Home = () => {
 
   // state
 
-  const {menuIndex, cart} = useSelector((state: RootState) => state.cart);
+  const {menuIndex} = useSelector((state: RootState) => state.cart);
   const [searchText, setSearchText] = useState('');
   const [menuSelectOpen, setMenuSelectOpen] = useState(false);
   const filterMenus = [
@@ -59,29 +57,9 @@ const Home = () => {
             <ListTitle>전체 식품</ListTitle>
             <NoOfFoods>87개</NoOfFoods>
           </Row>
-          <SortBtn>
-            <SortModal />
-          </SortBtn>
+          <SortBtn></SortBtn>
         </Row>
         <HorizontalLine style={{marginTop: 8}} />
-        <FilterMenuContainer>
-          {filterMenus.map((i, index) => (
-            <BottomSheetTestScreen key={i.id} list={filterMenus} index={index}>
-              {i.text}
-            </BottomSheetTestScreen>
-          ))}
-        </FilterMenuContainer>
-        {/* <FlatList
-        style={{marginTop: 24}}
-        data={testData}
-        renderItem={item => (
-          <FoodList item={item} menuIndex={menuIndex} navigation={navigation} />
-        )}
-        ItemSeparatorComponent={() => <HorizontalSpace height={16} />}
-        keyExtractor={item => item.productNo}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{paddingBottom: 80}}
-      /> */}
         <BtnCTA btnStyle="activated" onPress={async () => {}}>
           <BtnText>테스트 데이터</BtnText>
         </BtnCTA>

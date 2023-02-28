@@ -65,37 +65,6 @@ const MenuSelect = ({setOpen, center}: IMenuSelect) => {
     );
   };
 
-  interface IMenuList {
-    companyCd: string;
-    dietNo: string;
-    dietSeq: string;
-    statusCd: string;
-    statusNm: string;
-    userId: string;
-  }
-  const renderMenuList = ({index, item}: {index: number; item: IMenuList}) => {
-    const onDeleteDiet = () => {
-      deleteDietMutation.mutate({dietNo: item.dietNo});
-      setDeleteAlertShow(true);
-    };
-    return (
-      <Menu
-        onPress={() => {
-          dispatch(setMenuIndex(index));
-          setOpen(false);
-        }}>
-        <MenuText isActivated={index === menuIndex}>{item.dietSeq}</MenuText>
-        {index == 0 || (
-          <DeleteBtn onPress={onDeleteDiet}>
-            <DeleteImg
-              source={require('../../assets/icons/24_icon=close.png')}
-            />
-          </DeleteBtn>
-        )}
-      </Menu>
-    );
-  };
-
   const onCreateDiet = () => {
     if (addAlertStatus === 'none') {
       createDietMutation.mutate();
@@ -107,14 +76,32 @@ const MenuSelect = ({setOpen, center}: IMenuSelect) => {
   return (
     <TouchableWithoutFeedback onPress={() => {}}>
       <SelectContainer center={center}>
-        <FlatList
-          data={dietData}
-          renderItem={renderMenuList}
-          keyExtractor={item => item.dietNo}
-          ItemSeparatorComponent={() => <HorizontalLine />}
-        />
+        {dietData?.map((menu, index) => (
+          <Col key={menu.dietNo}>
+            <Menu
+              onPress={() => {
+                dispatch(setMenuIndex(index));
+                setOpen(false);
+              }}>
+              <MenuText isActivated={index === menuIndex}>
+                {menu.dietSeq}
+              </MenuText>
+              {dietData.length === 1 || (
+                <DeleteBtn
+                  onPress={() => {
+                    deleteDietMutation.mutate({dietNo: menu.dietNo});
+                    setDeleteAlertShow(true);
+                  }}>
+                  <DeleteImg
+                    source={require('../../assets/icons/24_icon=close.png')}
+                  />
+                </DeleteBtn>
+              )}
+            </Menu>
+            <HorizontalLine />
+          </Col>
+        ))}
 
-        <HorizontalLine />
         <Menu onPress={onCreateDiet}>
           <MenuText>끼니 추가하기</MenuText>
         </Menu>
