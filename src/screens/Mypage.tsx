@@ -27,80 +27,7 @@ import {useForm, useWatch} from 'react-hook-form';
 import WeightChangeAlert from '../components/myPage/WeightChangeAlert';
 import {updateUserInfo} from '../stores/slices/userInfoSlice';
 import {changeNutrByWeight} from '../util/alertActions';
-
-const Container = styled.View`
-  flex: 1;
-  background-color: ${colors.backgroundLight};
-`;
-
-const Card = styled.View`
-  width: 100%;
-  height: auto;
-  background-color: ${colors.white};
-  padding: 0px 16px 16px 16px;
-  elevation: 0;
-`;
-
-const ProfileContainer = styled.View`
-  margin-top: 24px;
-  flex-direction: row;
-  justify-content: space-between;
-`;
-
-const ProfileTextContainer = styled.View``;
-
-const NickName = styled(TextMain)`
-  font-size: 20px;
-  font-weight: 700;
-`;
-const Hello = styled(TextMain)`
-  margin-top: 4px;
-  font-size: 14px;
-`;
-
-const RecommendationContainer = styled.View`
-  width: 100%;
-  height: 34px;
-  margin-top: 24px;
-  background-color: ${colors.highlight};
-  justify-content: center;
-  align-items: center;
-`;
-
-const Recommendation = styled(TextMain)`
-  font-size: 16px;
-  font-weight: 300;
-`;
-
-const UserInfoBtnContainer = styled.TouchableOpacity`
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-`;
-
-const UserInfoBtnText = styled(TextSub)``;
-
-const TargetNutrContainer = styled.View`
-  width: 100%;
-  margin-top: 16px;
-  /* flex-direction: row; */
-  /* justify-content: center; */
-`;
-
-const PageBtn = styled.TouchableOpacity`
-  width: 100%;
-  height: 58px;
-  justify-content: center;
-`;
-const PageBtnText = styled(TextMain)`
-  font-size: 16px;
-  font-weight: bold;
-`;
-
-const RightArrow = styled.Image`
-  width: 20px;
-  height: 20px;
-`;
+import {useGetBaseLine, useUpdateBaseLine} from '../query/queries/baseLine';
 
 interface INavigateByBtnId {
   [key: string]: (btnId: string, navigate: Function) => void;
@@ -121,36 +48,40 @@ const Mypage = ({navigation: {navigate}}: NavigationProps) => {
     (state: RootState) => state.userInfo,
   );
   const dispatch = useDispatch();
+  const {data} = useGetBaseLine();
+  const updateMutation = useUpdateBaseLine();
+
+  // console.log('mypage/data:', data);
 
   // FlatList Data
   type INutrTargetData = Array<{
     nutrient: string;
-    value: string;
+    value: number;
     color: string;
     alertType: 'calorie' | 'carb' | 'protein' | 'fat' | 'weight';
   }>;
   const nutrTargetData: INutrTargetData = [
     {
       nutrient: '칼로리',
-      value: userTarget.calorie,
+      value: parseFloat(data.calorie),
       color: colors.main,
       alertType: 'calorie',
     },
     {
       nutrient: '탄수화물',
-      value: userTarget.carb,
+      value: parseFloat(data.carb),
       color: colors.blue,
       alertType: 'carb',
     },
     {
       nutrient: '단백질',
-      value: userTarget.protein,
+      value: parseFloat(data.protein),
       color: colors.green,
       alertType: 'protein',
     },
     {
       nutrient: '지방',
-      value: userTarget.fat,
+      value: parseFloat(data.fat),
       color: colors.orange,
       alertType: 'fat',
     },
@@ -246,34 +177,23 @@ const Mypage = ({navigation: {navigate}}: NavigationProps) => {
     ),
   };
 
+  //userInput에서 값 가져오는 거됨
+  //useMutation넣어서 가져온값을 서버에 있는 data변경해주는 로직만 type 별로 넣어주면됨
   const onAlertConfirm = () => {
     if (alertType === 'weight') {
-      const res = changeNutrByWeight(userInfo, weightValue);
-      if (autoCalculate) {
-        // TBD | store, 서버에 weight, 바뀐 target정보 Put
-        dispatch(updateUserInfo(res));
-      } else {
-        // TBD | store, 서버에 weight, tmr정보만 Put
-        dispatch(updateUserInfo({tmr: res.tmr, weight: weightValue}));
-      }
-    } else {
-      // TBD | store, 서버에 바뀐 target정보 Put
-      const res = nutrConvert[alertType](
-        userTarget.calorie,
-        valueByAlertType[alertType],
-      );
-      dispatch(updateUserInfo(res));
+      updateMutation.mutate({...data, weight: weightValue});
+    } else if (alertType === 'calorie') {
+      updateMutation.mutate({...data, calorie: calorieValue});
+    } else if (alertType === 'carb') {
+      updateMutation.mutate({...data, carb: carbValue});
+    } else if (alertType === 'protein') {
+      updateMutation.mutate({...data, protein: proteinValue});
+    } else if (alertType === 'fat') {
+      updateMutation.mutate({...data, fat: fatValue});
     }
-    setAlertShow(false);
   };
 
   const onAlertCancel = () => {
-    if (alertType === 'weight') {
-      setValue(alertType, userInfo.weight);
-    } else {
-      // TBD | 오류메시지 해결 모르겠다...
-      setValue(alertType, userTarget[alertType]);
-    }
     setAlertShow(false);
   };
 
@@ -356,3 +276,77 @@ const Mypage = ({navigation: {navigate}}: NavigationProps) => {
 };
 
 export default Mypage;
+
+const Container = styled.View`
+  flex: 1;
+  background-color: ${colors.backgroundLight};
+`;
+
+const Card = styled.View`
+  width: 100%;
+  height: auto;
+  background-color: ${colors.white};
+  padding: 0px 16px 16px 16px;
+  elevation: 0;
+`;
+
+const ProfileContainer = styled.View`
+  margin-top: 24px;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+const ProfileTextContainer = styled.View``;
+
+const NickName = styled(TextMain)`
+  font-size: 20px;
+  font-weight: 700;
+`;
+const Hello = styled(TextMain)`
+  margin-top: 4px;
+  font-size: 14px;
+`;
+
+const RecommendationContainer = styled.View`
+  width: 100%;
+  height: 34px;
+  margin-top: 24px;
+  background-color: ${colors.highlight};
+  justify-content: center;
+  align-items: center;
+`;
+
+const Recommendation = styled(TextMain)`
+  font-size: 16px;
+  font-weight: 300;
+`;
+
+const UserInfoBtnContainer = styled.TouchableOpacity`
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+`;
+
+const UserInfoBtnText = styled(TextSub)``;
+
+const TargetNutrContainer = styled.View`
+  width: 100%;
+  margin-top: 16px;
+  /* flex-direction: row; */
+  /* justify-content: center; */
+`;
+
+const PageBtn = styled.TouchableOpacity`
+  width: 100%;
+  height: 58px;
+  justify-content: center;
+`;
+const PageBtnText = styled(TextMain)`
+  font-size: 16px;
+  font-weight: bold;
+`;
+
+const RightArrow = styled.Image`
+  width: 20px;
+  height: 20px;
+`;

@@ -145,8 +145,8 @@ const SecondInput = ({navigation: {navigate}, route}: NavigationProps) => {
     // 나중에 사용자 정보 있으면 초기값으로 넣어줘야함.
     defaultValues: {
       bmrKnown: '',
-      weightTimeCd: data.weightTimeCd,
-      aerobicTimeCd: data.aerobicTimeCd,
+      weightTimeCd: data.weightTimeCd ? data.weightTimeCd : 'SP003001',
+      aerobicTimeCd: data.aerobicTimeCd ? data.aerobicTimeCd : 'SP004001',
     },
   });
   const bmrKnownValue = useWatch({control, name: 'bmrKnown'});

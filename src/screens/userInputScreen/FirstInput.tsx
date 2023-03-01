@@ -154,7 +154,7 @@ const FirstInput = ({navigation: {navigate}}: NavigationProps) => {
       age: data?.age ? data?.age : '',
       height: data?.height ? data?.height : '',
       weight: data?.weight ? data?.weight : '',
-      dietPurposeCd: data?.dietPurposeCd ? data?.dietPurposeCd : '',
+      dietPurposeCd: data?.dietPurposeCd ? data?.dietPurposeCd : 'SP002001',
     },
   });
   const genderValue = useWatch({control, name: 'gender'});

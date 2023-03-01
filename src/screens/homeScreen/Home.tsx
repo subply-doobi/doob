@@ -21,7 +21,7 @@ import {useGetBaseLine} from '../../query/queries/baseLine';
 
 const Home = () => {
   const {data} = useGetBaseLine();
-
+  console.log('home/data:', data);
   // state
 
   const {menuIndex} = useSelector((state: RootState) => state.cart);

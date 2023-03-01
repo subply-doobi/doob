@@ -32,7 +32,6 @@ export const useGetBaseLine = (options?: IQueryOptions) => {
 
 // POST
 export const useUpdateBaseLine = () => {
-  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (baseLine: IBaseLine) =>
       mutationFn<IBaseLine>(UPDATE_BASE_LINE, 'post', baseLine),
