@@ -128,7 +128,6 @@ const Mypage = ({navigation: {navigate}}: NavigationProps) => {
   const [alertType, setAlertType] = useState<
     'calorie' | 'carb' | 'protein' | 'fat' | 'weight'
   >('calorie');
-
   interface IRenderAlert {
     [key: string]: () => React.ReactElement;
   }
@@ -177,8 +176,6 @@ const Mypage = ({navigation: {navigate}}: NavigationProps) => {
     ),
   };
 
-  //userInput에서 값 가져오는 거됨
-  //useMutation넣어서 가져온값을 서버에 있는 data변경해주는 로직만 type 별로 넣어주면됨
   const onAlertConfirm = () => {
     if (alertType === 'weight') {
       updateMutation.mutate({...data, weight: weightValue});
