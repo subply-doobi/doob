@@ -78,13 +78,7 @@ const BottomMenuSelect = () => {
           );
         })}
         <Row>
-          <BtnSmall
-            style={{marginBottom: 8}}
-            onPress={() => {
-              // TBD | onCreateDiet()로 바꿀 것
-              createDietMutation.mutate();
-              NoOfDiet && dispatch(setMenuIndex(NoOfDiet));
-            }}>
+          <BtnSmall style={{marginBottom: 8}} onPress={() => onCreateDiet()}>
             <BtnSmallText style={{color: colors.inactivated}}>+</BtnSmallText>
           </BtnSmall>
         </Row>
@@ -92,7 +86,9 @@ const BottomMenuSelect = () => {
       <DAlert
         alertShow={createAlertShow}
         onCancel={() => setCreateAlertShow(false)}
-        onConfirm={() => setCreateAlertShow(false)}
+        onConfirm={() => {
+          setCreateAlertShow(false);
+        }}
         NoOfBtn={1}
         renderContent={() =>
           addAlertStatus === 'limit' ? (

@@ -57,8 +57,8 @@ const AutoDietModal = ({modalVisible, setModalVisible}: IAutoDietModal) => {
     ``,
   );
   const priceRangeStr = String(sliderValue[0]) + `,` + String(sliderValue[1]);
-  console.log('AutoDietModal : selctedCategoryStr', selectedCategoryStr);
-  console.log('AutoDietModal : priceRangeStr', priceRangeStr);
+  // console.log('AutoDietModal : selctedCategoryStr', selectedCategoryStr);
+  // console.log('AutoDietModal : priceRangeStr', priceRangeStr);
   return (
     <Modal
       visible={modalVisible}

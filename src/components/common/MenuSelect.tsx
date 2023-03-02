@@ -23,7 +23,7 @@ interface IMenuSelect {
 }
 const MenuSelect = ({setOpen, center}: IMenuSelect) => {
   // react-query
-  const {data: dietData, isLoading: dietDataIsLoading} = useListDiet();
+  const {data: dietData} = useListDiet();
   const createDietMutation = useCreateDiet();
   const deleteDietMutation = useDeleteDiet();
 
@@ -55,45 +55,45 @@ const MenuSelect = ({setOpen, center}: IMenuSelect) => {
     setCreateAlertShow(true);
   };
 
+  const onDeleteDiet = () => {
+    dietNoToDelete && deleteDietMutation.mutate({dietNo: dietNoToDelete});
+    dispatch(setMenuIndex(NoOfDiet ? NoOfDiet - 2 : 0));
+    setOpen(false);
+    setDeleteAlertShow(false);
+  };
+
   return (
     <TouchableWithoutFeedback onPress={() => {}}>
       <SelectContainer center={center}>
-        {dietDataIsLoading ? (
-          <ActivityIndicator />
-        ) : (
-          dietData?.map((menu, index) => (
-            <Col key={menu.dietNo}>
-              <Menu
-                onPress={() => {
-                  dispatch(setMenuIndex(index));
-                  setOpen(false);
-                }}>
-                <MenuText isActivated={index === menuIndex}>
-                  {menu.dietSeq}
-                </MenuText>
-                {dietData.length === 1 || (
-                  <DeleteBtn
-                    onPress={() => {
-                      setDietNoToDelete(menu.dietNo);
-                      setDeleteAlertShow(true);
-                    }}>
-                    <DeleteImg
-                      source={require('../../assets/icons/24_icon=close.png')}
-                    />
-                  </DeleteBtn>
-                )}
-              </Menu>
-              <HorizontalLine />
-            </Col>
-          ))
-        )}
+        {dietData?.map((menu, index) => (
+          <Col key={menu.dietNo}>
+            <Menu
+              onPress={() => {
+                dispatch(setMenuIndex(index));
+                setOpen(false);
+              }}>
+              <MenuText isActivated={index === menuIndex}>
+                {menu.dietSeq}
+              </MenuText>
+              {dietData.length === 1 || (
+                <DeleteBtn
+                  onPress={() => {
+                    setDietNoToDelete(menu.dietNo);
+                    setDeleteAlertShow(true);
+                  }}>
+                  <DeleteImg
+                    source={require('../../assets/icons/24_icon=close.png')}
+                  />
+                </DeleteBtn>
+              )}
+            </Menu>
+            <HorizontalLine />
+          </Col>
+        ))}
 
         <Menu
           onPress={() => {
-            // TBD | onCreateDiet()로 바꿀 것
-            createDietMutation.mutate();
-            NoOfDiet && dispatch(setMenuIndex(NoOfDiet));
-            setOpen(false);
+            onCreateDiet();
           }}>
           <MenuText>끼니 추가하기</MenuText>
         </Menu>
@@ -101,13 +101,7 @@ const MenuSelect = ({setOpen, center}: IMenuSelect) => {
         <DAlert
           alertShow={deleteAlertShow}
           renderContent={() => <DeleteAlertContent index={menuIndex} />}
-          onConfirm={() => {
-            dietNoToDelete &&
-              deleteDietMutation.mutate({dietNo: dietNoToDelete});
-            dispatch(setMenuIndex(NoOfDiet ? NoOfDiet - 2 : 0));
-            // setOpen(false);
-            setDeleteAlertShow(false);
-          }}
+          onConfirm={() => onDeleteDiet()}
           onCancel={() => setDeleteAlertShow(false)}
         />
         <DAlert
@@ -121,7 +115,10 @@ const MenuSelect = ({setOpen, center}: IMenuSelect) => {
               <></>
             )
           }
-          onConfirm={() => setCreateAlertShow(false)}
+          onConfirm={() => {
+            setOpen(false);
+            setCreateAlertShow(false);
+          }}
           onCancel={() => setCreateAlertShow(false)}
           NoOfBtn={1}
         />

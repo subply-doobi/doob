@@ -85,7 +85,6 @@ const DAlert = ({
             {NoOfBtn !== 1 && (
               <BtnLeft
                 onPress={() => {
-                  console.log('취소');
                   onCancel ? onCancel() : null;
                 }}>
                 <CancelBtnText>취소</CancelBtnText>
@@ -94,7 +93,6 @@ const DAlert = ({
 
             <BtnRight
               onPress={() => {
-                console.log('확인');
                 onConfirm ? onConfirm() : null;
               }}>
               <ConfirmBtnText>
