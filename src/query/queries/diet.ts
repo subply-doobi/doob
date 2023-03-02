@@ -61,9 +61,20 @@ export const useListDietDetail = (options?: IQueryOptions) => {
 
 // POST //
 export const useUpdateDietDetail = () => {
-  const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: () => mutationFn(UPDATE_DIET_DETAIL, 'post'),
+    mutationFn: ({
+      dietNo,
+      productNo,
+      qty,
+    }: {
+      dietNo: string;
+      productNo: string;
+      qty: string;
+    }) =>
+      mutationFn(
+        `${UPDATE_DIET_DETAIL}?dietNo=${dietNo}&productNo=${productNo}&qty=${qty}`,
+        'post',
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: [DIET_DETAIL]});
     },
@@ -88,28 +99,15 @@ export const useDeleteDiet = () => {
 export const useDeleteDietDetail = () => {
   // TBD | 미완
   const mutation = useMutation({
-    mutationFn: () => mutationFn(DELETE_DIET_DETAIL, 'post'),
+    mutationFn: ({dietNo, productNo}: {dietNo: string; productNo: string}) =>
+      mutationFn(
+        `${DELETE_DIET_DETAIL}?dietNo=${dietNo}&productNo=${productNo}`,
+        'delete',
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: [DIET_DETAIL]});
     },
     onError: e => console.log('useDeleteDietDetail error: ', e),
   });
   return mutation;
-};
-
-export const useGetTestData = (options?: IQueryOptions<ITestDataParams>) => {
-  const enabled = options?.enabled ?? true;
-  const searchText = options?.params.searchText || '';
-  const sortText = options?.params.sortText || '';
-  return useQuery({
-    queryKey: ['testData', searchText, sortText],
-    queryFn: searchText =>
-      queryFn(
-        `${LIST_PRODUCT}?searchText=${searchText}&categoryCd=&sort=${sortText}&filter=`,
-      ),
-    enabled,
-    onSuccess: data => {
-      console.log('테스트: ', data.slice(0, 3));
-    },
-  });
 };

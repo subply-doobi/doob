@@ -21,6 +21,7 @@ import {useListDiet} from '../query/queries/diet';
 import AutoMenuBtn from '../components/cart/AutoMenuBtn';
 import BottomMenuSelect from '../components/cart/BottomMenuSelect';
 import AutoDietModal from '../components/cart/AutoDietModal';
+import CartFoodList from '../components/cart/CartFoodList';
 
 const Cart = () => {
   // react-query
@@ -36,11 +37,15 @@ const Cart = () => {
   const [autoDietModalShow, setAutoDietModalShow] = useState(false);
 
   // etc
+  // 끼니1+끼니2+.... 텍스트
   const menuTotalText = dietData?.reduce(
     (acc, cur, idx) =>
       (acc += idx === 0 ? `${cur.dietSeq}` : `+${cur.dietSeq}`),
     '',
   );
+  // 현재 끼니의 식품들이 목표섭취량에 부합하는지
+  const menuStatus = 'notEnough';
+
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -80,8 +85,11 @@ const Cart = () => {
             <HorizontalSpace height={24} />
             <NutrientsProgress menuIndex={menuIndex} />
 
+            {/* 현재 끼니 식품들 */}
+            <CartFoodList />
+
             <AutoMenuBtn
-              status="empty"
+              status={menuStatus}
               onPress={() => setAutoDietModalShow(true)}
             />
             <AutoDietModal

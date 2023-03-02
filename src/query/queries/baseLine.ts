@@ -12,7 +12,7 @@ export const useCreateBaseLine = () => {
   const mutation = useMutation({
     mutationFn: (baseLine: IBaseLine) =>
       mutationFn<IBaseLine>(CREATE_BASE_LINE, 'put', baseLine),
-    onSuccess: data => queryClient.invalidateQueries({queryKey: ['baseLine']}),
+    onSuccess: data => queryClient.invalidateQueries({queryKey: [BASE_LINE]}),
     onError: e => console.log('useCreateBaseLine error: ', e),
   });
   return mutation;
@@ -32,7 +32,6 @@ export const useGetBaseLine = (options?: IQueryOptions) => {
 
 // POST
 export const useUpdateBaseLine = () => {
-  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (baseLine: IBaseLine) =>
       mutationFn<IBaseLine>(UPDATE_BASE_LINE, 'post', baseLine),

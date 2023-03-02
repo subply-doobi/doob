@@ -16,7 +16,6 @@ import {
 } from '../../styles/styledConsts';
 import colors from '../../styles/colors';
 import DSlider from '../common/slider/DSlider';
-import {useGetTestData} from '../../query/queries/diet';
 
 interface IAutoDietModal {
   modalVisible: boolean;

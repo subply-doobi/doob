@@ -18,11 +18,11 @@ import colors from '../../styles/colors';
 import MenuSelect from '../../components/common/MenuSelect';
 import MenuHeader from '../../components/common/MenuHeader';
 import {useGetBaseLine} from '../../query/queries/baseLine';
+import {useListDiet} from '../../query/queries/diet';
 
 const Home = () => {
-  const {data} = useGetBaseLine();
-
   // state
+  const {data: dietData} = useListDiet();
 
   const {menuIndex} = useSelector((state: RootState) => state.cart);
   const [searchText, setSearchText] = useState('');
@@ -33,6 +33,7 @@ const Home = () => {
     {id: 3, text: '가격'},
     {id: 4, text: '끼니구성'},
   ];
+
   return (
     <TouchableWithoutFeedback
       onPress={() => {

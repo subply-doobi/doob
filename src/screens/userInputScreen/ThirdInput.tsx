@@ -38,13 +38,13 @@ const ThirdInput = ({navigation: {navigate}}: NavigationProps) => {
   const updateMutation = useUpdateBaseLine();
   const createMutation = useCreateBaseLine();
   const {data} = useGetBaseLine();
+  // console.log('ThirdInput/data:', data);
   // redux
   const {userInfo, userTarget} = useSelector(
     (state: RootState) => state.userInfo,
   );
-  console.log('userInfo3: userInfo:', userInfo);
-  console.log('userInfo3: userTarget:', userTarget);
-
+  // console.log('userInfo3: userInfo:', userInfo);
+  // console.log('userInfo3: userTarget:', userTarget);
   // ref
   const scrollRef = useRef<ScrollView>(null);
 
@@ -143,7 +143,6 @@ const ThirdInput = ({navigation: {navigate}}: NavigationProps) => {
 
   const onSubmit = () => {
     //기존 값이 존재하면 update 없으면 create
-
     const calculationMethod = activeSections[0];
     const dataToConvert = {
       userInfo,
@@ -155,10 +154,8 @@ const ThirdInput = ({navigation: {navigate}}: NavigationProps) => {
       fatManual,
     };
     const requestBody = convertDataByMethod[calculationMethod](dataToConvert);
-    console.log('thirdInput/onSubmit:', data);
-    data === undefined
-      ? createMutation.mutate(requestBody)
-      : updateMutation.mutate(requestBody);
+    // console.log('ThirdInput/requestBody:', requestBody);
+    updateMutation.mutate(requestBody);
   };
   // TBD | 스크롤뷰 ref를 Manual에 넘겨서 단백질입력 활성화시 스크롤 내려주기
   return (
@@ -181,7 +178,10 @@ const ThirdInput = ({navigation: {navigate}}: NavigationProps) => {
       <BtnBottomCTA
         btnStyle={btnStyle}
         disabled={btnIsActive ? false : true}
-        onPress={onSubmit}>
+        onPress={() => {
+          onSubmit();
+          navigate('BottomTabNav', {screen: 'Home'});
+        }}>
         <BtnText>완료</BtnText>
       </BtnBottomCTA>
     </Container>
@@ -189,11 +189,6 @@ const ThirdInput = ({navigation: {navigate}}: NavigationProps) => {
 };
 
 export default ThirdInput;
-
-const Title = styled(TextMain)`
-  font-size: 24px;
-  font-weight: bold;
-`;
 
 const AccordionHeader = styled.View`
   height: 52px;
