@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {FlatList, Text, TouchableWithoutFeedback} from 'react-native';
+import {TouchableWithoutFeedback, ActivityIndicator} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import styled from 'styled-components/native';
 import {
@@ -14,6 +14,8 @@ import {Col, HorizontalLine, TextMain} from '../../styles/styledConsts';
 import {checkMenuEmpty} from '../../util/checkEmptyMenu';
 import CreateLimitAlertContent from './alert/CreateLimitAlertContent';
 import DAlert from './alert/DAlert';
+import DeleteAlertContent from './alert/DeleteAlertContent';
+import MenuEmptyAlertContent from './alert/MenuEmptyAlertContent';
 
 interface IMenuSelect {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -21,53 +23,33 @@ interface IMenuSelect {
 }
 const MenuSelect = ({setOpen, center}: IMenuSelect) => {
   // react-query
-  const {data: dietData} = useListDiet();
+  const {data: dietData, isLoading: dietDataIsLoading} = useListDiet();
   const createDietMutation = useCreateDiet();
   const deleteDietMutation = useDeleteDiet();
 
   // redux
   const {menuIndex} = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch();
+
+  // state
   const [deleteAlertShow, setDeleteAlertShow] = useState(false);
   const [createAlertShow, setCreateAlertShow] = useState(false);
+  const [dietNoToDelete, setDietNoToDelete] = useState<string>();
 
-  const addAlertStatus = dietData
+  // TBD | BottomMenuSelect랑 겹치는 기능
+  const NoOfDiet = dietData?.length;
+  const addAlertStatus = NoOfDiet
     ? checkMenuEmpty(dietData) === undefined
-      ? dietData?.length >= 3
+      ? NoOfDiet >= 3
         ? 'limit'
         : 'none'
       : 'empty'
     : 'none';
 
-  const deleteAlertContent = (index: number) => {
-    return (
-      <Container>
-        <Col style={{marginTop: 28, alignItems: 'center'}}>
-          <AlertText>끼니 {index + 1}</AlertText>
-          <AlertText>삭제하시겠어요?</AlertText>
-        </Col>
-      </Container>
-    );
-  };
-
-  const createLimitAlertContent = () => {
-    return <CreateLimitAlertContent />;
-  };
-  const menuEmptyAlertContent = () => {
-    const emptyMenuIndex = checkMenuEmpty(dietData);
-    return (
-      <Container>
-        <Col style={{marginTop: 28, alignItems: 'center'}}>
-          <AlertText>{`끼니${emptyMenuIndex - 1}을 먼저 구성하고`}</AlertText>
-          <AlertText>{`이용해보세요`}</AlertText>
-        </Col>
-      </Container>
-    );
-  };
-
   const onCreateDiet = () => {
     if (addAlertStatus === 'none') {
       createDietMutation.mutate();
+      NoOfDiet && dispatch(setMenuIndex(NoOfDiet));
       return;
     }
     setCreateAlertShow(true);
@@ -76,49 +58,65 @@ const MenuSelect = ({setOpen, center}: IMenuSelect) => {
   return (
     <TouchableWithoutFeedback onPress={() => {}}>
       <SelectContainer center={center}>
-        {dietData?.map((menu, index) => (
-          <Col key={menu.dietNo}>
-            <Menu
-              onPress={() => {
-                dispatch(setMenuIndex(index));
-                setOpen(false);
-              }}>
-              <MenuText isActivated={index === menuIndex}>
-                {menu.dietSeq}
-              </MenuText>
-              {dietData.length === 1 || (
-                <DeleteBtn
-                  onPress={() => {
-                    deleteDietMutation.mutate({dietNo: menu.dietNo});
-                    setDeleteAlertShow(true);
-                  }}>
-                  <DeleteImg
-                    source={require('../../assets/icons/24_icon=close.png')}
-                  />
-                </DeleteBtn>
-              )}
-            </Menu>
-            <HorizontalLine />
-          </Col>
-        ))}
+        {dietDataIsLoading ? (
+          <ActivityIndicator />
+        ) : (
+          dietData?.map((menu, index) => (
+            <Col key={menu.dietNo}>
+              <Menu
+                onPress={() => {
+                  dispatch(setMenuIndex(index));
+                  setOpen(false);
+                }}>
+                <MenuText isActivated={index === menuIndex}>
+                  {menu.dietSeq}
+                </MenuText>
+                {dietData.length === 1 || (
+                  <DeleteBtn
+                    onPress={() => {
+                      setDietNoToDelete(menu.dietNo);
+                      setDeleteAlertShow(true);
+                    }}>
+                    <DeleteImg
+                      source={require('../../assets/icons/24_icon=close.png')}
+                    />
+                  </DeleteBtn>
+                )}
+              </Menu>
+              <HorizontalLine />
+            </Col>
+          ))
+        )}
 
-        <Menu onPress={onCreateDiet}>
+        <Menu
+          onPress={() => {
+            // TBD | onCreateDiet()로 바꿀 것
+            createDietMutation.mutate();
+            NoOfDiet && dispatch(setMenuIndex(NoOfDiet));
+            setOpen(false);
+          }}>
           <MenuText>끼니 추가하기</MenuText>
         </Menu>
 
         <DAlert
           alertShow={deleteAlertShow}
-          renderContent={() => deleteAlertContent(menuIndex)}
-          onConfirm={() => setDeleteAlertShow(false)}
+          renderContent={() => <DeleteAlertContent index={menuIndex} />}
+          onConfirm={() => {
+            dietNoToDelete &&
+              deleteDietMutation.mutate({dietNo: dietNoToDelete});
+            dispatch(setMenuIndex(NoOfDiet ? NoOfDiet - 2 : 0));
+            // setOpen(false);
+            setDeleteAlertShow(false);
+          }}
           onCancel={() => setDeleteAlertShow(false)}
         />
         <DAlert
           alertShow={createAlertShow}
           renderContent={() =>
             addAlertStatus === 'limit' ? (
-              createLimitAlertContent()
+              <CreateLimitAlertContent />
             ) : addAlertStatus === 'empty' ? (
-              menuEmptyAlertContent()
+              <MenuEmptyAlertContent />
             ) : (
               <></>
             )

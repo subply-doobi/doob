@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   BtnSmall,
   BtnSmallText,
@@ -18,24 +18,39 @@ import {
 import DAlert from '../common/alert/DAlert';
 import CreateLimitAlertContent from '../common/alert/CreateLimitAlertContent';
 import colors from '../../styles/colors';
+import {checkMenuEmpty} from '../../util/checkEmptyMenu';
+import MenuEmptyAlertContent from '../common/alert/MenuEmptyAlertContent';
 
-interface IBottomMenuSelect {
-  createDietAlertShow: boolean;
-  setCreateDietAlertShow: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const BottomMenuSelect = ({
-  createDietAlertShow,
-  setCreateDietAlertShow,
-}: IBottomMenuSelect) => {
+const BottomMenuSelect = () => {
   // react-query
   const {data: dietData} = useListDiet();
   const createDietMutation = useCreateDiet();
-  const NoOfDiet = dietData?.length;
 
   // redux
   const {menuIndex} = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch();
+
+  // state
+  const [createAlertShow, setCreateAlertShow] = useState(false);
+
+  // TBD | MenuSelect랑 겹치는 기능  //
+  const NoOfDiet = dietData?.length;
+  const addAlertStatus = NoOfDiet
+    ? checkMenuEmpty(dietData) === undefined
+      ? NoOfDiet >= 3
+        ? 'limit'
+        : 'none'
+      : 'empty'
+    : 'none';
+
+  const onCreateDiet = () => {
+    if (addAlertStatus === 'none') {
+      createDietMutation.mutate();
+      NoOfDiet && dispatch(setMenuIndex(NoOfDiet));
+      return;
+    }
+    setCreateAlertShow(true);
+  };
 
   return (
     <Col>
@@ -55,7 +70,7 @@ const BottomMenuSelect = ({
                 style={{marginBottom: 8}}
                 onPress={() => dispatch(setMenuIndex(index))}>
                 <BtnSmallText isActivated={isActivated}>
-                  {menu.dietSeq}
+                  {menu?.dietSeq}
                 </BtnSmallText>
               </BtnSmall>
               <VerticalSpace width={8} />
@@ -66,10 +81,7 @@ const BottomMenuSelect = ({
           <BtnSmall
             style={{marginBottom: 8}}
             onPress={() => {
-              if (NoOfDiet && NoOfDiet >= 3) {
-                setCreateDietAlertShow(true);
-                return;
-              }
+              // TBD | onCreateDiet()로 바꿀 것
               createDietMutation.mutate();
               NoOfDiet && dispatch(setMenuIndex(NoOfDiet));
             }}>
@@ -78,11 +90,19 @@ const BottomMenuSelect = ({
         </Row>
       </Row>
       <DAlert
-        alertShow={createDietAlertShow}
-        onCancel={() => setCreateDietAlertShow(false)}
-        onConfirm={() => setCreateDietAlertShow(false)}
+        alertShow={createAlertShow}
+        onCancel={() => setCreateAlertShow(false)}
+        onConfirm={() => setCreateAlertShow(false)}
         NoOfBtn={1}
-        renderContent={() => <CreateLimitAlertContent />}
+        renderContent={() =>
+          addAlertStatus === 'limit' ? (
+            <CreateLimitAlertContent />
+          ) : addAlertStatus === 'empty' ? (
+            <MenuEmptyAlertContent />
+          ) : (
+            <></>
+          )
+        }
       />
     </Col>
   );

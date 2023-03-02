@@ -7,3 +7,8 @@ export type TMenu = {
   userId: string;
 };
 export type TDietData = Array<TMenu>;
+
+export interface ITestDataParams {
+  searchText: string;
+  sortText: string;
+}

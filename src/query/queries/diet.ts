@@ -1,8 +1,8 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {DIET, DIET_DETAIL} from '../keys';
 import {queryClient} from '../store';
-import {IQueryOptions} from '../types/common';
-import {TDietData} from '../types/diet';
+import {IMutationOptions, IQueryOptions} from '../types/common';
+import {ITestDataParams, TDietData} from '../types/diet';
 import {mutationFn, queryFn} from './requestFn';
 import {
   CREATE_DIET,
@@ -11,6 +11,7 @@ import {
   DELETE_DIET_DETAIL,
   LIST_DIET,
   LIST_DIET_DETAIL,
+  LIST_PRODUCT,
   UPDATE_DIET_DETAIL,
 } from './urls';
 
@@ -85,6 +86,7 @@ export const useDeleteDiet = () => {
 };
 
 export const useDeleteDietDetail = () => {
+  // TBD | 미완
   const mutation = useMutation({
     mutationFn: () => mutationFn(DELETE_DIET_DETAIL, 'post'),
     onSuccess: () => {
@@ -93,4 +95,21 @@ export const useDeleteDietDetail = () => {
     onError: e => console.log('useDeleteDietDetail error: ', e),
   });
   return mutation;
+};
+
+export const useGetTestData = (options?: IQueryOptions<ITestDataParams>) => {
+  const enabled = options?.enabled ?? true;
+  const searchText = options?.params.searchText || '';
+  const sortText = options?.params.sortText || '';
+  return useQuery({
+    queryKey: ['testData', searchText, sortText],
+    queryFn: searchText =>
+      queryFn(
+        `${LIST_PRODUCT}?searchText=${searchText}&categoryCd=&sort=${sortText}&filter=`,
+      ),
+    enabled,
+    onSuccess: data => {
+      console.log('테스트: ', data.slice(0, 3));
+    },
+  });
 };

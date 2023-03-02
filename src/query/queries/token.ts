@@ -5,13 +5,7 @@ import {
   loginWithKakaoAccount,
 } from '@react-native-seoul/kakao-login';
 import axios from 'axios';
-import {
-  PRODUCT_LIST,
-  GET_TOKEN,
-  GET_AUTH,
-  RE_ISSUE_TOKEN,
-  GET_BASE_LINE,
-} from './urls';
+import {GET_TOKEN, GET_AUTH, RE_ISSUE_TOKEN} from './urls';
 
 // doobi server------------------ //
 // 카카오 토큰으로 DoobiToken 발급

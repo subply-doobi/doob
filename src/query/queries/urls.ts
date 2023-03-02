@@ -20,7 +20,7 @@ export const DELETE_DIET = `${BASE_URL}/api/member/diet/delete-diet`;
 export const DELETE_DIET_DETAIL = `${BASE_URL}/api/member/diet/delete-diet-detail`;
 
 // product-controller
-export const PRODUCT_LIST = `${BASE_URL}/api/member/product/list-product`;
+export const LIST_PRODUCT = `${BASE_URL}/api/member/product/list-product`;
 export const CREATE_PRODUCT_AUTO = `${BASE_URL}/api/member/product/create-product-auto`;
 
 // api-member-code-controller

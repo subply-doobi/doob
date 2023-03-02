@@ -7,7 +7,6 @@ import {useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
 import {calculateCartNutr} from '../../util/targetCalculation';
 import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
-import {getUserBaseLine} from '../../query/query';
 import {ActivityIndicator} from 'react-native';
 import {useGetBaseLine} from '../../query/queries/baseLine';
 

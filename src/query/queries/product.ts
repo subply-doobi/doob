@@ -1,23 +1,25 @@
 import {useMutation, useQuery} from '@tanstack/react-query';
-import {PRODUCT_AUTO} from '../keys';
+import {DIET_DETAIL, PRODUCT_AUTO} from '../keys';
 import {queryClient} from '../store';
-import {IQueryOptions} from '../types/common';
+import {IMutationOptions, IQueryOptions} from '../types/common';
+import {ICreateProductAutoParams, IListProductParams} from '../types/product';
 import {mutationFn, queryFn} from './requestFn';
-import {CREATE_PRODUCT_AUTO, PRODUCT_LIST} from './urls';
+import {CREATE_PRODUCT_AUTO, LIST_PRODUCT} from './urls';
 
 export const useCreateProductAuto = () => {
   const mutation = useMutation({
     mutationFn: ({
       dietNo,
-      categories,
-      priceRange,
-    }: {
-      dietNo: string;
-      categories: string;
-      priceRange: string;
-    }) => mutationFn(`${CREATE_PRODUCT_AUTO}/${dietNo}`, 'post'),
+      categoryText = '',
+      priceText = '',
+    }: ICreateProductAutoParams) => {
+      return mutationFn(
+        `${CREATE_PRODUCT_AUTO}/${dietNo}?categoryText=&priceText=`,
+        'post',
+      );
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: [PRODUCT_AUTO]});
+      queryClient.invalidateQueries({queryKey: [DIET_DETAIL]});
     },
     onError: e => console.log('useCreateProductAuto error: ', e),
   });
@@ -25,12 +27,15 @@ export const useCreateProductAuto = () => {
 };
 // optional params 어떻게 받을 것인지
 
-export const useListProduct = (options?: IQueryOptions) => {
+export const useListProduct = (
+  options?: IQueryOptions,
+  params?: IListProductParams,
+) => {
   const enabled = options?.enabled ?? true;
   return useQuery({
     queryKey: ['tempProduct'],
     queryFn: () =>
-      queryFn(`${PRODUCT_LIST}?searchText=&categoryCd=CG003&sort=&filter=`),
+      queryFn(`${LIST_PRODUCT}?searchText=&categoryCd=CG003&sort=&filter=`),
     enabled,
     onSuccess: data => {
       console.log(data[0]);

@@ -20,17 +20,11 @@ import MenuSelect from '../components/common/MenuSelect';
 import {useListDiet} from '../query/queries/diet';
 import AutoMenuBtn from '../components/cart/AutoMenuBtn';
 import BottomMenuSelect from '../components/cart/BottomMenuSelect';
-import {useGetBaseLine} from '../query/queries/baseLine';
 import AutoDietModal from '../components/cart/AutoDietModal';
 
 const Cart = () => {
   // react-query
   const {data: dietData} = useListDiet();
-  const menuTotalText = dietData?.reduce(
-    (acc, cur, idx) =>
-      (acc += idx === 0 ? `${cur.dietSeq}` : `+${cur.dietSeq}`),
-    '',
-  );
 
   // redux
   const {menuIndex} = useSelector((state: RootState) => state.cart);
@@ -39,9 +33,14 @@ const Cart = () => {
   // useState
   const [menuSelectOpen, setMenuSelectOpen] = useState(false);
   const [checkAllClicked, setCheckAllClicked] = useState(false);
-  const [createDietAlertShow, setCreateDietAlertShow] = useState(false);
   const [autoDietModalShow, setAutoDietModalShow] = useState(false);
 
+  // etc
+  const menuTotalText = dietData?.reduce(
+    (acc, cur, idx) =>
+      (acc += idx === 0 ? `${cur.dietSeq}` : `+${cur.dietSeq}`),
+    '',
+  );
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -96,10 +95,7 @@ const Cart = () => {
           </Card>
 
           {/* 카드 하단 끼니 선택 및 추가 */}
-          <BottomMenuSelect
-            createDietAlertShow={createDietAlertShow}
-            setCreateDietAlertShow={setCreateDietAlertShow}
-          />
+          <BottomMenuSelect />
 
           {/* 끼니 정보 요약 */}
           <TotalSummaryContainer>

@@ -16,6 +16,7 @@ import {
 } from '../../styles/styledConsts';
 import colors from '../../styles/colors';
 import DSlider from '../common/slider/DSlider';
+import {useGetTestData} from '../../query/queries/diet';
 
 interface IAutoDietModal {
   modalVisible: boolean;
@@ -39,6 +40,25 @@ const AutoDietModal = ({modalVisible, setModalVisible}: IAutoDietModal) => {
         Array.from({length: categoryData?.length}, () => true),
       );
   }, [categoryData?.length]);
+
+  // etc
+  const NoOfSelectedCategory = selectedCategory.reduce(
+    (acc, cur) => (acc += cur ? 1 : 0),
+    0,
+  );
+  const btnDisabled = NoOfSelectedCategory < 3 ? true : false;
+  const selectedCategoryStr = categoryData?.reduce(
+    (acc, cur, idx) =>
+      (acc += selectedCategory[idx]
+        ? idx === 0
+          ? `${cur.categoryCd}`
+          : `,${cur.categoryCd}`
+        : ``),
+    ``,
+  );
+  const priceRangeStr = String(sliderValue[0]) + `,` + String(sliderValue[1]);
+  console.log('AutoDietModal : selctedCategoryStr', selectedCategoryStr);
+  console.log('AutoDietModal : priceRangeStr', priceRangeStr);
   return (
     <Modal
       visible={modalVisible}
@@ -86,8 +106,17 @@ const AutoDietModal = ({modalVisible, setModalVisible}: IAutoDietModal) => {
             sliderWidth={SLIDER_WIDTH}
           />
           <HorizontalSpace height={32} />
-          <BtnCTA btnStyle="activated" onPress={() => {}}>
-            <BtnText>한 끼니 자동구성</BtnText>
+          <BtnCTA
+            btnStyle={btnDisabled ? 'inactivated' : 'activated'}
+            disabled={btnDisabled}
+            onPress={() => {
+              console.log('자동구성 버튼누르면 로딩인디케이터, 모달창 닫기');
+
+              // setModalVisible(false);
+            }}>
+            <BtnText>
+              {btnDisabled ? `3가지 이상 선택해주세요` : `한 끼니 자동구성`}
+            </BtnText>
           </BtnCTA>
         </ModalContainer>
       </ModalBackGround>

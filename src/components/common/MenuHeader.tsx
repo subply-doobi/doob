@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {ActivityIndicator} from 'react-native';
 import React, {SetStateAction} from 'react';
 import styled from 'styled-components/native';
 import {TextMain} from '../../styles/styledConsts';
@@ -26,12 +26,14 @@ interface IMenuHeader {
 }
 const MenuHeader = ({menuSelectOpen, setMenuSelectOpen}: IMenuHeader) => {
   // react-query
-  const {data: dietData} = useListDiet();
+  const {data: dietData, isLoading: dietDataIsLoading} = useListDiet();
   // redux
   const {menuIndex} = useSelector((state: RootState) => state.cart);
-  return (
+  return dietDataIsLoading ? (
+    <ActivityIndicator />
+  ) : (
     <Header onPress={() => setMenuSelectOpen(v => !v)}>
-      <HeaderText>{dietData ? dietData[menuIndex].dietSeq : ''}</HeaderText>
+      <HeaderText>{dietData ? dietData[menuIndex]?.dietSeq : ''}</HeaderText>
       {menuSelectOpen ? (
         <Arrow source={require('../../assets/icons/24_dropdown_up.png')} />
       ) : (
