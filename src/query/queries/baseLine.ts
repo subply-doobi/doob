@@ -37,6 +37,7 @@ export const useUpdateBaseLine = () => {
       mutationFn<IBaseLine>(UPDATE_BASE_LINE, 'post', baseLine),
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: [BASE_LINE]});
+      console.log('update success');
     },
     onError: e => console.log('useUpdateBaseLine error: ', e),
   });

@@ -38,7 +38,7 @@ const ThirdInput = ({navigation: {navigate}}: NavigationProps) => {
   const updateMutation = useUpdateBaseLine();
   const createMutation = useCreateBaseLine();
   const {data} = useGetBaseLine();
-  console.log('ThirdInput/data:', data);
+  // console.log('ThirdInput/data:', data);
   // redux
   const {userInfo, userTarget} = useSelector(
     (state: RootState) => state.userInfo,
@@ -155,7 +155,7 @@ const ThirdInput = ({navigation: {navigate}}: NavigationProps) => {
       fatManual,
     };
     const requestBody = convertDataByMethod[calculationMethod](dataToConvert);
-    console.log('ThirdInput/requestBody:', requestBody);
+    // console.log('ThirdInput/requestBody:', requestBody);
     updateMutation.mutate(requestBody);
   };
   // TBD | 스크롤뷰 ref를 Manual에 넘겨서 단백질입력 활성화시 스크롤 내려주기

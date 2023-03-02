@@ -116,13 +116,6 @@ const Mypage = ({navigation: {navigate}}: NavigationProps) => {
   const weightValue = useWatch({control, name: 'weight'});
   const [autoCalculate, setAutoCalculate] = useState(false);
 
-  const valueByAlertType: {[key: string]: string} = {
-    calorie: calorieValue,
-    carb: carbValue,
-    protein: proteinValue,
-    fat: fatValue,
-  };
-
   // userInfo change alert
   const [alertShow, setAlertShow] = useState(false);
   const [alertType, setAlertType] = useState<
@@ -175,21 +168,20 @@ const Mypage = ({navigation: {navigate}}: NavigationProps) => {
       />
     ),
   };
-
-  const onAlertConfirm = () => {
-    if (alertType === 'weight') {
-      updateMutation.mutate({...data, weight: weightValue});
-    } else if (alertType === 'calorie') {
-      updateMutation.mutate({...data, calorie: calorieValue});
-    } else if (alertType === 'carb') {
-      updateMutation.mutate({...data, carb: carbValue});
-    } else if (alertType === 'protein') {
-      updateMutation.mutate({...data, protein: proteinValue});
-    } else if (alertType === 'fat') {
-      updateMutation.mutate({...data, fat: fatValue});
-    }
+  const typeData = {
+    calorie: calorieValue,
+    carb: carbValue,
+    protein: proteinValue,
+    fat: fatValue,
+    weight: weightValue,
   };
-
+  const typeValue = typeData[alertType];
+  const onAlertConfirm = () => {
+    updateMutation.mutate({
+      ...data,
+      [alertType]: typeValue,
+    });
+  };
   const onAlertCancel = () => {
     setAlertShow(false);
   };
