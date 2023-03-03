@@ -1,5 +1,12 @@
 import React, {useState} from 'react';
-import {Text, ScrollView, SafeAreaView, Image, View} from 'react-native';
+import {
+  Text,
+  ScrollView,
+  SafeAreaView,
+  Image,
+  View,
+  Pressable,
+} from 'react-native';
 import styled from 'styled-components/native';
 import {BASE_URL} from '../../query/queries/urls';
 import {
@@ -171,16 +178,16 @@ const FoodDetail = () => {
       </Container>
       <View>
         <StickyFooter style={{flexDirection: 'row'}}>
-          <BtnCTA
-            style={{marginRight: 8, width: 60}}
-            btnStyle="border"
+          <Pressable
+            style={{marginRight: 8, width: 52, height: 52}}
             onPress={handlePressLikeBtn}>
             <Image
-              //TODO : 우선 heart이미지 bottomNavigator꺼 가져와서 안어울림
+              // 조건에 따라서 서로 다른 좋아요 버튼 갖게 할 것
               // source={require('../../assets/icons/36_likePage_selected.png')}
-              source={require('../../assets/icons/36_likePage.png')}
+              style={{width: 52, height: 52}}
+              source={require('../../assets/icons/48_like_activated.png')}
             />
-          </BtnCTA>
+          </Pressable>
           <BtnCTA
             btnStyle={'activated'}
             style={{flex: 4}}
