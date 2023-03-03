@@ -9,6 +9,8 @@ import {calculateCartNutr} from '../../util/targetCalculation';
 import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
 import {ActivityIndicator} from 'react-native';
 import {useGetBaseLine} from '../../query/queries/baseLine';
+import {useListDietDetail} from '../../query/queries/diet';
+import {sumUpNutrients} from '../../util/sumUp';
 
 const ProgressBarContainer = styled.View`
   flex: 1;
@@ -80,44 +82,44 @@ const ProgressBar = ({title, numerator, denominator}: INutrientProgress) => {
   );
 };
 
-const NutrientsProgress = ({menuIndex}: {menuIndex: number}) => {
-  // react-query test
-  const {data, isLoading} = useGetBaseLine();
-  // const {cart} = useSelector((state: RootState) => state?.cart);
-  // const {calorie, carb, protein, fat} = calculateCartNutr(cart[menuIndex]);
+const NutrientsProgress = ({currentDietNo}: {currentDietNo: string}) => {
+  // react-query
+  const {data: baseLineData, isFetching: baseLineIsFetching} = useGetBaseLine();
+  const {data: dietDetailData, isFetching: dietDetailIsFetching} =
+    useListDietDetail(currentDietNo);
 
-  // const {calorie, carb, protein, fat} = data;
+  const {cal, carb, protein, fat} = sumUpNutrients(dietDetailData);
   return (
     <Container>
-      {isLoading ? (
+      {baseLineIsFetching ? (
         <ActivityIndicator />
       ) : (
         <>
           <ProgressBar
             title="칼로리(g)"
-            numerator={0}
-            denominator={parseInt(data?.calorie)}
+            numerator={cal}
+            denominator={parseInt(baseLineData?.calorie)}
           />
           <VerticalSpace width={8} />
 
           <ProgressBar
             title="탄수화물(g)"
-            numerator={0}
-            denominator={parseInt(data?.carb)}
+            numerator={carb}
+            denominator={parseInt(baseLineData?.carb)}
           />
           <VerticalSpace width={8} />
 
           <ProgressBar
             title="단백질(g)"
-            numerator={0}
-            denominator={parseInt(data?.protein)}
+            numerator={protein}
+            denominator={parseInt(baseLineData?.protein)}
           />
           <VerticalSpace width={8} />
 
           <ProgressBar
             title="지방(g)"
-            numerator={0}
-            denominator={parseInt(data?.fat)}
+            numerator={fat}
+            denominator={parseInt(baseLineData?.fat)}
           />
         </>
       )}

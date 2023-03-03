@@ -6,47 +6,54 @@ import {
   Row,
   VerticalSpace,
 } from '../../styles/styledConsts';
-import {TDietData} from '../../query/types/diet';
+import {IDietData} from '../../query/types/diet';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
-import {setMenuIndex} from '../../stores/slices/cartSlice';
+import {setCurrentDietNo} from '../../stores/slices/cartSlice';
 import {
   useCreateDiet,
+  useCreateDietDetail,
   useListDiet,
   useListDietDetail,
 } from '../../query/queries/diet';
 import DAlert from '../common/alert/DAlert';
 import CreateLimitAlertContent from '../common/alert/CreateLimitAlertContent';
 import colors from '../../styles/colors';
-import {checkMenuEmpty} from '../../util/checkEmptyMenu';
+import {checkEmptyMenuIndex} from '../../util/checkEmptyMenu';
 import MenuEmptyAlertContent from '../common/alert/MenuEmptyAlertContent';
 
 const BottomMenuSelect = () => {
+  // redux
+  const {currentDietNo} = useSelector((state: RootState) => state.cart);
+  const dispatch = useDispatch();
+
   // react-query
   const {data: dietData} = useListDiet();
-  const createDietMutation = useCreateDiet();
-
-  // redux
-  const {menuIndex} = useSelector((state: RootState) => state.cart);
-  const dispatch = useDispatch();
+  const createDietMutation = useCreateDiet({
+    onSuccess: data => {
+      dispatch(setCurrentDietNo(data.dietNo));
+    },
+  });
+  // const createDietDetailMutation = useCreateDietDetail();
 
   // state
   const [createAlertShow, setCreateAlertShow] = useState(false);
 
   // TBD | MenuSelect랑 겹치는 기능  //
   const NoOfDiet = dietData?.length;
-  const addAlertStatus = NoOfDiet
-    ? checkMenuEmpty(dietData) === undefined
-      ? NoOfDiet >= 3
-        ? 'limit'
-        : 'none'
-      : 'empty'
-    : 'none';
+  const addAlertStatus =
+    NoOfDiet === undefined
+      ? 'error'
+      : checkEmptyMenuIndex(dietData)
+      ? 'empty'
+      : NoOfDiet >= 3
+      ? 'limit'
+      : 'possible';
 
   const onCreateDiet = () => {
-    if (addAlertStatus === 'none') {
+    if (addAlertStatus === 'possible') {
       createDietMutation.mutate();
-      NoOfDiet && dispatch(setMenuIndex(NoOfDiet));
+      // TBD | 여기서 빈 끼니 있는지도 확인
       return;
     }
     setCreateAlertShow(true);
@@ -62,13 +69,13 @@ const BottomMenuSelect = () => {
           marginTop: 16,
         }}>
         {dietData?.map((menu, index) => {
-          const isActivated = menuIndex === index ? true : false;
+          const isActivated = menu.dietNo === currentDietNo ? true : false;
           return (
             <Row key={menu.dietNo}>
               <BtnSmall
                 isActivated={isActivated}
                 style={{marginBottom: 8}}
-                onPress={() => dispatch(setMenuIndex(index))}>
+                onPress={() => dispatch(setCurrentDietNo(menu.dietNo))}>
                 <BtnSmallText isActivated={isActivated}>
                   {menu?.dietSeq}
                 </BtnSmallText>
@@ -81,6 +88,19 @@ const BottomMenuSelect = () => {
           <BtnSmall style={{marginBottom: 8}} onPress={() => onCreateDiet()}>
             <BtnSmallText style={{color: colors.inactivated}}>+</BtnSmallText>
           </BtnSmall>
+          {/* <BtnSmall
+            style={{marginBottom: 8}}
+            onPress={() => {
+              dietData &&
+                createDietDetailMutation.mutate({
+                  dietNo: dietData[menuIndex]?.dietNo,
+                  productNo: 'PD20220713000000017',
+                });
+            }}>
+            <BtnSmallText style={{color: colors.inactivated}}>
+              추가
+            </BtnSmallText>
+          </BtnSmall> */}
         </Row>
       </Row>
       <DAlert

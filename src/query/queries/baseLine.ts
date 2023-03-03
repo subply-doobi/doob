@@ -22,7 +22,7 @@ export const useCreateBaseLine = () => {
 
 export const useGetBaseLine = (options?: IQueryOptions) => {
   const enabled = options?.enabled ?? true;
-  return useQuery({
+  return useQuery<IBaseLine>({
     queryKey: [BASE_LINE],
     queryFn: () => queryFn(GET_BASE_LINE),
     enabled,

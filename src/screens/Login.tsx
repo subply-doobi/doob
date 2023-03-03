@@ -5,8 +5,14 @@ import {NavigationProps} from '../constants/constants';
 import React, {useEffect, useCallback} from 'react';
 import {useGetBaseLine} from '../query/queries/baseLine';
 import {validateToken} from '../query/queries/token';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../stores/store';
 
 const Login = ({navigation: {navigate}}: NavigationProps) => {
+  //redux
+  const dispatch = useDispatch();
+  const {currentDietNo} = useSelector((state: RootState) => state.cart);
+
   //유저값 check 후 화면 이동
   const {data, isLoading} = useGetBaseLine();
 
@@ -19,9 +25,10 @@ const Login = ({navigation: {navigate}}: NavigationProps) => {
       ? navigate('InputNav', {screen: 'FirstInput'})
       : navigate('BottomTabNav', {screen: 'Home'});
   }, [isLoading, data, navigate]);
+
   useEffect(() => {
     signInWithKakao();
-  });
+  }, []);
 
   // const signInWithKakao = async (): Promise<void> => {
   //   const {isTokenValid} = await validateToken();

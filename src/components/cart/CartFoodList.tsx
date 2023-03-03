@@ -1,9 +1,11 @@
 import {useState} from 'react';
+import {ActivityIndicator} from 'react-native';
 import {useSelector} from 'react-redux';
 import styled from 'styled-components/native';
 import {
   useDeleteDietDetail,
   useListDiet,
+  useListDietDetail,
   useUpdateDietDetail,
 } from '../../query/queries/diet';
 import {BASE_URL} from '../../query/queries/urls';
@@ -63,13 +65,15 @@ const testD = [
 ];
 
 const CartFoodList = () => {
+  // redux
+  const {currentDietNo} = useSelector((state: RootState) => state.cart);
+
   // react-query
   const {data: dietData} = useListDiet();
+  const {data: dietDetailData, isFetching: dietDetailIsFetching} =
+    useListDietDetail(currentDietNo);
   const updateMutation = useUpdateDietDetail();
   const deleteMutation = useDeleteDietDetail();
-
-  // redux
-  const {menuIndex} = useSelector((state: RootState) => state.cart);
 
   // state
   const [deleteAlertShow, setDeleteAlertShow] = useState(false);
@@ -86,17 +90,18 @@ const CartFoodList = () => {
     minQty: string,
   ) => {};
   const onDelete = () => {
-    // dietData && deleteMutation.mutate({
-    //   dietNo: dietData[menuIndex].dietNo,
-    //   productNo: productNoToDelete,
-    // });
-    console.log('onDelete: dietNo: ', dietData && dietData[menuIndex].dietNo);
-    console.log('onDelete: productNo: ', productNoToDelete);
+    dietData &&
+      deleteMutation.mutate({
+        dietNo: currentDietNo,
+        productNo: productNoToDelete,
+      });
     setDeleteAlertShow(false);
   };
-  return (
+  return dietDetailIsFetching ? (
+    <ActivityIndicator />
+  ) : (
     <Container>
-      {testD.map((food, idx) => (
+      {dietDetailData?.map((food, idx) => (
         <FoodBox key={idx}>
           <Row
             style={{
@@ -117,7 +122,9 @@ const CartFoodList = () => {
                   />
                 </DeleteBtn>
               </Row>
-              <ProductNmText>{food.productNm}</ProductNmText>
+              <ProductNmText numberOfLines={1} ellipsizeMode="tail">
+                {food.productNm}
+              </ProductNmText>
               <NutrientText>
                 칼로리{' '}
                 <NutrientValue>{parseInt(food.calorie)}kcal </NutrientValue>
@@ -133,7 +140,7 @@ const CartFoodList = () => {
                       source={require(`../../assets/icons/12_numberMinus.png`)}
                     />
                   </PlusMinusBtn>
-                  <Quantity>3</Quantity>
+                  <Quantity>{food.qty}</Quantity>
                   <PlusMinusBtn>
                     <PlusMinusImage
                       source={require(`../../assets/icons/12_numberPlus.png`)}
@@ -153,11 +160,7 @@ const CartFoodList = () => {
         onCancel={() => {
           setDeleteAlertShow(false);
         }}
-        renderContent={() => (
-          <DeleteAlertContent
-            dietSeq={dietData ? dietData[menuIndex].dietSeq : ''}
-          />
-        )}
+        renderContent={() => <DeleteAlertContent dietSeq={'해당식품을'} />}
       />
     </Container>
   );

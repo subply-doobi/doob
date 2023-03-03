@@ -7,11 +7,12 @@ import {
   useDeleteDiet,
   useListDiet,
 } from '../../query/queries/diet';
-import {setMenuIndex} from '../../stores/slices/cartSlice';
+import {setCurrentDietNo} from '../../stores/slices/cartSlice';
 import {RootState} from '../../stores/store';
 import colors from '../../styles/colors';
 import {Col, HorizontalLine, TextMain} from '../../styles/styledConsts';
-import {checkMenuEmpty} from '../../util/checkEmptyMenu';
+import {checkEmptyMenuIndex} from '../../util/checkEmptyMenu';
+import {findDietSeq} from '../../util/findDietSeq';
 import CreateLimitAlertContent from './alert/CreateLimitAlertContent';
 import DAlert from './alert/DAlert';
 import DeleteAlertContent from './alert/DeleteAlertContent';
@@ -28,7 +29,7 @@ const MenuSelect = ({setOpen, center}: IMenuSelect) => {
   const deleteDietMutation = useDeleteDiet();
 
   // redux
-  const {menuIndex} = useSelector((state: RootState) => state.cart);
+  const {currentDietNo} = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch();
 
   // state
@@ -38,18 +39,19 @@ const MenuSelect = ({setOpen, center}: IMenuSelect) => {
 
   // TBD | BottomMenuSelect랑 겹치는 기능
   const NoOfDiet = dietData?.length;
-  const addAlertStatus = NoOfDiet
-    ? checkMenuEmpty(dietData) === undefined
-      ? NoOfDiet >= 3
-        ? 'limit'
-        : 'none'
-      : 'empty'
-    : 'none';
+  const addAlertStatus =
+    NoOfDiet === undefined
+      ? 'error'
+      : checkEmptyMenuIndex(dietData)
+      ? 'empty'
+      : NoOfDiet >= 3
+      ? 'limit'
+      : 'possible';
 
   const onCreateDiet = () => {
-    if (addAlertStatus === 'none') {
+    if (addAlertStatus === 'possible') {
       createDietMutation.mutate();
-      NoOfDiet && dispatch(setMenuIndex(NoOfDiet));
+      // TBD | 여기서 빈 끼니 있는지도 확인
       return;
     }
     setCreateAlertShow(true);
@@ -57,7 +59,8 @@ const MenuSelect = ({setOpen, center}: IMenuSelect) => {
 
   const onDeleteDiet = () => {
     dietNoToDelete && deleteDietMutation.mutate({dietNo: dietNoToDelete});
-    dispatch(setMenuIndex(NoOfDiet ? NoOfDiet - 2 : 0));
+    dietData &&
+      dispatch(setCurrentDietNo(dietData[dietData.length - 2]?.dietNo));
     setOpen(false);
     setDeleteAlertShow(false);
   };
@@ -69,10 +72,10 @@ const MenuSelect = ({setOpen, center}: IMenuSelect) => {
           <Col key={menu.dietNo}>
             <Menu
               onPress={() => {
-                dispatch(setMenuIndex(index));
+                dispatch(setCurrentDietNo(menu.dietNo));
                 setOpen(false);
               }}>
-              <MenuText isActivated={index === menuIndex}>
+              <MenuText isActivated={menu.dietNo === currentDietNo}>
                 {menu.dietSeq}
               </MenuText>
               {dietData.length === 1 || (
@@ -100,7 +103,11 @@ const MenuSelect = ({setOpen, center}: IMenuSelect) => {
 
         <DAlert
           alertShow={deleteAlertShow}
-          renderContent={() => <DeleteAlertContent index={menuIndex} />}
+          renderContent={() => (
+            <DeleteAlertContent
+              dietSeq={dietData ? findDietSeq(dietData, dietNoToDelete) : ''}
+            />
+          )}
           onConfirm={() => onDeleteDiet()}
           onCancel={() => setDeleteAlertShow(false)}
         />

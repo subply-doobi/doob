@@ -26,7 +26,7 @@ const AutoDietModal = ({modalVisible, setModalVisible}: IAutoDietModal) => {
   const {data: categoryData} = useListCategory();
 
   // redux
-  const {menuIndex} = useSelector((state: RootState) => state.cart);
+  const {currentDietNo} = useSelector((state: RootState) => state.cart);
 
   // useState
   // index 0: 도시락 | 1: 닭가슴살 | 2: 샐러드 | 3: 영양간식 | 4: 과자 | 5: 음료

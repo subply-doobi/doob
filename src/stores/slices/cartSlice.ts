@@ -6,10 +6,12 @@ import {IProduct} from '../../constants/constants';
 // cart -> menu -> product
 export interface ICartState {
   menuIndex: number;
+  currentDietNo: string;
 }
 
 const initialState: ICartState = {
   menuIndex: 0,
+  currentDietNo: '',
 };
 
 export const cartSlice = createSlice({
@@ -18,6 +20,10 @@ export const cartSlice = createSlice({
   reducers: {
     setMenuIndex: (state, action: PayloadAction<number>) => {
       state.menuIndex = action.payload;
+    },
+    setCurrentDietNo: (state, action: PayloadAction<string>) => {
+      console.log('cartSlice: setCurrentDietNo!!');
+      state.currentDietNo = action.payload;
     },
     addProductToMenu: (
       state,
@@ -104,6 +110,7 @@ export const cartSlice = createSlice({
 
 export const {
   setMenuIndex,
+  setCurrentDietNo,
   addProductToMenu,
   deleteProduct,
   addMenuToCart,

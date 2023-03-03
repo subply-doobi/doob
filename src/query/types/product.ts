@@ -10,3 +10,24 @@ export interface ICreateProductAutoParams {
   categoryText?: string;
   priceText?: string;
 }
+
+export interface IProductData {
+  calorie: string;
+  carb: string;
+  categoryCd: string;
+  categoryNm: string;
+  dietNo: string;
+  distributerBizNo: string;
+  distributerNm: string;
+  fat: string;
+  mainAttId: string;
+  mainAttUrl: string;
+  platformNm: string;
+  price: string;
+  productNm: string;
+  productNo: string;
+  protein: string;
+  qty: string;
+  subCategoryCd: string;
+  subCategoryNm: string;
+}

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {TouchableWithoutFeedback} from 'react-native';
 import styled from 'styled-components/native';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
 import {
   BtnCTA,
@@ -19,12 +19,17 @@ import MenuSelect from '../../components/common/MenuSelect';
 import MenuHeader from '../../components/common/MenuHeader';
 import {useGetBaseLine} from '../../query/queries/baseLine';
 import {useListDiet} from '../../query/queries/diet';
+import {queryFn} from '../../query/queries/requestFn';
+import {LIST_DIET} from '../../query/queries/urls';
+import {setCurrentDietNo} from '../../stores/slices/cartSlice';
 
 const Home = () => {
-  // state
-  const {data: dietData} = useListDiet();
+  // redux
+  const dispatch = useDispatch();
 
-  const {menuIndex} = useSelector((state: RootState) => state.cart);
+  // state
+
+  const {currentDietNo} = useSelector((state: RootState) => state.cart);
   const [searchText, setSearchText] = useState('');
   const [menuSelectOpen, setMenuSelectOpen] = useState(false);
   const filterMenus = [
@@ -33,6 +38,14 @@ const Home = () => {
     {id: 3, text: '가격'},
     {id: 4, text: '끼니구성'},
   ];
+
+  useEffect(() => {
+    // 앱 시작할 때 내가 어떤 끼니를 보고 있는지 redux에 저장해놓기 위해 필요함
+    console.log('HOme');
+    queryFn(LIST_DIET).then(res => {
+      res[0] && dispatch(setCurrentDietNo(res[0]?.dietNo));
+    });
+  }, []);
 
   return (
     <TouchableWithoutFeedback
@@ -52,7 +65,7 @@ const Home = () => {
             onSubmitEditing={() => console.log('search!!')}
           />
         </MenuAndSearchBox>
-        <NutrientsProgress menuIndex={menuIndex} />
+        <NutrientsProgress currentDietNo={currentDietNo} />
         <Row style={{justifyContent: 'space-between', marginTop: 32}}>
           <Row>
             <ListTitle>전체 식품</ListTitle>

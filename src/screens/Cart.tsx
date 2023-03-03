@@ -17,19 +17,23 @@ import {
 import NutrientsProgress from '../components/common/NutrientsProgress';
 import MenuHeader from '../components/common/MenuHeader';
 import MenuSelect from '../components/common/MenuSelect';
-import {useListDiet} from '../query/queries/diet';
+import {useListDiet, useListDietDetail} from '../query/queries/diet';
 import AutoMenuBtn from '../components/cart/AutoMenuBtn';
 import BottomMenuSelect from '../components/cart/BottomMenuSelect';
 import AutoDietModal from '../components/cart/AutoDietModal';
 import CartFoodList from '../components/cart/CartFoodList';
+import {compareNutrToTarget, sumUpNutrients} from '../util/sumUp';
+import {useGetBaseLine} from '../query/queries/baseLine';
 
 const Cart = () => {
-  // react-query
-  const {data: dietData} = useListDiet();
-
   // redux
-  const {menuIndex} = useSelector((state: RootState) => state.cart);
+  const {currentDietNo} = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch();
+
+  // react-query
+  const {data: baseLineData} = useGetBaseLine();
+  const {data: dietData} = useListDiet();
+  const {data: dietDetailData} = useListDietDetail(currentDietNo);
 
   // useState
   const [menuSelectOpen, setMenuSelectOpen] = useState(false);
@@ -43,9 +47,27 @@ const Cart = () => {
       (acc += idx === 0 ? `${cur.dietSeq}` : `+${cur.dietSeq}`),
     '',
   );
-  // 현재 끼니의 식품들이 목표섭취량에 부합하는지
-  const menuStatus = 'notEnough';
 
+  // 현재 끼니의 식품들이 목표섭취량에 부합하는지 확인
+  // empty/notEnough/exceed 에 따라 autoMenuBtn 디자인이 다름
+  const {
+    calorie: calT,
+    carb: carbT,
+    protein: proteinT,
+    fat: fatT,
+  } = baseLineData ?? {};
+  const {cal, carb, protein, fat} = sumUpNutrients(dietDetailData);
+  const menuStatus = baseLineData
+    ? compareNutrToTarget(
+        {cal, carb, protein, fat},
+        {
+          cal: parseInt(baseLineData.calorie),
+          carb: parseInt(baseLineData.carb),
+          protein: parseInt(baseLineData.protein),
+          fat: parseInt(baseLineData.fat),
+        },
+      )
+    : 'empty';
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -83,11 +105,12 @@ const Cart = () => {
                 setMenuSelectOpen={setMenuSelectOpen}></MenuHeader>
             </CardMenuHeader>
             <HorizontalSpace height={24} />
-            <NutrientsProgress menuIndex={menuIndex} />
+            <NutrientsProgress currentDietNo={currentDietNo} />
 
             {/* 현재 끼니 식품들 */}
             <CartFoodList />
 
+            {/* 자동구성 버튼 */}
             <AutoMenuBtn
               status={menuStatus}
               onPress={() => setAutoDietModalShow(true)}

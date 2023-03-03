@@ -16,6 +16,7 @@ export const CREATE_DIET_DETAIL = `${BASE_URL}/api/member/diet/create-diet-detai
 export const UPDATE_DIET_DETAIL = `${BASE_URL}/api/member/diet/update-diet-detail`;
 export const LIST_DIET = `${BASE_URL}/api/member/diet/list-diet`;
 export const LIST_DIET_DETAIL = `${BASE_URL}/api/member/diet/list-diet-detail`;
+export const LIST_DIET_DETAIL_ALL = `${BASE_URL}/api/member/diet/list-diet-detail-all`;
 export const DELETE_DIET = `${BASE_URL}/api/member/diet/delete-diet`;
 export const DELETE_DIET_DETAIL = `${BASE_URL}/api/member/diet/delete-diet-detail`;
 
