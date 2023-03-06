@@ -216,7 +216,7 @@ export const kakaoAppAdminKey = 'f1fddabbeb50a2054c9b82ced4017b11';
 // type
 // TBD | react navigation ts 적용 아직 모름
 export interface NavigationProps {
-  navigation: {
+  navigation?: {
     navigate: Function;
     goBack: Function;
     setOptions: Function;

@@ -1,4 +1,5 @@
 import {IDietDetailData} from '../query/types/diet';
+import {IProductData} from '../query/types/product';
 
 export const sumUpNutrients = (dietDetail: IDietDetailData | undefined) => {
   let cal = 0;
@@ -20,9 +21,9 @@ export const sumUpNutrients = (dietDetail: IDietDetailData | undefined) => {
 export const sumUpPrice = (dietDetail: IDietDetailData) => {
   let price = 0;
   dietDetail.forEach((food, index) => {
-    price += parseInt(food.price);
+    price += parseInt(food.price) * parseInt(food.qty);
   });
-  return;
+  return price;
 };
 
 interface INutr {
@@ -53,7 +54,29 @@ export const compareNutrToTarget = (
   return exceedNumber === 0 ? 'notEnough' : 'exceed';
 };
 
-export const commaOnNum = (num: number | string) => {
+export const reGroupBySeller = (dietDetailData: IProductData[]) => {
+  console.log('reGroupBySeller start');
+  let reGroupedProducts: Array<Array<IProductData>> = [[]];
+  for (let i = 0; i < dietDetailData.length; i++) {
+    if (i === 0) {
+      reGroupedProducts[0].push(dietDetailData[i]);
+      continue;
+    }
+    for (let j = 0; j < reGroupedProducts.length; j++) {
+      if (reGroupedProducts[j][0].platformNm === dietDetailData[i].platformNm) {
+        reGroupedProducts[j].push(dietDetailData[i]);
+        break;
+      } else {
+        reGroupedProducts.push([dietDetailData[i]]);
+        break;
+      }
+    }
+  }
+  console.log('reGroupedProducts: ', reGroupedProducts);
+  return reGroupedProducts;
+};
+
+export const commaToNum = (num: number | string) => {
   console.log('typeof num : ', typeof num);
   const n = typeof num === 'number' ? num.toString() : num;
   return n.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');

@@ -6,19 +6,25 @@ import {ICreateProductAutoParams, IListProductParams} from '../types/product';
 import {mutationFn, queryFn} from './requestFn';
 import {CREATE_PRODUCT_AUTO, LIST_PRODUCT} from './urls';
 
+// PUT
 export const useCreateProductAuto = () => {
   const mutation = useMutation({
     mutationFn: ({
       dietNo,
       categoryText = '',
       priceText = '',
-    }: ICreateProductAutoParams) => {
+    }: {
+      dietNo: string;
+      categoryText?: string;
+      priceText?: string;
+    }) => {
       return mutationFn(
-        `${CREATE_PRODUCT_AUTO}/${dietNo}?categoryText=&priceText=`,
-        'post',
+        `${CREATE_PRODUCT_AUTO}/${dietNo}?categoryText=${categoryText}&priceText=${priceText}`,
+        'put',
       );
     },
-    onSuccess: () => {
+    onSuccess: data => {
+      console.log(data);
       queryClient.invalidateQueries({queryKey: [DIET_DETAIL]});
     },
     onError: e => console.log('useCreateProductAuto error: ', e),
@@ -27,18 +33,31 @@ export const useCreateProductAuto = () => {
 };
 // optional params 어떻게 받을 것인지
 
+// GET
 export const useListProduct = (
+  params?: {
+    searchText?: string;
+    categoryCd?: string;
+    sort?: string;
+    filter?: string;
+  },
   options?: IQueryOptions,
-  params?: IListProductParams,
 ) => {
   const enabled = options?.enabled ?? true;
+  const searchText = params?.searchText ? params?.searchText : '';
+  const categoryCd = params?.categoryCd ? params?.categoryCd : '';
+  const sort = params?.sort ? params?.sort : '';
+  const filter = params?.filter ? params?.filter : '';
+
   return useQuery({
     queryKey: ['tempProduct'],
     queryFn: () =>
-      queryFn(`${LIST_PRODUCT}?searchText=&categoryCd=CG003&sort=&filter=`),
+      queryFn(
+        `${LIST_PRODUCT}?searchText=${searchText}&categoryCd=${categoryCd}&sort=${sort}&filter=${filter}`,
+      ),
     enabled,
     onSuccess: data => {
-      console.log(data[0]);
+      options?.onSuccess && options?.onSuccess();
     },
     onError: e => {
       console.log(e);
@@ -46,7 +65,7 @@ export const useListProduct = (
   });
 };
 
-const tttt = {
+const listProductTest = {
   calorie: '232.000',
   carb: '23.000',
   categoryCd: 'CG003',
@@ -66,3 +85,46 @@ const tttt = {
   subCategoryCd: 'CG003002',
   subCategoryNm: '토핑(단백질)',
 };
+
+const dietDetailTest = [
+  {
+    calorie: '340.000',
+    carb: '47.000',
+    categoryCd: 'CG001',
+    categoryNm: '도시락',
+    dietNo: 'DT20230223000000001',
+    distributerBizNo: '557-81-00806',
+    distributerNm: '㈜미스터네이처',
+    fat: '10.000',
+    mainAttId: 'PD202207131319226158904',
+    mainAttUrl: '/files/pd/202207/13_t_202207131319226624891.png',
+    platformNm: '미스터네이처',
+    price: '3900',
+    productNm: '로칼도시락 다섯가지 나물밥 & 청양고추 닭가슴살 소시지',
+    productNo: 'PD20220713000000013',
+    protein: '16.000',
+    qty: '1',
+    subCategoryCd: 'CG001001',
+    subCategoryNm: '반찬포함',
+  },
+  {
+    calorie: '320.000',
+    carb: '63.000',
+    categoryCd: 'CG001',
+    categoryNm: '도시락',
+    dietNo: 'DT20230223000000001',
+    distributerBizNo: '557-81-00806',
+    distributerNm: '㈜미스터네이처',
+    fat: '4.500',
+    mainAttId: 'PD202207131319237872447',
+    mainAttUrl: '/files/pd/202207/17_t_202207131319238342731.png',
+    platformNm: '미스터네이처',
+    price: '3900',
+    productNm: '로칼덮밥도시락 갈릭버섯 덮밥',
+    productNo: 'PD20220713000000017',
+    protein: '8.000',
+    qty: '1',
+    subCategoryCd: 'CG001002',
+    subCategoryNm: '볶음밥',
+  },
+];

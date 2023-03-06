@@ -20,49 +20,7 @@ import {
 } from '../../styles/styledConsts';
 import DAlert from '../common/alert/DAlert';
 import DeleteAlertContent from '../common/alert/DeleteAlertContent';
-
-const testD = [
-  {
-    calorie: '232.000',
-    carb: '23.000',
-    categoryCd: 'CG003',
-    categoryNm: '샐러드',
-    distributerBizNo: '346-88-00170',
-    distributerNm: '㈜에이타워',
-    fat: '8.000',
-    mainAttId: 'PD202207131320083658528',
-    mainAttUrl: '/files/pd/202207/5_t_202207131320084273042.png',
-    platformNm: '포켓샐러드',
-    price: '6500',
-    priceCalorieCompare: '0.0356923',
-    priceProteinCompare: '0.0027692',
-    productNm: '포켓샐러드 불고기 샐러드',
-    productNo: 'PD20220713000000152',
-    protein: '18.000',
-    subCategoryCd: 'CG003002',
-    subCategoryNm: '토핑(단백질)',
-  },
-  {
-    calorie: '232.000',
-    carb: '23.000',
-    categoryCd: 'CG003',
-    categoryNm: '샐러드',
-    distributerBizNo: '346-88-00170',
-    distributerNm: '㈜에이타워',
-    fat: '8.000',
-    mainAttId: 'PD202207131320083658528',
-    mainAttUrl: '/files/pd/202207/5_t_202207131320084273042.png',
-    platformNm: '포켓샐러드',
-    price: '6500',
-    priceCalorieCompare: '0.0356923',
-    priceProteinCompare: '0.0027692',
-    productNm: '포켓샐러드 불고기 샐러드',
-    productNo: 'PD20220713000000152',
-    protein: '18.000',
-    subCategoryCd: 'CG003002',
-    subCategoryNm: '토핑(단백질)',
-  },
-];
+import QuantityControl from './QuantityControl';
 
 const CartFoodList = () => {
   // redux
@@ -78,6 +36,7 @@ const CartFoodList = () => {
   // state
   const [deleteAlertShow, setDeleteAlertShow] = useState(false);
   const [productNoToDelete, setProductNoToDelete] = useState('');
+  const [numberPickerOpen, setNumberPickerOpen] = useState(false);
 
   const minusBtnOnPress = (
     productNo: string,
@@ -97,9 +56,7 @@ const CartFoodList = () => {
       });
     setDeleteAlertShow(false);
   };
-  return dietDetailIsFetching ? (
-    <ActivityIndicator />
-  ) : (
+  return (
     <Container>
       {dietDetailData?.map((food, idx) => (
         <FoodBox key={idx}>
@@ -134,19 +91,7 @@ const CartFoodList = () => {
               </NutrientText>
               <Row style={{marginTop: 12, justifyContent: 'space-between'}}>
                 <ProductPrice>{food.price}원</ProductPrice>
-                <QuantityControlBox>
-                  <PlusMinusBtn>
-                    <PlusMinusImage
-                      source={require(`../../assets/icons/12_numberMinus.png`)}
-                    />
-                  </PlusMinusBtn>
-                  <Quantity>{food.qty}</Quantity>
-                  <PlusMinusBtn>
-                    <PlusMinusImage
-                      source={require(`../../assets/icons/12_numberPlus.png`)}
-                    />
-                  </PlusMinusBtn>
-                </QuantityControlBox>
+                <QuantityControl food={food} />
               </Row>
             </Col>
           </Row>
@@ -216,27 +161,4 @@ const NutrientValue = styled(TextMain)`
 
 const ProductPrice = styled(TextMain)`
   font-size: 16px;
-`;
-
-const QuantityControlBox = styled.View`
-  flex-direction: row;
-  width: 98px;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const Quantity = styled(TextMain)`
-  font-size: 16px;
-  font-weight: bold;
-`;
-
-const PlusMinusBtn = styled.TouchableOpacity`
-  width: 24px;
-  height: 24px;
-  justify-content: center;
-  align-items: center;
-`;
-const PlusMinusImage = styled.Image`
-  width: 12px;
-  height: 12px;
 `;

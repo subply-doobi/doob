@@ -94,34 +94,36 @@ const NutrientsProgress = ({currentDietNo}: {currentDietNo: string}) => {
       {baseLineIsFetching ? (
         <ActivityIndicator />
       ) : (
-        <>
-          <ProgressBar
-            title="칼로리(g)"
-            numerator={cal}
-            denominator={parseInt(baseLineData?.calorie)}
-          />
-          <VerticalSpace width={8} />
+        baseLineData && (
+          <>
+            <ProgressBar
+              title="칼로리(g)"
+              numerator={cal}
+              denominator={parseInt(baseLineData.calorie)}
+            />
+            <VerticalSpace width={8} />
 
-          <ProgressBar
-            title="탄수화물(g)"
-            numerator={carb}
-            denominator={parseInt(baseLineData?.carb)}
-          />
-          <VerticalSpace width={8} />
+            <ProgressBar
+              title="탄수화물(g)"
+              numerator={carb}
+              denominator={parseInt(baseLineData.carb)}
+            />
+            <VerticalSpace width={8} />
 
-          <ProgressBar
-            title="단백질(g)"
-            numerator={protein}
-            denominator={parseInt(baseLineData?.protein)}
-          />
-          <VerticalSpace width={8} />
+            <ProgressBar
+              title="단백질(g)"
+              numerator={protein}
+              denominator={parseInt(baseLineData.protein)}
+            />
+            <VerticalSpace width={8} />
 
-          <ProgressBar
-            title="지방(g)"
-            numerator={fat}
-            denominator={parseInt(baseLineData?.fat)}
-          />
-        </>
+            <ProgressBar
+              title="지방(g)"
+              numerator={fat}
+              denominator={parseInt(baseLineData.fat)}
+            />
+          </>
+        )
       )}
     </Container>
   );

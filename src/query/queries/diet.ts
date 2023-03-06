@@ -38,6 +38,7 @@ export const useCreateDietDetail = () => {
       ),
     onSuccess: data => {
       queryClient.invalidateQueries({queryKey: [DIET_DETAIL]});
+      queryClient.invalidateQueries({queryKey: [DIET_DETAIL_ALL]});
     },
     onError: e => console.log('useCreateDietDetail error: ', e),
   });
@@ -71,7 +72,7 @@ export const useListDietDetail = (dietNo: string, options?: IQueryOptions) => {
 
 export const useListDietDetailAll = (options?: IQueryOptions) => {
   const enabled = options?.enabled ?? true;
-  return useQuery({
+  return useQuery<IDietDetailData>({
     queryKey: [DIET_DETAIL_ALL],
     queryFn: () => queryFn(LIST_DIET_DETAIL_ALL),
     enabled,
@@ -116,8 +117,8 @@ export const useDeleteDiet = () => {
   return mutation;
 };
 
+// DELETE
 export const useDeleteDietDetail = () => {
-  // TBD | 미완
   const mutation = useMutation({
     mutationFn: ({dietNo, productNo}: {dietNo: string; productNo: string}) =>
       mutationFn(

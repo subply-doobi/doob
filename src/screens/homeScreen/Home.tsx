@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {TouchableWithoutFeedback} from 'react-native';
+import {TouchableWithoutFeedback, FlatList} from 'react-native';
 import styled from 'styled-components/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
@@ -8,6 +8,7 @@ import {
   BtnText,
   Container,
   HorizontalLine,
+  HorizontalSpace,
   Row,
   TextMain,
   TextSub,
@@ -17,18 +18,30 @@ import NutrientsProgress from '../../components/common/NutrientsProgress';
 import colors from '../../styles/colors';
 import MenuSelect from '../../components/common/MenuSelect';
 import MenuHeader from '../../components/common/MenuHeader';
-import {useGetBaseLine} from '../../query/queries/baseLine';
-import {useListDiet} from '../../query/queries/diet';
 import {queryFn} from '../../query/queries/requestFn';
 import {LIST_DIET} from '../../query/queries/urls';
 import {setCurrentDietNo} from '../../stores/slices/cartSlice';
+import {useListProduct} from '../../query/queries/product';
+import {setListTitle} from '../../stores/slices/filterSlice';
+import FoodList from '../../components/home/FoodList';
+import {IProductData} from '../../query/types/product';
 
 const Home = () => {
   // redux
   const dispatch = useDispatch();
+  const {listTitle} = useSelector((state: RootState) => state.filter);
+
+  // react-query
+  const {data: tData} = useListProduct(
+    {categoryCd: 'CG003'},
+    {
+      onSuccess: () => {
+        dispatch(setListTitle('샐러드'));
+      },
+    },
+  );
 
   // state
-
   const {currentDietNo} = useSelector((state: RootState) => state.cart);
   const [searchText, setSearchText] = useState('');
   const [menuSelectOpen, setMenuSelectOpen] = useState(false);
@@ -46,6 +59,10 @@ const Home = () => {
       res[0] && dispatch(setCurrentDietNo(res[0]?.dietNo));
     });
   }, []);
+
+  const renderFoodList = ({item}: {item: IProductData}) => (
+    <FoodList item={item} />
+  );
 
   return (
     <TouchableWithoutFeedback
@@ -65,18 +82,30 @@ const Home = () => {
             onSubmitEditing={() => console.log('search!!')}
           />
         </MenuAndSearchBox>
-        <NutrientsProgress currentDietNo={currentDietNo} />
+        {currentDietNo && <NutrientsProgress currentDietNo={currentDietNo} />}
         <Row style={{justifyContent: 'space-between', marginTop: 32}}>
           <Row>
-            <ListTitle>전체 식품</ListTitle>
-            <NoOfFoods>87개</NoOfFoods>
+            <ListTitle>{listTitle}</ListTitle>
+            <NoOfFoods> {tData?.length}개</NoOfFoods>
           </Row>
           <SortBtn></SortBtn>
         </Row>
         <HorizontalLine style={{marginTop: 8}} />
-        <BtnCTA btnStyle="activated" onPress={async () => {}}>
+        {/* <BtnCTA btnStyle="activated" onPress={async () => {}}>
           <BtnText>테스트 데이터</BtnText>
-        </BtnCTA>
+        </BtnCTA> */}
+
+        {/* 식품리스트 */}
+        <HorizontalSpace height={16} />
+        {tData && (
+          <FlatList
+            data={tData}
+            keyExtractor={item => item.productNo}
+            renderItem={renderFoodList}
+            ItemSeparatorComponent={() => <HorizontalSpace height={16} />}
+          />
+        )}
+
         {menuSelectOpen && <MenuSelect setOpen={setMenuSelectOpen} />}
       </Container>
     </TouchableWithoutFeedback>

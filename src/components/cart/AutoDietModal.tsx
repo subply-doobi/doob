@@ -10,12 +10,12 @@ import {
   BtnText,
   HorizontalLine,
   HorizontalSpace,
-  Row,
-  StyledProps,
   TextMain,
 } from '../../styles/styledConsts';
 import colors from '../../styles/colors';
 import DSlider from '../common/slider/DSlider';
+import {useCreateProductAuto} from '../../query/queries/product';
+import DAlert from '../common/alert/DAlert';
 
 interface IAutoDietModal {
   modalVisible: boolean;
@@ -24,7 +24,7 @@ interface IAutoDietModal {
 const AutoDietModal = ({modalVisible, setModalVisible}: IAutoDietModal) => {
   // react-query
   const {data: categoryData} = useListCategory();
-
+  const autoMenuMutation = useCreateProductAuto();
   // redux
   const {currentDietNo} = useSelector((state: RootState) => state.cart);
 
@@ -58,6 +58,17 @@ const AutoDietModal = ({modalVisible, setModalVisible}: IAutoDietModal) => {
   const priceRangeStr = String(sliderValue[0]) + `,` + String(sliderValue[1]);
   // console.log('AutoDietModal : selctedCategoryStr', selectedCategoryStr);
   // console.log('AutoDietModal : priceRangeStr', priceRangeStr);
+
+  const runAutoMenu = () => {
+    console.log('autoMenu! 모달창 닫기');
+    autoMenuMutation.mutate({
+      dietNo: currentDietNo,
+      categoryText: selectedCategoryStr,
+      priceText: priceRangeStr,
+    });
+    setModalVisible(false);
+  };
+
   return (
     <Modal
       visible={modalVisible}
@@ -108,11 +119,7 @@ const AutoDietModal = ({modalVisible, setModalVisible}: IAutoDietModal) => {
           <BtnCTA
             btnStyle={btnDisabled ? 'inactivated' : 'activated'}
             disabled={btnDisabled}
-            onPress={() => {
-              console.log('자동구성 버튼누르면 로딩인디케이터, 모달창 닫기');
-
-              // setModalVisible(false);
-            }}>
+            onPress={runAutoMenu}>
             <BtnText>
               {btnDisabled ? `3가지 이상 선택해주세요` : `한 끼니 자동구성`}
             </BtnText>

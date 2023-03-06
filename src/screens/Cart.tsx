@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {TouchableWithoutFeedback, ScrollView} from 'react-native';
+import {TouchableWithoutFeedback, ScrollView, View} from 'react-native';
 import styled from 'styled-components/native';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -24,6 +24,7 @@ import AutoDietModal from '../components/cart/AutoDietModal';
 import CartFoodList from '../components/cart/CartFoodList';
 import {compareNutrToTarget, sumUpNutrients} from '../util/sumUp';
 import {useGetBaseLine} from '../query/queries/baseLine';
+import CartSummary from '../components/cart/CartSummary';
 
 const Cart = () => {
   // redux
@@ -41,21 +42,9 @@ const Cart = () => {
   const [autoDietModalShow, setAutoDietModalShow] = useState(false);
 
   // etc
-  // 끼니1+끼니2+.... 텍스트
-  const menuTotalText = dietData?.reduce(
-    (acc, cur, idx) =>
-      (acc += idx === 0 ? `${cur.dietSeq}` : `+${cur.dietSeq}`),
-    '',
-  );
 
   // 현재 끼니의 식품들이 목표섭취량에 부합하는지 확인
   // empty/notEnough/exceed 에 따라 autoMenuBtn 디자인이 다름
-  const {
-    calorie: calT,
-    carb: carbT,
-    protein: proteinT,
-    fat: fatT,
-  } = baseLineData ?? {};
   const {cal, carb, protein, fat} = sumUpNutrients(dietDetailData);
   const menuStatus = baseLineData
     ? compareNutrToTarget(
@@ -69,77 +58,72 @@ const Cart = () => {
       )
     : 'empty';
   return (
-    <TouchableWithoutFeedback
-      onPress={() => {
-        setMenuSelectOpen(false);
-      }}>
-      <Container>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <SelectedDeleteRow>
-            <SelectAllBox>
-              <SelectAllCheckbox
-                onPress={() => setCheckAllClicked(clicked => !clicked)}>
-                {checkAllClicked ? (
-                  <CheckboxImage
-                    source={require('../assets/icons/24_checkbox_selected.png')}
-                  />
-                ) : (
-                  <CheckboxImage
-                    source={require('../assets/icons/24_checkbox.png')}
-                  />
-                )}
-              </SelectAllCheckbox>
+    // <TouchableWithoutFeedback
+    //   onPress={() => {
+    //     setMenuSelectOpen(false);
+    //   }}>
+    <Container>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{paddingBottom: 80}}>
+        <SelectedDeleteRow>
+          <SelectAllBox>
+            <SelectAllCheckbox
+              onPress={() => setCheckAllClicked(clicked => !clicked)}>
+              {checkAllClicked ? (
+                <CheckboxImage
+                  source={require('../assets/icons/24_checkbox_selected.png')}
+                />
+              ) : (
+                <CheckboxImage
+                  source={require('../assets/icons/24_checkbox.png')}
+                />
+              )}
+            </SelectAllCheckbox>
 
-              <SelectAllText>전체 선택</SelectAllText>
-            </SelectAllBox>
-            <BtnSmall onPress={() => console.log('선택삭제')}>
-              <BtnSmallText isActivated={true}>선택 삭제</BtnSmallText>
-            </BtnSmall>
-          </SelectedDeleteRow>
+            <SelectAllText>전체 선택</SelectAllText>
+          </SelectAllBox>
+          <BtnSmall onPress={() => console.log('선택삭제')}>
+            <BtnSmallText isActivated={true}>선택 삭제</BtnSmallText>
+          </BtnSmall>
+        </SelectedDeleteRow>
 
-          {/* 끼니 카드 */}
-          <Card>
-            <CardMenuHeader>
-              <MenuHeader
-                menuSelectOpen={menuSelectOpen}
-                setMenuSelectOpen={setMenuSelectOpen}></MenuHeader>
-            </CardMenuHeader>
-            <HorizontalSpace height={24} />
-            <NutrientsProgress currentDietNo={currentDietNo} />
+        {/* 끼니 카드 */}
+        <Card>
+          <CardMenuHeader>
+            <MenuHeader
+              menuSelectOpen={menuSelectOpen}
+              setMenuSelectOpen={setMenuSelectOpen}></MenuHeader>
+          </CardMenuHeader>
+          <HorizontalSpace height={24} />
+          <NutrientsProgress currentDietNo={currentDietNo} />
 
-            {/* 현재 끼니 식품들 */}
-            <CartFoodList />
+          {/* 현재 끼니 식품들 */}
+          <CartFoodList />
 
-            {/* 자동구성 버튼 */}
-            <AutoMenuBtn
-              status={menuStatus}
-              onPress={() => setAutoDietModalShow(true)}
-            />
-            <AutoDietModal
-              modalVisible={autoDietModalShow}
-              setModalVisible={setAutoDietModalShow}
-            />
-            <MenuTotalPrice>합계 0원</MenuTotalPrice>
-            {menuSelectOpen && (
-              <MenuSelect setOpen={setMenuSelectOpen} center={true} />
-            )}
-          </Card>
+          {/* 자동구성 버튼 */}
+          <AutoMenuBtn
+            status={menuStatus}
+            onPress={() => setAutoDietModalShow(true)}
+          />
+          <AutoDietModal
+            modalVisible={autoDietModalShow}
+            setModalVisible={setAutoDietModalShow}
+          />
+          <MenuTotalPrice>합계 0원</MenuTotalPrice>
+          {menuSelectOpen && (
+            <MenuSelect setOpen={setMenuSelectOpen} center={true} />
+          )}
+        </Card>
 
-          {/* 카드 하단 끼니 선택 및 추가 */}
-          <BottomMenuSelect />
+        {/* 카드 하단 끼니 선택 및 추가 */}
+        <BottomMenuSelect />
 
-          {/* 끼니 정보 요약 */}
-          <TotalSummaryContainer>
-            <MenuTotalText>{menuTotalText}</MenuTotalText>
-            <SellerText>존맛식품</SellerText>
-            <SellerProductPrice>식품: 5,700원</SellerProductPrice>
-            <SellerShippingPrice>
-              배송비: 3,000원 (10,000원 이상 무료배송)
-            </SellerShippingPrice>
-          </TotalSummaryContainer>
-        </ScrollView>
-      </Container>
-    </TouchableWithoutFeedback>
+        {/* 끼니 정보 요약 */}
+        <CartSummary />
+      </ScrollView>
+    </Container>
+    // </TouchableWithoutFeedback>
   );
 };
 
@@ -184,34 +168,9 @@ const CardMenuHeader = styled.View`
   align-self: center;
 `;
 
-const TotalSummaryContainer = styled.View`
-  padding: 0px 8px 0px 8px;
-`;
-
 const MenuTotalPrice = styled(TextMain)`
   margin-top: 24px;
   font-size: 16px;
   font-weight: bold;
   align-self: flex-end;
-`;
-
-const MenuTotalText = styled(TextMain)`
-  align-self: center;
-  font-size: 18px;
-  font-weight: bold;
-  margin-top: 16px;
-`;
-
-const SellerText = styled(TextMain)`
-  font-size: 16px;
-  font-weight: bold;
-  margin-top: 16px;
-`;
-
-const SellerProductPrice = styled(TextMain)`
-  font-size: 14px;
-  margin-top: 4px;
-`;
-const SellerShippingPrice = styled(TextSub)`
-  font-size: 14px;
 `;
