@@ -53,7 +53,7 @@ export const compareNutrToTarget = (
   return exceedNumber === 0 ? 'notEnough' : 'exceed';
 };
 
-export const commaOnNum = (num: number | string) => {
+export const commaToNum = (num: number | string) => {
   console.log('typeof num : ', typeof num);
   const n = typeof num === 'number' ? num.toString() : num;
   return n.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');

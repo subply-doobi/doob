@@ -116,8 +116,8 @@ export const useDeleteDiet = () => {
   return mutation;
 };
 
+// DELETE
 export const useDeleteDietDetail = () => {
-  // TBD | 미완
   const mutation = useMutation({
     mutationFn: ({dietNo, productNo}: {dietNo: string; productNo: string}) =>
       mutationFn(

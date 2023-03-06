@@ -21,49 +21,6 @@ import {
 import DAlert from '../common/alert/DAlert';
 import DeleteAlertContent from '../common/alert/DeleteAlertContent';
 
-const testD = [
-  {
-    calorie: '232.000',
-    carb: '23.000',
-    categoryCd: 'CG003',
-    categoryNm: '샐러드',
-    distributerBizNo: '346-88-00170',
-    distributerNm: '㈜에이타워',
-    fat: '8.000',
-    mainAttId: 'PD202207131320083658528',
-    mainAttUrl: '/files/pd/202207/5_t_202207131320084273042.png',
-    platformNm: '포켓샐러드',
-    price: '6500',
-    priceCalorieCompare: '0.0356923',
-    priceProteinCompare: '0.0027692',
-    productNm: '포켓샐러드 불고기 샐러드',
-    productNo: 'PD20220713000000152',
-    protein: '18.000',
-    subCategoryCd: 'CG003002',
-    subCategoryNm: '토핑(단백질)',
-  },
-  {
-    calorie: '232.000',
-    carb: '23.000',
-    categoryCd: 'CG003',
-    categoryNm: '샐러드',
-    distributerBizNo: '346-88-00170',
-    distributerNm: '㈜에이타워',
-    fat: '8.000',
-    mainAttId: 'PD202207131320083658528',
-    mainAttUrl: '/files/pd/202207/5_t_202207131320084273042.png',
-    platformNm: '포켓샐러드',
-    price: '6500',
-    priceCalorieCompare: '0.0356923',
-    priceProteinCompare: '0.0027692',
-    productNm: '포켓샐러드 불고기 샐러드',
-    productNo: 'PD20220713000000152',
-    protein: '18.000',
-    subCategoryCd: 'CG003002',
-    subCategoryNm: '토핑(단백질)',
-  },
-];
-
 const CartFoodList = () => {
   // redux
   const {currentDietNo} = useSelector((state: RootState) => state.cart);

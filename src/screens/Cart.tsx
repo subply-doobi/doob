@@ -50,12 +50,6 @@ const Cart = () => {
 
   // 현재 끼니의 식품들이 목표섭취량에 부합하는지 확인
   // empty/notEnough/exceed 에 따라 autoMenuBtn 디자인이 다름
-  const {
-    calorie: calT,
-    carb: carbT,
-    protein: proteinT,
-    fat: fatT,
-  } = baseLineData ?? {};
   const {cal, carb, protein, fat} = sumUpNutrients(dietDetailData);
   const menuStatus = baseLineData
     ? compareNutrToTarget(
