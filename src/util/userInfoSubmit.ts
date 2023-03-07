@@ -28,7 +28,7 @@ const convertDataByAutoMethod = ({userInfo, userTarget}: ISubmitParams) => {
     age: userInfo.age,
     height: userInfo.height,
     weight: userInfo.weight,
-    dietPurposeCd: userInfo.dietPurposecd,
+    dietPurposeCd: userInfo.dietPurposeCd,
     weightTimeCd: userInfo.weightTimeCd,
     aerobicTimeCd: userInfo.aerobicTimeCd,
   };
@@ -56,7 +56,7 @@ const convertDataByRatioMethod = ({
     age: userInfo.age,
     height: userInfo.height,
     weight: userInfo.weight,
-    dietPurposeCd: userInfo.dietPurposecd,
+    dietPurposeCd: userInfo.dietPurposeCd,
     weightTimeCd: userInfo.weightTimeCd,
     aerobicTimeCd: userInfo.aerobicTimeCd,
   };
@@ -85,7 +85,7 @@ const convertDataByManualMethod = ({
     age: userInfo.age,
     height: userInfo.height,
     weight: userInfo.weight,
-    dietPurposeCd: userInfo.dietPurposecd,
+    dietPurposeCd: userInfo.dietPurposeCd,
     weightTimeCd: userInfo.weightTimeCd,
     aerobicTimeCd: userInfo.aerobicTimeCd,
   };

@@ -27,6 +27,12 @@ import {
   saveUserTarget,
 } from '../../stores/slices/userInfoSlice';
 import {calculateNutrTarget} from '../../util/targetCalculation';
+import {
+  useWeightPurposeCode,
+  useAerobicPurposeCode,
+} from '../../query/queries/code';
+import {DrawerLayoutAndroid} from 'react-native';
+import {useGetBaseLine} from '../../query/queries/baseLine';
 
 interface IFormData {
   bmrKnown: string;
@@ -57,7 +63,6 @@ const renderBmrKnownInput = (
   handleSubmit: Function,
   userInfo1Refs?: React.MutableRefObject<any[]>,
 ) => {
-  // const onSubmit = (data) => console.log("dddd", data);
   return (
     <>
       <InputHeader isActivated={value ? true : false}>
@@ -89,7 +94,7 @@ const onHandlePress = (
     userInfo.weight,
     weightTimeCdValue,
     aerobicTimeCdValue,
-    userInfo.dietPurposecd,
+    userInfo.dietPurposeCd,
     bmrMod,
   );
   dispatch(
@@ -114,7 +119,19 @@ const onHandlePress = (
 
 const SecondInput = ({navigation: {navigate}, route}: NavigationProps) => {
   const {userInfo} = useSelector((state: RootState) => state.userInfo);
-  console.log('userInfo2: userInfo:', userInfo);
+  // console.log('userInfo2: userInfo:', userInfo);
+  const {data, isLoading} = useGetBaseLine();
+  const weightTimeCd = useWeightPurposeCode('SP003');
+  const weightTimeCdCategory = weightTimeCd.data;
+  const newWeightTimeCdCategory = weightTimeCdCategory?.map(item => {
+    return {value: item.cd, label: item.cdNm};
+  });
+
+  const aerobicTimeCd = useAerobicPurposeCode('SP004');
+  const aerobicTimeCdCategory = aerobicTimeCd.data;
+  const newAerobicTimeCdCategory = aerobicTimeCdCategory?.map(item => {
+    return {value: item.cd, label: item.cdNm};
+  });
   // redux
   const dispatch = useDispatch();
 
@@ -128,15 +145,15 @@ const SecondInput = ({navigation: {navigate}, route}: NavigationProps) => {
     // 나중에 사용자 정보 있으면 초기값으로 넣어줘야함.
     defaultValues: {
       bmrKnown: '',
-      weightTimeCd: weightTrainingCategrory[0].value,
-      aerobicTimeCd: aerobicTrainingCategrory[0].value,
+      weightTimeCd: data?.weightTimeCd ? data?.weightTimeCd : 'SP003001',
+      aerobicTimeCd: data?.aerobicTimeCd ? data?.aerobicTimeCd : 'SP004001',
     },
   });
   const bmrKnownValue = useWatch({control, name: 'bmrKnown'});
   const weightTimeCdValue = useWatch({control, name: 'weightTimeCd'});
   const aerobicTimeCdValue = useWatch({control, name: 'aerobicTimeCd'});
   useEffect(() => {
-    handleSubmit(() => console.log('submit!'))();
+    handleSubmit(() => {})();
   }, []);
   return (
     <Container>
@@ -157,14 +174,14 @@ const SecondInput = ({navigation: {navigate}, route}: NavigationProps) => {
         )}
         <Dropdown
           placeholder="웨이트 운동시간"
-          items={weightTrainingCategrory}
+          items={weightTimeCd.isLoading ? [] : newWeightTimeCdCategory}
           value={weightTimeCdValue}
           setValue={setValue}
           reactHookFormName="weightTimeCd"
         />
         <Dropdown
           placeholder="유산소 운동시간"
-          items={aerobicTrainingCategrory}
+          items={aerobicTimeCd.isLoading ? [] : newAerobicTimeCdCategory}
           value={aerobicTimeCdValue}
           setValue={setValue}
           reactHookFormName="aerobicTimeCd"

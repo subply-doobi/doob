@@ -6,6 +6,7 @@
     // "paths": {
     //   "~/*": ["./*"]
     // },
+    "jsx": "react-jsx",
     "types": ["@types/styled-components-react-native"]
   }
 }

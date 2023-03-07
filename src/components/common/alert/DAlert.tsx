@@ -1,9 +1,9 @@
 import {View, Text, Modal} from 'react-native';
 import React from 'react';
 import styled from 'styled-components/native';
-import colors from '../../styles/colors';
-import {SCREENWIDTH} from '../../constants/constants';
-import {Row, StyledProps, TextMain} from '../../styles/styledConsts';
+import colors from '../../../styles/colors';
+import {SCREENWIDTH} from '../../../constants/constants';
+import {Row, StyledProps, TextMain} from '../../../styles/styledConsts';
 
 const ModalBackGround = styled.View`
   flex: 1;
@@ -85,7 +85,6 @@ const DAlert = ({
             {NoOfBtn !== 1 && (
               <BtnLeft
                 onPress={() => {
-                  console.log('취소');
                   onCancel ? onCancel() : null;
                 }}>
                 <CancelBtnText>취소</CancelBtnText>
@@ -94,7 +93,6 @@ const DAlert = ({
 
             <BtnRight
               onPress={() => {
-                console.log('확인');
                 onConfirm ? onConfirm() : null;
               }}>
               <ConfirmBtnText>

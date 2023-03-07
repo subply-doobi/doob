@@ -82,7 +82,6 @@ const PaymentDetail = ({
     totalPrice: string;
   }
   const orderInfo: IOrder = route?.params.item;
-  console.log('PaymentDetail: orderInfo:', orderInfo);
   useEffect(() => {
     setOptions({headerTitle: route?.params?.date});
   }, []);

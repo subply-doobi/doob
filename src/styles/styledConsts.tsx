@@ -9,6 +9,7 @@ export interface StyledProps {
   height?: number;
   backgroundColor?: string;
   lineColor?: string;
+  thumbIdx?: number;
 }
 
 export const Container = styled.View`

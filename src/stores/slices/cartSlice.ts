@@ -2,25 +2,68 @@ import {createSlice} from '@reduxjs/toolkit';
 import type {PayloadAction} from '@reduxjs/toolkit';
 import {getProductIndex, hasProduct} from '../../util/reduxUtil';
 import {IProduct} from '../../constants/constants';
+import {IProductData} from '../../query/types/product';
 
 // cart -> menu -> product
+
+interface ICurrentNutr {
+  cal: number;
+  carb: number;
+  protein: number;
+  fat: number;
+}
 export interface ICartState {
-  menuIndex: number;
+  currentDietNo: string;
+  currentNutr: ICurrentNutr;
 }
 
 const initialState: ICartState = {
-  menuIndex: 0,
+  currentDietNo: '',
+  currentNutr: {
+    cal: 0,
+    carb: 0,
+    protein: 0,
+    fat: 0,
+  },
 };
 
 export const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    setMenuIndex: (state, action: PayloadAction<number>) => {
-      state.menuIndex = action.payload;
+    setCurrentDietNo: (state, action: PayloadAction<string>) => {
+      state.currentDietNo = action.payload;
+    },
+    setCurrentNutr: (state, action: PayloadAction<ICurrentNutr>) => {
+      const {cal, carb, protein, fat} = state.currentNutr;
+      state.currentNutr = {
+        cal: action.payload.cal,
+        carb: action.payload.carb,
+        protein: action.payload.protein,
+        fat: action.payload.fat,
+      };
+    },
+    addNutr: (state, action: PayloadAction<ICurrentNutr>) => {
+      const {cal, carb, protein, fat} = state.currentNutr;
+      state.currentNutr = {
+        cal: cal + action.payload.cal,
+        carb: carb + action.payload.carb,
+        protein: protein + action.payload.protein,
+        fat: fat + action.payload.fat,
+      };
+    },
+    minusNutr: (state, action: PayloadAction<ICurrentNutr>) => {
+      const {cal, carb, protein, fat} = state.currentNutr;
+      state.currentNutr = {
+        cal: cal - action.payload.cal,
+        carb: carb - action.payload.carb,
+        protein: protein - action.payload.protein,
+        fat: fat - action.payload.fat,
+      };
     },
   },
 });
 
-export const {setMenuIndex} = cartSlice.actions;
+export const {setCurrentDietNo, setCurrentNutr, addNutr, minusNutr} =
+  cartSlice.actions;
 export default cartSlice.reducer;
