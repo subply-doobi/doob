@@ -19,33 +19,7 @@ import {
   UserInfoTextInput,
 } from '../../styles/styledConsts';
 import {Controller, useForm, useWatch} from 'react-hook-form';
-
-const Container = styled.View`
-  padding: 0px 16px 24px 16px;
-`;
-
-const PurposeText = styled(TextMain)`
-  font-size: 16px;
-`;
-const PurposeTextBold = styled(PurposeText)`
-  font-weight: bold;
-`;
-const WeightDifference = styled(TextMain)`
-  font-size: 18px;
-  margin-top: 16px;
-`;
-const WeightDifferenceValue = styled(WeightDifference)`
-  font-weight: bold;
-`;
-
-const GuideText = styled(TextSub)`
-  font-size: 14px;
-`;
-
-const InputHeader = styled(InputHeaderText)`
-  margin-top: 24px;
-`;
-const Input = styled(UserInfoTextInput)``;
+import {useGetBaseLine} from '../../query/queries/baseLine';
 
 const renderCalorieInput = ({field: {onChange, onBlur, value}}: IFormField) => {
   return (
@@ -65,6 +39,7 @@ const renderCalorieInput = ({field: {onChange, onBlur, value}}: IFormField) => {
   );
 };
 
+//mutation 넣고 계산까지
 const CalChangeAlert = ({
   type,
   control,
@@ -80,7 +55,7 @@ const CalChangeAlert = ({
   const {userInfo, userTarget} = useSelector(
     (state: RootState) => state.userInfo,
   );
-
+  const {data, isLoading} = useGetBaseLine();
   useEffect(() => {
     handleSubmit(() => console.log('handleSubmit!'))();
   }, []);
@@ -88,10 +63,10 @@ const CalChangeAlert = ({
   return (
     <Container>
       <Col style={{marginTop: 24}}>
-        <PurposeText>{userInfo.nickname} 님의 목표는</PurposeText>
+        <PurposeText>{data.userId} 님의 목표는</PurposeText>
         <PurposeText>
           <PurposeTextBold>
-            {purposeCdToValue[userInfo.dietPurposecd].targetText}
+            {purposeCdToValue[data.dietPurposeCd]?.targetText}
           </PurposeTextBold>
           입니다
         </PurposeText>
@@ -121,3 +96,30 @@ const CalChangeAlert = ({
 };
 
 export default CalChangeAlert;
+
+const Container = styled.View`
+  padding: 0px 16px 24px 16px;
+`;
+
+const PurposeText = styled(TextMain)`
+  font-size: 16px;
+`;
+const PurposeTextBold = styled(PurposeText)`
+  font-weight: bold;
+`;
+const WeightDifference = styled(TextMain)`
+  font-size: 18px;
+  margin-top: 16px;
+`;
+const WeightDifferenceValue = styled(WeightDifference)`
+  font-weight: bold;
+`;
+
+const GuideText = styled(TextSub)`
+  font-size: 14px;
+`;
+
+const InputHeader = styled(InputHeaderText)`
+  margin-top: 24px;
+`;
+const Input = styled(UserInfoTextInput)``;

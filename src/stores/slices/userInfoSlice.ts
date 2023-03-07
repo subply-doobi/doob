@@ -12,7 +12,7 @@ export interface IUserInfo {
   age: string;
   height: string;
   weight: string;
-  dietPurposecd: string;
+  dietPurposeCd: string;
   bmr: string;
   weightTimeCd: string;
   aerobicTimeCd: string;
@@ -39,7 +39,7 @@ const initialState: userInfoState = {
     age: '',
     height: '',
     weight: '',
-    dietPurposecd: purposeCategory[0].value,
+    dietPurposeCd: purposeCategory[0].value,
     bmr: '',
     weightTimeCd: weightTrainingCategrory[0].value,
     aerobicTimeCd: aerobicTrainingCategrory[0].value,
@@ -64,7 +64,7 @@ export const userInfoSlice = createSlice({
         age?: string;
         height?: string;
         weight?: string;
-        dietPurposecd?: string;
+        dietPurposeCd?: string;
         bmr?: string;
         weightTimeCd?: string;
         aerobicTimeCd?: string;

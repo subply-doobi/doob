@@ -14,7 +14,7 @@ import {
   VerticalLine,
   VerticalSpace,
 } from '../styles/styledConsts';
-import DAlert from '../components/common/DAlert';
+import DAlert from '../components/common/alert/DAlert';
 import DBottomSheet from '../components/common/DBottomSheet';
 import {
   Asset,
@@ -256,7 +256,6 @@ const HistoryDetail = ({
       </AddOptionBtn>
     </AddAlertContainer>
   );
-  console.log('HistoryDetail: imagePicked: ', imagePicked);
   return (
     <Container>
       <Card>

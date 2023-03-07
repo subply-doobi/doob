@@ -20,6 +20,7 @@ import {
   plusProductQuantity,
   minusProductQuantity,
 } from '../../stores/slices/cartSlice';
+import {RootState} from '../../stores/store';
 
 const Number = styled(TextMain)`
   font-size: 16px;

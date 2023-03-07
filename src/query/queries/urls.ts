@@ -1,4 +1,3 @@
-
 export const BASE_URL = 'http://52.79.208.191:8080';
 
 export const GET_TOKEN = `${BASE_URL}/api/every/token/get-token`; //토큰 조회
@@ -17,7 +16,16 @@ export const CREATE_DIET_DETAIL = `${BASE_URL}/api/member/diet/create-diet-detai
 export const UPDATE_DIET_DETAIL = `${BASE_URL}/api/member/diet/update-diet-detail`;
 export const LIST_DIET = `${BASE_URL}/api/member/diet/list-diet`;
 export const LIST_DIET_DETAIL = `${BASE_URL}/api/member/diet/list-diet-detail`;
+export const LIST_DIET_DETAIL_ALL = `${BASE_URL}/api/member/diet/list-diet-detail-all`;
 export const DELETE_DIET = `${BASE_URL}/api/member/diet/delete-diet`;
 export const DELETE_DIET_DETAIL = `${BASE_URL}/api/member/diet/delete-diet-detail`;
 
-export const PRODUCT_LIST = `${BASE_URL}/api/member/product/list-product`;
+// product-controller
+export const LIST_PRODUCT = `${BASE_URL}/api/member/product/list-product`;
+export const CREATE_PRODUCT_AUTO = `${BASE_URL}/api/member/product/create-product-auto`;
+
+// api-member-code-controller
+export const COMMON_CODE = `${BASE_URL}/api/member/code/list-code`;
+
+// category-controller
+export const LIST_CATEGORY = `${BASE_URL}/api/member/category/list-category/CG`;

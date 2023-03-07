@@ -1,9 +1,17 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import colors from '../../styles/colors';
 import {VerticalSpace} from '../../styles/styledConsts';
 import * as Progress from 'react-native-progress';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../stores/store';
+import {calculateCartNutr} from '../../util/targetCalculation';
+import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
+import {ActivityIndicator} from 'react-native';
 import {useGetBaseLine} from '../../query/queries/baseLine';
+import {useListDietDetail} from '../../query/queries/diet';
+import {sumUpNutrients} from '../../util/sumUp';
+import {setCurrentNutr} from '../../stores/slices/cartSlice';
 
 const ProgressBarContainer = styled.View`
   flex: 1;
@@ -75,35 +83,50 @@ const ProgressBar = ({title, numerator, denominator}: INutrientProgress) => {
   );
 };
 
-const NutrientsProgress = ({menuIndex}: {menuIndex: number}) => {
-  // react-query test
-  const {isLoading, error, data} = useGetBaseLine();
-  const {calorie, carb, protein, fat} = data;
+const NutrientsProgress = ({currentDietNo}: {currentDietNo: string}) => {
+  // react-query
+  const {data: baseLineData, isFetching: baseLineIsFetching} = useGetBaseLine();
+  const {data: dietDetailData, isFetching: dietDetailIsFetching} =
+    useListDietDetail(currentDietNo);
+
+  const {cal, carb, protein, fat} = sumUpNutrients(dietDetailData);
+
   return (
     <Container>
-      <ProgressBar
-        title="칼로리(g)"
-        numerator={parseInt('0')}
-        denominator={parseInt(calorie)}
-      />
-      <VerticalSpace width={8} />
-      <ProgressBar
-        title="탄수화물(g)"
-        numerator={parseInt('0')}
-        denominator={parseInt(carb)}
-      />
-      <VerticalSpace width={8} />
-      <ProgressBar
-        title="단백질(g)"
-        numerator={parseInt('0')}
-        denominator={parseInt(protein)}
-      />
-      <VerticalSpace width={8} />
-      <ProgressBar
-        title="지방(g)"
-        numerator={parseInt('0')}
-        denominator={parseInt(fat)}
-      />
+      {baseLineIsFetching ? (
+        <ActivityIndicator />
+      ) : (
+        baseLineData && (
+          <>
+            <ProgressBar
+              title="칼로리(g)"
+              numerator={cal}
+              denominator={parseInt(baseLineData.calorie)}
+            />
+            <VerticalSpace width={8} />
+
+            <ProgressBar
+              title="탄수화물(g)"
+              numerator={carb}
+              denominator={parseInt(baseLineData.carb)}
+            />
+            <VerticalSpace width={8} />
+
+            <ProgressBar
+              title="단백질(g)"
+              numerator={protein}
+              denominator={parseInt(baseLineData.protein)}
+            />
+            <VerticalSpace width={8} />
+
+            <ProgressBar
+              title="지방(g)"
+              numerator={fat}
+              denominator={parseInt(baseLineData.fat)}
+            />
+          </>
+        )
+      )}
     </Container>
   );
 };

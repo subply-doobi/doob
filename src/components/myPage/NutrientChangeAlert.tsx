@@ -13,30 +13,12 @@ import {useSelector} from 'react-redux';
 import {Controller, useForm, useWatch} from 'react-hook-form';
 import {validationRules} from '../../constants/constants';
 import {IFormField} from '../../constants/constants';
-
-const Container = styled.View`
-  padding: 0px 16px 24px 16px;
-`;
-
-const GuideText = styled(TextMain)`
-  font-size: 16px;
-`;
-
-const InputHeader = styled(InputHeaderText)`
-  margin-top: 24px;
-`;
-const Input = styled(UserInfoTextInput)``;
-
-const nutrTextByNutr: {[key: string]: string} = {
-  carb: '탄수화물',
-  protein: '단백질',
-  fat: '지방',
-};
+import {useGetBaseLine} from '../../query/queries/baseLine';
 
 // TBD | renderInput 이것도 겹치는 것 꽤 많은 듯. (useRef같은 것 쓰는건 컴포넌트로 못빼겠지..?!)
 const renderNutrInput = (
   {field: {onChange, onBlur, value}}: IFormField,
-  nutrText: string,
+  nutrText: number,
 ) => {
   return (
     <>
@@ -44,7 +26,7 @@ const renderNutrInput = (
         {nutrText} (g)
       </InputHeader>
       <Input
-        placeholder="칼로리 (kcal)"
+        placeholder={nutrText}
         value={value}
         onChangeText={onChange}
         isActivated={value ? true : false}
@@ -69,9 +51,13 @@ const NutrChangeAlert = ({
   useEffect(() => {
     handleSubmit(() => console.log('handleSubmit!'))();
   }, []);
+  const {data} = useGetBaseLine();
+  const nutrTextByNutr: {[key: string]: string} = {
+    carb: data.carb,
+    protein: data.protein,
+    fat: data.fat,
+  };
   const nutrText = nutrTextByNutr[type];
-  console.log(nutrText);
-
   return (
     <Container>
       <Col style={{marginTop: 24}}>
@@ -98,3 +84,16 @@ const NutrChangeAlert = ({
 };
 
 export default NutrChangeAlert;
+
+const Container = styled.View`
+  padding: 0px 16px 24px 16px;
+`;
+
+const GuideText = styled(TextMain)`
+  font-size: 16px;
+`;
+
+const InputHeader = styled(InputHeaderText)`
+  margin-top: 24px;
+`;
+const Input = styled(UserInfoTextInput)``;

@@ -1,12 +1,14 @@
 import React, {useEffect, useState} from 'react';
+import {TouchableWithoutFeedback, FlatList} from 'react-native';
 import styled from 'styled-components/native';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
 import {
   BtnCTA,
   BtnText,
   Container,
   HorizontalLine,
+  HorizontalSpace,
   Row,
   TextMain,
   TextSub,
@@ -14,33 +16,44 @@ import {
 
 import NutrientsProgress from '../../components/common/NutrientsProgress';
 import colors from '../../styles/colors';
-import BottomSheetTestScreen from '../../components/home/homeFilter/HomeFilter';
-import SortModal from '../../components/home/homeFilter/SortModal';
 import MenuSelect from '../../components/common/MenuSelect';
 import MenuHeader from '../../components/common/MenuHeader';
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {USER_PROFILE} from '../../query/keys';
-import {getUserInfo} from '../../query/queries/member';
+import {queryFn} from '../../query/queries/requestFn';
+import {LIST_DIET} from '../../query/queries/urls';
+import {setCurrentDietNo} from '../../stores/slices/cartSlice';
+import {useListProduct} from '../../query/queries/product';
+import {setListTitle} from '../../stores/slices/filterSlice';
+import FoodList from '../../components/home/FoodList';
+import {IProductData} from '../../query/types/product';
+import {useListDietDetail} from '../../query/queries/diet';
 
 const Home = () => {
-  const queryClient = useQueryClient();
+  // redux
+  const dispatch = useDispatch();
+  const {listTitle} = useSelector((state: RootState) => state.filter);
+  const {currentDietNo} = useSelector((state: RootState) => state.cart);
 
-  const {data} = useQuery([USER_PROFILE], getUserInfo);
+  // react-query
+  const {data: tData} = useListProduct(
+    {categoryCd: 'CG003'},
+    {
+      onSuccess: () => {
+        dispatch(setListTitle('샐러드'));
+      },
+    },
+  );
+  const {data: dietDetailData, isFetching: dietDetailIsFetching} =
+    useListDietDetail(currentDietNo, {enabled: currentDietNo ? true : false});
 
-  const {mutate} = useMutation(getUserInfo, {
-    onMutate: () => {
-      queryClient.cancelQueries([USER_PROFILE]);
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries([USER_PROFILE]);
-    },
-    onError: e => {
-      throw e;
-    },
-  });
+  useEffect(() => {
+    // 앱 시작할 때 내가 어떤 끼니를 보고 있는지 redux에 저장해놓기 위해 필요함
+    console.log('HOme');
+    queryFn(LIST_DIET).then(res => {
+      res[0] && dispatch(setCurrentDietNo(res[0]?.dietNo));
+    });
+  }, []);
 
   // state
-  const {menuIndex} = useSelector((state: RootState) => state.cart);
   const [searchText, setSearchText] = useState('');
   const [menuSelectOpen, setMenuSelectOpen] = useState(false);
   const filterMenus = [
@@ -49,54 +62,59 @@ const Home = () => {
     {id: 3, text: '가격'},
     {id: 4, text: '끼니구성'},
   ];
+
+  const renderFoodList = ({item}: {item: IProductData}) =>
+    dietDetailData ? (
+      <FoodList item={item} dietDetailData={dietDetailData} />
+    ) : (
+      <></>
+    );
+
   return (
-    <Container>
-      <MenuAndSearchBox>
-        <MenuHeader
-          menuSelectOpen={menuSelectOpen}
-          setMenuSelectOpen={setMenuSelectOpen}
-        />
-        <SearchInput
-          onChangeText={setSearchText}
-          value={searchText}
-          placeholder="검색어 입력"
-          onSubmitEditing={() => console.log('search!!')}
-        />
-      </MenuAndSearchBox>
-      <NutrientsProgress menuIndex={menuIndex} />
-      <Row style={{justifyContent: 'space-between', marginTop: 32}}>
-        <Row>
-          <ListTitle>전체 식품</ListTitle>
-          <NoOfFoods>87개</NoOfFoods>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        setMenuSelectOpen(false);
+      }}>
+      <Container>
+        <MenuAndSearchBox>
+          <MenuHeader
+            menuSelectOpen={menuSelectOpen}
+            setMenuSelectOpen={setMenuSelectOpen}
+          />
+          <SearchInput
+            onChangeText={setSearchText}
+            value={searchText}
+            placeholder="검색어 입력"
+            onSubmitEditing={() => console.log('search!!')}
+          />
+        </MenuAndSearchBox>
+        {currentDietNo && <NutrientsProgress currentDietNo={currentDietNo} />}
+        <Row style={{justifyContent: 'space-between', marginTop: 32}}>
+          <Row>
+            <ListTitle>{listTitle}</ListTitle>
+            <NoOfFoods> {tData?.length}개</NoOfFoods>
+          </Row>
+          <SortBtn></SortBtn>
         </Row>
-        <SortBtn>
-          <SortModal />
-        </SortBtn>
-      </Row>
-      <HorizontalLine style={{marginTop: 8}} />
-      <FilterMenuContainer>
-        {filterMenus.map((i, index) => (
-          <BottomSheetTestScreen key={i.id} list={filterMenus} index={index}>
-            {i.text}
-          </BottomSheetTestScreen>
-        ))}
-      </FilterMenuContainer>
-      {/* <FlatList
-        style={{marginTop: 24}}
-        data={testData}
-        renderItem={item => (
-          <FoodList item={item} menuIndex={menuIndex} navigation={navigation} />
+        <HorizontalLine style={{marginTop: 8}} />
+        {/* <BtnCTA btnStyle="activated" onPress={async () => {}}>
+          <BtnText>테스트 데이터</BtnText>
+        </BtnCTA> */}
+
+        {/* 식품리스트 */}
+        <HorizontalSpace height={16} />
+        {tData && dietDetailData && (
+          <FlatList
+            data={tData}
+            keyExtractor={item => item.productNo}
+            renderItem={renderFoodList}
+            ItemSeparatorComponent={() => <HorizontalSpace height={16} />}
+          />
         )}
-        ItemSeparatorComponent={() => <HorizontalSpace height={16} />}
-        keyExtractor={item => item.productNo}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{paddingBottom: 80}}
-      /> */}
-      <BtnCTA btnStyle="activated" onPress={async () => {}}>
-        <BtnText>테스트 데이터</BtnText>
-      </BtnCTA>
-      {menuSelectOpen && <MenuSelect setOpen={setMenuSelectOpen} />}
-    </Container>
+
+        {menuSelectOpen && <MenuSelect setOpen={setMenuSelectOpen} />}
+      </Container>
+    </TouchableWithoutFeedback>
   );
 };
 

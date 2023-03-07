@@ -4,10 +4,8 @@ import {validateToken} from './token';
 export const queryFn = async (url: string) => {
   const {isTokenValid, validToken} = await validateToken();
   if (!isTokenValid) return null;
-
   const requestConfig = {headers: {authorization: `Bearer ${validToken}`}};
   const res = await axios.get(url, requestConfig);
-  console.log('queryFn res: ', res.data);
 
   return res.data;
 };
