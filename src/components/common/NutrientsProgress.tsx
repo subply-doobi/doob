@@ -1,9 +1,9 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import colors from '../../styles/colors';
 import {VerticalSpace} from '../../styles/styledConsts';
 import * as Progress from 'react-native-progress';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
 import {calculateCartNutr} from '../../util/targetCalculation';
 import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
@@ -11,6 +11,7 @@ import {ActivityIndicator} from 'react-native';
 import {useGetBaseLine} from '../../query/queries/baseLine';
 import {useListDietDetail} from '../../query/queries/diet';
 import {sumUpNutrients} from '../../util/sumUp';
+import {setCurrentNutr} from '../../stores/slices/cartSlice';
 
 const ProgressBarContainer = styled.View`
   flex: 1;
@@ -89,6 +90,7 @@ const NutrientsProgress = ({currentDietNo}: {currentDietNo: string}) => {
     useListDietDetail(currentDietNo);
 
   const {cal, carb, protein, fat} = sumUpNutrients(dietDetailData);
+
   return (
     <Container>
       {baseLineIsFetching ? (

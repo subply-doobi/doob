@@ -25,11 +25,13 @@ import {useListProduct} from '../../query/queries/product';
 import {setListTitle} from '../../stores/slices/filterSlice';
 import FoodList from '../../components/home/FoodList';
 import {IProductData} from '../../query/types/product';
+import {useListDietDetail} from '../../query/queries/diet';
 
 const Home = () => {
   // redux
   const dispatch = useDispatch();
   const {listTitle} = useSelector((state: RootState) => state.filter);
+  const {currentDietNo} = useSelector((state: RootState) => state.cart);
 
   // react-query
   const {data: tData} = useListProduct(
@@ -40,17 +42,8 @@ const Home = () => {
       },
     },
   );
-
-  // state
-  const {currentDietNo} = useSelector((state: RootState) => state.cart);
-  const [searchText, setSearchText] = useState('');
-  const [menuSelectOpen, setMenuSelectOpen] = useState(false);
-  const filterMenus = [
-    {id: 1, text: '카테고리'},
-    {id: 2, text: '영양성분'},
-    {id: 3, text: '가격'},
-    {id: 4, text: '끼니구성'},
-  ];
+  const {data: dietDetailData, isFetching: dietDetailIsFetching} =
+    useListDietDetail(currentDietNo, {enabled: currentDietNo ? true : false});
 
   useEffect(() => {
     // 앱 시작할 때 내가 어떤 끼니를 보고 있는지 redux에 저장해놓기 위해 필요함
@@ -60,9 +53,22 @@ const Home = () => {
     });
   }, []);
 
-  const renderFoodList = ({item}: {item: IProductData}) => (
-    <FoodList item={item} />
-  );
+  // state
+  const [searchText, setSearchText] = useState('');
+  const [menuSelectOpen, setMenuSelectOpen] = useState(false);
+  const filterMenus = [
+    {id: 1, text: '카테고리'},
+    {id: 2, text: '영양성분'},
+    {id: 3, text: '가격'},
+    {id: 4, text: '끼니구성'},
+  ];
+
+  const renderFoodList = ({item}: {item: IProductData}) =>
+    dietDetailData ? (
+      <FoodList item={item} dietDetailData={dietDetailData} />
+    ) : (
+      <></>
+    );
 
   return (
     <TouchableWithoutFeedback
@@ -97,7 +103,7 @@ const Home = () => {
 
         {/* 식품리스트 */}
         <HorizontalSpace height={16} />
-        {tData && (
+        {tData && dietDetailData && (
           <FlatList
             data={tData}
             keyExtractor={item => item.productNo}

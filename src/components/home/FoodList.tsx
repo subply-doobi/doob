@@ -4,15 +4,9 @@ import styled from 'styled-components/native';
 import colors from '../../styles/colors';
 import {Col, Row, TextMain, TextSub} from '../../styles/styledConsts';
 import {BASE_URL} from '../../query/queries/urls';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
-import {
-  addProductToMenu,
-  deleteProduct,
-  makeQuantity,
-} from '../../stores/slices/cartSlice';
 import {NavigationProps} from '../../constants/constants';
-import {PayloadAction} from '@reduxjs/toolkit';
 import {SCREENWIDTH} from '../../constants/constants';
 import {NavigationContainer} from '@react-navigation/native';
 import {
@@ -23,9 +17,11 @@ import {
 import {IProductData} from '../../query/types/product';
 import DAlert from '../common/alert/DAlert';
 import DeleteAlertContent from '../common/alert/DeleteAlertContent';
+import {commaToNum} from '../../util/sumUp';
 
 interface IFoodList extends NavigationProps {
   item: IProductData;
+  dietDetailData: IProductData[];
 }
 
 const checkProductIncluded = (productNo: string, menu: IProductData[]) => {
@@ -39,11 +35,10 @@ const checkProductIncluded = (productNo: string, menu: IProductData[]) => {
   return isIncluded;
 };
 
-const FoodList = ({item, navigation}: IFoodList) => {
+const FoodList = ({item, dietDetailData, navigation}: IFoodList) => {
   // redux
+  const dispatch = useDispatch();
   const {currentDietNo} = useSelector((state: RootState) => state.cart);
-  const {data: dietDetailData, isFetching: dietDetailIsFetching} =
-    useListDietDetail(currentDietNo);
 
   // react-query
   const addMutation = useCreateDietDetail();
@@ -52,19 +47,24 @@ const FoodList = ({item, navigation}: IFoodList) => {
   // state
   const [deleteAlertShow, setDeleteAlertShow] = useState(false);
   const [productNoToDelete, setProductNoToDelete] = useState('');
+  const [isIncluded, setIsIncluded] = useState(
+    checkProductIncluded(item.productNo, dietDetailData),
+  );
 
-  const isIncluded =
-    dietDetailData && checkProductIncluded(item.productNo, dietDetailData);
+  // const isIncluded =
+  //   dietDetailData && checkProductIncluded(item.productNo, dietDetailData);
 
   const onDelete = () => {
     delelteMutation.mutate({
       dietNo: currentDietNo,
       productNo: productNoToDelete,
     });
+    setIsIncluded(v => !v);
     setDeleteAlertShow(false);
   };
 
   const onAdd = (productNo: string) => {
+    setIsIncluded(v => !v);
     addMutation.mutate({dietNo: currentDietNo, productNo});
   };
 
@@ -89,11 +89,13 @@ const FoodList = ({item, navigation}: IFoodList) => {
                 {item?.productNm}
               </ProductName>
             </Col>
-            <Price>{item?.price}원</Price>
+            <Price>{commaToNum(item?.price)}원</Price>
           </ProductInfoContainer>
           <AddOrDeleteBtn
             onPress={() => {
               if (isIncluded) {
+                // 삭제할 식품 정보저장 및 알럿만 띄우고
+                // 실제 삭제는 DAlert callback에서!
                 setProductNoToDelete(item.productNo);
                 setDeleteAlertShow(true);
               } else {

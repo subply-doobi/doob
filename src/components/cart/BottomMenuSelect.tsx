@@ -88,19 +88,6 @@ const BottomMenuSelect = () => {
           <BtnSmall style={{marginBottom: 8}} onPress={() => onCreateDiet()}>
             <BtnSmallText style={{color: colors.inactivated}}>+</BtnSmallText>
           </BtnSmall>
-          {/* <BtnSmall
-            style={{marginBottom: 8}}
-            onPress={() => {
-              dietData &&
-                createDietDetailMutation.mutate({
-                  dietNo: dietData[menuIndex]?.dietNo,
-                  productNo: 'PD20220713000000017',
-                });
-            }}>
-            <BtnSmallText style={{color: colors.inactivated}}>
-              추가
-            </BtnSmallText>
-          </BtnSmall> */}
         </Row>
       </Row>
       <DAlert

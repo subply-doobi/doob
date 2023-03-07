@@ -18,6 +18,7 @@ import {
   TextMain,
   TextSub,
 } from '../../styles/styledConsts';
+import {commaToNum} from '../../util/sumUp';
 import DAlert from '../common/alert/DAlert';
 import DeleteAlertContent from '../common/alert/DeleteAlertContent';
 import QuantityControl from './QuantityControl';
@@ -90,7 +91,7 @@ const CartFoodList = () => {
                 지방 <NutrientValue>{parseInt(food.fat)}g </NutrientValue>
               </NutrientText>
               <Row style={{marginTop: 12, justifyContent: 'space-between'}}>
-                <ProductPrice>{food.price}원</ProductPrice>
+                <ProductPrice>{commaToNum(food.price)}원</ProductPrice>
                 <QuantityControl food={food} />
               </Row>
             </Col>

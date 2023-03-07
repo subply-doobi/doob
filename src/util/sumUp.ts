@@ -55,7 +55,6 @@ export const compareNutrToTarget = (
 };
 
 export const reGroupBySeller = (dietDetailData: IProductData[]) => {
-  console.log('reGroupBySeller start');
   let reGroupedProducts: Array<Array<IProductData>> = [[]];
   for (let i = 0; i < dietDetailData.length; i++) {
     if (i === 0) {
@@ -72,12 +71,10 @@ export const reGroupBySeller = (dietDetailData: IProductData[]) => {
       }
     }
   }
-  console.log('reGroupedProducts: ', reGroupedProducts);
   return reGroupedProducts;
 };
 
 export const commaToNum = (num: number | string) => {
-  console.log('typeof num : ', typeof num);
   const n = typeof num === 'number' ? num.toString() : num;
   return n.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
 };

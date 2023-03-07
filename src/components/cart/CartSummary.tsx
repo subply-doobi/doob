@@ -4,7 +4,7 @@ import {useListDiet, useListDietDetailAll} from '../../query/queries/diet';
 import {IProductData} from '../../query/types/product';
 import {RootState} from '../../stores/store';
 import {TextMain, TextSub} from '../../styles/styledConsts';
-import {reGroupBySeller, sumUpPrice} from '../../util/sumUp';
+import {commaToNum, reGroupBySeller, sumUpPrice} from '../../util/sumUp';
 import {View} from 'react-native';
 
 const CartSummary = () => {
@@ -29,7 +29,7 @@ const CartSummary = () => {
           <View key={idx}>
             <SellerText>{group[0].platformNm}</SellerText>
             <SellerProductPrice>
-              식품: {sumUpPrice(group)} 원
+              식품: {commaToNum(sumUpPrice(group))} 원
             </SellerProductPrice>
             <SellerShippingPrice>
               배송비: 3,000원 (10,000원 이상 무료배송)

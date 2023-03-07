@@ -2,123 +2,68 @@ import {createSlice} from '@reduxjs/toolkit';
 import type {PayloadAction} from '@reduxjs/toolkit';
 import {getProductIndex, hasProduct} from '../../util/reduxUtil';
 import {IProduct} from '../../constants/constants';
+import {IProductData} from '../../query/types/product';
 
 // cart -> menu -> product
+
+interface ICurrentNutr {
+  cal: number;
+  carb: number;
+  protein: number;
+  fat: number;
+}
 export interface ICartState {
-  menuIndex: number;
   currentDietNo: string;
+  currentNutr: ICurrentNutr;
 }
 
 const initialState: ICartState = {
-  menuIndex: 0,
   currentDietNo: '',
+  currentNutr: {
+    cal: 0,
+    carb: 0,
+    protein: 0,
+    fat: 0,
+  },
 };
 
 export const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    setMenuIndex: (state, action: PayloadAction<number>) => {
-      state.menuIndex = action.payload;
-    },
     setCurrentDietNo: (state, action: PayloadAction<string>) => {
-      console.log('cartSlice: setCurrentDietNo!!');
       state.currentDietNo = action.payload;
     },
-    addProductToMenu: (
-      state,
-      action: PayloadAction<{
-        menuIndex: number;
-        product: IProduct;
-      }>,
-    ) => {
-      const {menuIndex, product} = action.payload;
-      hasProduct(state.cart[menuIndex], product.productNo) ||
-        state.cart[menuIndex].push(product);
+    setCurrentNutr: (state, action: PayloadAction<ICurrentNutr>) => {
+      const {cal, carb, protein, fat} = state.currentNutr;
+      state.currentNutr = {
+        cal: action.payload.cal,
+        carb: action.payload.carb,
+        protein: action.payload.protein,
+        fat: action.payload.fat,
+      };
     },
-    deleteProduct: (
-      state,
-      action: PayloadAction<{
-        menuIndex: number;
-        productNo: string;
-      }>,
-    ) => {
-      const {menuIndex, productNo} = action.payload;
-      if (hasProduct(state.cart[menuIndex], productNo)) {
-        const productIndex = getProductIndex(state.cart[menuIndex], productNo);
-        console.log('deleteProduct: index:', productIndex);
-        state.cart[menuIndex].splice(productIndex, 1);
-      }
+    addNutr: (state, action: PayloadAction<ICurrentNutr>) => {
+      const {cal, carb, protein, fat} = state.currentNutr;
+      state.currentNutr = {
+        cal: cal + action.payload.cal,
+        carb: carb + action.payload.carb,
+        protein: protein + action.payload.protein,
+        fat: fat + action.payload.fat,
+      };
     },
-    checkBoxDeleteProduct: (state, action) => {
-      const {menuIndex, pickedCart} = action.payload;
-      console.log('action:', action.payload);
-      pickedCart.map(el => {
-        if (hasProduct(state.cart[menuIndex], el)) {
-          const productIndex = getProductIndex(state.cart[menuIndex], el);
-          console.log('deleteProduct: index:', productIndex);
-          return state.cart[menuIndex].splice(productIndex, 1);
-        }
-      });
-    },
-    addMenuToCart: state => {
-      state.cart = [...state.cart, []];
-    },
-    deleteMenu: (state, action: PayloadAction<number>) => {
-      state.cart.splice(action.payload, 1);
-    },
-    makeQuantity: (state, action) => {
-      let {product} = action.payload;
-      state.cart[state.menuIndex].map(el => {
-        return (el.qty = 1);
-      });
-    },
-    plusProductQuantity: (state, action) => {
-      let {productNo, qty} = action.payload;
-      state.cart[state.menuIndex].map(el => {
-        if (el.productNo === productNo) {
-          qty++;
-          return (el.qty = qty);
-        }
-      });
-    },
-    minusProductQuantity: (state, action) => {
-      let {productNo, qty} = action.payload;
-      state.cart[state.menuIndex].map(el => {
-        if (el.productNo === productNo) {
-          qty--;
-          return (el.qty = qty);
-        }
-      });
-    },
-    pickProductCheckBox: (state, action) => {
-      let {id, picked} = action.payload;
-
-      if (picked === true) {
-        state.pickedCart.push(id);
-      } else if (picked === false) {
-        for (let i = 0; i < state.pickedCart.length; i++) {
-          if (state.pickedCart[i] === id) {
-            state.pickedCart.splice(i, 1);
-            i--;
-          }
-        }
-      }
+    minusNutr: (state, action: PayloadAction<ICurrentNutr>) => {
+      const {cal, carb, protein, fat} = state.currentNutr;
+      state.currentNutr = {
+        cal: cal - action.payload.cal,
+        carb: carb - action.payload.carb,
+        protein: protein - action.payload.protein,
+        fat: fat - action.payload.fat,
+      };
     },
   },
 });
 
-export const {
-  setMenuIndex,
-  setCurrentDietNo,
-  addProductToMenu,
-  deleteProduct,
-  addMenuToCart,
-  deleteMenu,
-  plusProductQuantity,
-  minusProductQuantity,
-  makeQuantity,
-  pickProductCheckBox,
-  checkBoxDeleteProduct,
-} = cartSlice.actions;
+export const {setCurrentDietNo, setCurrentNutr, addNutr, minusNutr} =
+  cartSlice.actions;
 export default cartSlice.reducer;

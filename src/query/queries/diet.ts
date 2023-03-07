@@ -1,8 +1,12 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {useDispatch} from 'react-redux';
+import {setCurrentNutr} from '../../stores/slices/cartSlice';
+import {sumUpNutrients} from '../../util/sumUp';
 import {DIET, DIET_DETAIL, DIET_DETAIL_ALL} from '../keys';
 import {queryClient} from '../store';
 import {IMutationOptions, IQueryOptions} from '../types/common';
 import {IDietData, IDietDetailData, IListDietDetailParams} from '../types/diet';
+import {IProductData} from '../types/product';
 import {mutationFn, queryFn} from './requestFn';
 import {
   CREATE_DIET,
@@ -61,6 +65,7 @@ export const useListDiet = (options?: IQueryOptions) => {
 };
 
 export const useListDietDetail = (dietNo: string, options?: IQueryOptions) => {
+  const dispatch = useDispatch();
   const enabled = options?.enabled ?? true;
   return useQuery<IDietDetailData>({
     queryKey: dietNo ? [DIET_DETAIL, dietNo] : [DIET_DETAIL],
@@ -117,7 +122,6 @@ export const useDeleteDiet = () => {
   return mutation;
 };
 
-// DELETE
 export const useDeleteDietDetail = () => {
   const mutation = useMutation({
     mutationFn: ({dietNo, productNo}: {dietNo: string; productNo: string}) =>
@@ -125,10 +129,36 @@ export const useDeleteDietDetail = () => {
         `${DELETE_DIET_DETAIL}?dietNo=${dietNo}&productNo=${productNo}`,
         'delete',
       ),
-    onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: [DIET_DETAIL]});
+    onMutate: async ({dietNo, productNo}) => {
+      // Cancel any outgoing refetches
+      // (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({queryKey: [DIET_DETAIL]});
+      // Snapshot the previous value
+      // const prevData = queryClient.getQueryData<IProductData[]>([
+      //   DIET_DETAIL,
+      //   dietNo,
+      // ]);
+
+      // Optimistically update to the new value
+      let newData: IProductData[] = [];
+      queryClient.setQueryData([DIET_DETAIL, dietNo], () => {
+        // for (let i = 0; i < prevData.length; i++) {
+        //   prevData[i].productNo !== productNo && newData.push(prevData[i]);
+        // }
+        return [];
+      });
+      console.log('newData: ', newData);
+      // Return a context with the previous and new todo
+      return newData;
     },
-    onError: e => console.log('useDeleteDietDetail error: ', e),
+    onSuccess: () => {},
+    onError: (e, {dietNo, productNo}, context) => {
+      queryClient.setQueryData([DIET_DETAIL, dietNo], context?.newData);
+      console.log('useDeleteDietDetail error: ', e);
+    },
+    onSettled: (data, err, {dietNo, productNo}) => {
+      // queryClient.invalidateQueries({queryKey: [DIET_DETAIL, dietNo]});
+    },
   });
   return mutation;
 };
