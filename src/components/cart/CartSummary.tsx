@@ -27,7 +27,7 @@ const CartSummary = () => {
       {reGroupedProducts &&
         reGroupedProducts.map((group, idx) => (
           <View key={idx}>
-            <SellerText>{group[0].platformNm}</SellerText>
+            <SellerText>{group[0]?.platformNm}</SellerText>
             <SellerProductPrice>
               식품: {commaToNum(sumUpPrice(group))} 원
             </SellerProductPrice>
