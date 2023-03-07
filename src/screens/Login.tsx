@@ -16,18 +16,19 @@ const Login = ({navigation: {navigate}}: NavigationProps) => {
   //유저값 check 후 화면 이동
   const {data, isLoading} = useGetBaseLine();
 
-  const signInWithKakao = async (): Promise<void> => {
+  const signInWithKakao = useCallback(async (): Promise<void> => {
     const isTokenValid = await validateToken();
+    console.log(isLoading);
     isTokenValid && !isLoading
       ? Object.keys(data).length === 0
         ? navigate('InputNav', {screen: 'FirstInput'})
         : navigate('BottomTabNav', {screen: 'Home'})
       : navigate('Login', {screen: 'Login'});
-  };
+  }, [data, isLoading, navigate]);
 
   useEffect(() => {
     signInWithKakao();
-  });
+  }, [signInWithKakao]);
 
   // const signInWithKakao = async (): Promise<void> => {
   //   const {isTokenValid} = await validateToken();
