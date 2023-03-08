@@ -27,10 +27,10 @@ interface IMenuHeader {
 }
 const MenuHeader = ({menuSelectOpen, setMenuSelectOpen}: IMenuHeader) => {
   // react-query
-  const {data: dietData, isFetching: dietDataIsFetching} = useListDiet();
+  const {data: dietData, isLoading: dietDataIsLoading} = useListDiet();
   // redux
   const {currentDietNo} = useSelector((state: RootState) => state.cart);
-  return dietDataIsFetching ? (
+  return dietDataIsLoading ? (
     <ActivityIndicator />
   ) : (
     <Header onPress={() => setMenuSelectOpen(v => !v)}>

@@ -43,8 +43,7 @@ const Cart = () => {
   // react-query
   const {data: dietData} = useListDiet();
   const {data: baseLineData} = useGetBaseLine();
-  const {data: dietDetailData, isFetching: dietDetailIsFetching} =
-    useListDietDetail(currentDietNo);
+  const {data: dietDetailData} = useListDietDetail(currentDietNo);
 
   // useState
   const [menuSelectOpen, setMenuSelectOpen] = useState(false);

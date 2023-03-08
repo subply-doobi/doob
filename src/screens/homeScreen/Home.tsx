@@ -42,8 +42,9 @@ const Home = () => {
       },
     },
   );
-  const {data: dietDetailData, isFetching: dietDetailIsFetching} =
-    useListDietDetail(currentDietNo, {enabled: currentDietNo ? true : false});
+  const {data: dietDetailData} = useListDietDetail(currentDietNo, {
+    enabled: currentDietNo ? true : false,
+  });
 
   useEffect(() => {
     // 앱 시작할 때 내가 어떤 끼니를 보고 있는지 redux에 저장해놓기 위해 필요함
@@ -70,13 +71,13 @@ const Home = () => {
       <></>
     );
 
-  const renderFoods = useCallback(
-    ({item}: {item: IProductData}) =>
-      dietDetailData ? (
-        <FoodList item={item} dietDetailData={dietDetailData} />
-      ) : null,
-    [],
-  );
+  // const renderFoods = useCallback(
+  //   ({item}: {item: IProductData}) =>
+  //     dietDetailData ? (
+  //       <FoodList item={item} dietDetailData={dietDetailData} />
+  //     ) : null,
+  //   [],
+  // );
 
   return (
     <TouchableWithoutFeedback
@@ -115,14 +116,14 @@ const Home = () => {
           <FlatList
             data={tData}
             keyExtractor={item => item.productNo}
-            renderItem={renderFoods}
+            renderItem={renderFoodList}
             ItemSeparatorComponent={() => <HorizontalSpace height={16} />}
-            // initialNumToRender={5}
-            // windowSize={3}
-            // maxToRenderPerBatch={5}
-            // updateCellsBatchingPeriod={30}
-            // removeClippedSubviews={false}
-            // onEndReachedThreshold={0.1}
+            initialNumToRender={2}
+            windowSize={2}
+            maxToRenderPerBatch={1}
+            removeClippedSubviews={true}
+            onEndReachedThreshold={0.4}
+            showsVerticalScrollIndicator={false}
           />
         )}
 

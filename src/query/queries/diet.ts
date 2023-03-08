@@ -137,6 +137,7 @@ export const useUpdateDietDetail = () => {
       ),
     onSuccess: (data, {dietNo}) => {
       queryClient.invalidateQueries({queryKey: [DIET_DETAIL, dietNo]});
+      queryClient.invalidateQueries({queryKey: [DIET_DETAIL_ALL]});
     },
     onError: e => console.log('useUpdateDietDetail error: ', e),
   });

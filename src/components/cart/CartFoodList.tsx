@@ -36,8 +36,7 @@ const CartFoodList = () => {
 
   // react-query
   const {data: dietData} = useListDiet();
-  const {data: dietDetailData, isFetching: dietDetailIsFetching} =
-    useListDietDetail(currentDietNo);
+  const {data: dietDetailData} = useListDietDetail(currentDietNo);
   const {data: dietAllData} = useListDietDetailAll();
   const updateMutation = useUpdateDietDetail();
   const deleteMutation = useDeleteDietDetail();
@@ -66,10 +65,6 @@ const CartFoodList = () => {
     setDeleteAlertShow(false);
   };
 
-  // 판매자별 총액계산
-  const reGroupedProducts = dietAllData && reGroupBySeller(dietAllData);
-  const priceBySeller =
-    reGroupedProducts && makePriceObjBySeller(reGroupedProducts);
   return (
     <Container>
       {dietDetailData?.map((food, idx) => (
@@ -128,23 +123,18 @@ const CartFoodList = () => {
       <DBottomSheet
         alertShow={numberPickerShow}
         setAlertShow={setNumberPickerShow}
-        renderContent={() =>
-          priceBySeller ? (
-            <NumberPickerContent
-              setNumberPickerShow={setNumberPickerShow}
-              platformNm={numberPickerInfo.platformNm}
-              productNo={numberPickerInfo.productNo}
-              productNm={numberPickerInfo.productNm}
-              price={numberPickerInfo.price}
-              minQty={numberPickerInfo.minQty}
-              freeShippingPrice={numberPickerInfo.freeShippingPrice}
-              shippingPrice={numberPickerInfo.shippingPrice}
-              priceBySeller={priceBySeller}
-            />
-          ) : (
-            <></>
-          )
-        }
+        renderContent={() => (
+          <NumberPickerContent
+            setNumberPickerShow={setNumberPickerShow}
+            platformNm={numberPickerInfo.platformNm}
+            productNo={numberPickerInfo.productNo}
+            productNm={numberPickerInfo.productNm}
+            price={numberPickerInfo.price}
+            minQty={numberPickerInfo.minQty}
+            freeShippingPrice={numberPickerInfo.freeShippingPrice}
+            shippingPrice={numberPickerInfo.shippingPrice}
+          />
+        )}
         onCancel={() => setNumberPickerShow(false)}
       />
     </Container>
