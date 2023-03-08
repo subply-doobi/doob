@@ -88,7 +88,7 @@ export const useListProduct = (
     queryFn: () =>
       queryFn(
         `${LIST_PRODUCT}?searchText=${searchText}&categoryCd=${categoryCd}&sort=${sort}&filter=${filter}`,
-      ).then(res => res.slice(0, 3)),
+      ),
     enabled,
     onSuccess: data => {
       options?.onSuccess && options?.onSuccess();

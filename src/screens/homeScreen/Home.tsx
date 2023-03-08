@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useMemo, useCallback} from 'react';
 import {TouchableWithoutFeedback, FlatList} from 'react-native';
 import styled from 'styled-components/native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -35,10 +35,10 @@ const Home = () => {
 
   // react-query
   const {data: tData} = useListProduct(
-    {categoryCd: 'CG003'},
+    {categoryCd: 'CG001'},
     {
       onSuccess: () => {
-        dispatch(setListTitle('샐러드'));
+        dispatch(setListTitle('도시락'));
       },
     },
   );
@@ -69,6 +69,14 @@ const Home = () => {
     ) : (
       <></>
     );
+
+  const renderFoods = useCallback(
+    ({item}: {item: IProductData}) =>
+      dietDetailData ? (
+        <FoodList item={item} dietDetailData={dietDetailData} />
+      ) : null,
+    [],
+  );
 
   return (
     <TouchableWithoutFeedback
@@ -107,8 +115,14 @@ const Home = () => {
           <FlatList
             data={tData}
             keyExtractor={item => item.productNo}
-            renderItem={renderFoodList}
+            renderItem={renderFoods}
             ItemSeparatorComponent={() => <HorizontalSpace height={16} />}
+            // initialNumToRender={5}
+            // windowSize={3}
+            // maxToRenderPerBatch={5}
+            // updateCellsBatchingPeriod={30}
+            // removeClippedSubviews={false}
+            // onEndReachedThreshold={0.1}
           />
         )}
 
