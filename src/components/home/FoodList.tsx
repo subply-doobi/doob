@@ -8,7 +8,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../stores/store';
 import {NavigationProps} from '../../constants/constants';
 import {SCREENWIDTH} from '../../constants/constants';
-import {NavigationContainer} from '@react-navigation/native';
 import {
   useCreateDietDetail,
   useDeleteDietDetail,
@@ -18,6 +17,7 @@ import {IProductData} from '../../query/types/product';
 import DAlert from '../common/alert/DAlert';
 import DeleteAlertContent from '../common/alert/DeleteAlertContent';
 import {commaToNum} from '../../util/sumUp';
+import {useNavigation} from '@react-navigation/native';
 
 interface IFoodList extends NavigationProps {
   item: IProductData;
@@ -35,7 +35,8 @@ const checkProductIncluded = (productNo: string, menu: IProductData[]) => {
   return isIncluded;
 };
 
-const FoodList = ({item, dietDetailData, navigation}: IFoodList) => {
+const FoodList = ({item, dietDetailData}: IFoodList) => {
+  const navigation = useNavigation();
   // redux
   const dispatch = useDispatch();
   const {currentDietNo} = useSelector((state: RootState) => state.cart);
@@ -71,9 +72,7 @@ const FoodList = ({item, dietDetailData, navigation}: IFoodList) => {
   return (
     <Container>
       <FoodDetailBtn
-        onPress={() => {
-          console.log('식품상세정보로 이동');
-        }}>
+        onPress={() => navigation.navigate('FoodDetail', {item: item})}>
         <Row>
           <Thumbnail
             source={{

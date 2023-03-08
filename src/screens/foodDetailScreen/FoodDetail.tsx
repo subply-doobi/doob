@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   ScrollView,
@@ -18,22 +18,24 @@ import {
   TextMain,
   TextSub,
   StickyFooter,
-  HorizontalSpace,
   Dot,
 } from '../../styles/styledConsts';
 import colors from '../../styles/colors';
 import NutrientsProgress from '../../components/common/NutrientsProgress';
-import {Food} from '../../util/dummyData';
+import {RootState} from '../../stores/store';
 import {
   useCreateProductMark,
   useDeleteProductMark,
 } from '../../query/queries/product';
+import {useCreateDietDetail, useListDietDetail} from '../../query/queries/diet';
 import NutrientPart from './foodDetailSubScreen/NutrientPart';
 import ShippingPart from './foodDetailSubScreen/ShippingPart';
 import FoodPart from './foodDetailSubScreen/FoodPart';
 import ReviewPart from './foodDetailSubScreen/ReviewPart';
-
-const food = Food;
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {IProductData} from '../../query/types/product';
+import DAlert from '../../components/common/alert/DAlert';
+import {useSelector} from 'react-redux';
 
 export interface TableItem {
   name: string;
@@ -42,53 +44,57 @@ export interface TableItem {
   color?: string;
 }
 
-const table: TableItem[] = [
-  {
-    name: 'calorie',
-    column1: '칼로리',
-    column2: `${Math.ceil(Number(food.calorie))}`,
-    color: colors.main,
-  },
-  {
-    name: 'carb',
-    column1: '탄수화물',
-    column2: `${Math.ceil(Number(food.carb))}`,
-    color: colors.blue,
-  },
-  {
-    name: 'protein',
-    column1: '단백질',
-    column2: `${Math.ceil(Number(food.protein))}`,
-    color: colors.green,
-  },
-  {
-    name: 'fat',
-    column1: '지방',
-    column2: `${Math.ceil(Number(food.fat))}`,
-    color: colors.orange,
-  },
-];
-
-const ShowPart = i => {
-  return i.index === 0 ? (
-    <NutrientPart table={table} />
-  ) : i.index === 1 ? (
-    <FoodPart />
-  ) : i.index === 2 ? (
-    <ReviewPart />
-  ) : i.index === 3 ? (
-    <ShippingPart />
-  ) : (
-    <NutrientPart table={table} />
-  );
-};
-
 const FoodDetail = () => {
-  //TODO : 상위컴포넌트에서 props로 받아서 식품명 header로 띄우기
+  const navigation = useNavigation();
+  const route = useRoute();
+  const food: IProductData = route.params.item;
+  const {currentDietNo} = useSelector((state: RootState) => state.cart);
   const detailMenu = ['영양성분', '식품상세', '후기', '배송정책'];
   const [clicked, setClicked] = useState(0);
+  const [alertShow, setAlertShow] = useState(false);
   const createProductMarkMutation = useCreateProductMark();
   const deleteProductMarkMutation = useDeleteProductMark();
+  const createDietDetailMutation = useCreateDietDetail();
+  const {data: dietDetailData, isFetching: dietDetailIsFetching} =
+    useListDietDetail(currentDietNo, {enabled: currentDietNo ? true : false});
+  console.log(dietDetailData);
+
+  const checkProductIncluded = (productNo: string, menu: IProductData[]) => {
+    let isIncluded = false;
+    for (let i = 0; i < menu.length; i++) {
+      if (menu[i].productNo === productNo) {
+        isIncluded = true;
+        break;
+      }
+    }
+    return isIncluded;
+  };
+
+  //TODO : route.params.item 타입 관련 해결 및 만약 null값일 시 에러처리
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitleContainerStyle: {
+        flexDirection: 'row',
+        alignItems: 'center',
+      },
+      headerTitle: () => {
+        return (
+          <>
+            <View style={{marginRight: 8}}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: colors.textMain,
+                  fontWeight: 'bold',
+                }}>
+                {food.productNm}
+              </Text>
+            </View>
+          </>
+        );
+      },
+    });
+  }, [navigation, food.productNm]);
 
   const handlePressLikeBtn = () => {
     //TODO : 찜된 목록인지 알 수 있는 API나오면 좋아요기능 완성하기
@@ -101,17 +107,69 @@ const FoodDetail = () => {
 
   const handlePressAddCartBtn = () => {
     //dietNo =
+    // createDietDetailMutation.mutate({
+    //   dietNo: food.dietNo,
+    //   productNo: food.productNo,
+    // });
+
+    setAlertShow(true);
+  };
+  console.log(food);
+
+  const handlePressConfirm = () => {
     createDietDetailMutation.mutate({
-      dietNo: 'DT20230214000000001',
+      dietNo: currentDietNo,
       productNo: food.productNo,
     });
+    setAlertShow(false);
+  };
+
+  const table: TableItem[] = [
+    {
+      name: 'calorie',
+      column1: '칼로리',
+      column2: `${Math.ceil(Number(food.calorie))}`,
+      color: colors.main,
+    },
+    {
+      name: 'carb',
+      column1: '탄수화물',
+      column2: `${Math.ceil(Number(food.carb))}`,
+      color: colors.blue,
+    },
+    {
+      name: 'protein',
+      column1: '단백질',
+      column2: `${Math.ceil(Number(food.protein))}`,
+      color: colors.green,
+    },
+    {
+      name: 'fat',
+      column1: '지방',
+      column2: `${Math.ceil(Number(food.fat))}`,
+      color: colors.orange,
+    },
+  ];
+
+  const ShowPart = i => {
+    return i.index === 0 ? (
+      <NutrientPart table={table} />
+    ) : i.index === 1 ? (
+      <FoodPart />
+    ) : i.index === 2 ? (
+      <ReviewPart />
+    ) : i.index === 3 ? (
+      <ShippingPart />
+    ) : (
+      <NutrientPart table={table} />
+    );
   };
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <Container>
         <ScrollView style={{marginBottom: 20, flex: 1}}>
-          <NutrientsProgress menuIndex={0} />
+          {currentDietNo && <NutrientsProgress currentDietNo={currentDietNo} />}
           <View>
             <FoodImageContainer
               source={{
@@ -120,11 +178,11 @@ const FoodDetail = () => {
             />
             <FoodImageBottom />
             <NutritionInImage>
-              {table.slice(0, 4).map(el => {
+              {table.slice(0, 4).map((el, index) => {
                 return (
                   <>
                     <View
-                      key={el.name}
+                      key={`${el.name}-${index}`}
                       style={{
                         flexDirection: 'row',
                         alignItems: 'center',
@@ -161,7 +219,7 @@ const FoodDetail = () => {
             }}>
             {detailMenu.map((el, index) => {
               return (
-                <React.Fragment key={index}>
+                <React.Fragment key={`${el}-${index}`}>
                   <DetailMenu
                     onPress={() => setClicked(index)}
                     selected={index === clicked}>
@@ -192,10 +250,27 @@ const FoodDetail = () => {
             btnStyle={'activated'}
             style={{flex: 4}}
             onPress={handlePressAddCartBtn}>
-            <BtnText>장바구니 추가</BtnText>
+            <BtnText>현재끼니에 추가</BtnText>
           </BtnCTA>
         </StickyFooter>
       </View>
+      <DAlert
+        alertShow={alertShow}
+        onCancel={() => setAlertShow(false)}
+        onConfirm={handlePressConfirm}
+        renderContent={() => (
+          <View
+            style={{
+              height: 50,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text style={{fontSize: 18, color: colors.textMain}}>
+              현재 끼니에 추가하시겠습니까?
+            </Text>
+          </View>
+        )}
+      />
     </SafeAreaView>
   );
 };
