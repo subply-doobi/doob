@@ -50,7 +50,7 @@ const DBottomSheet = ({
     <Modal
       animationType="slide"
       transparent={true}
-      visible={alertShow ? true : false}
+      visible={alertShow}
       onRequestClose={() => {
         onCancel ? onCancel() : null;
       }}>

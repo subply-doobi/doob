@@ -18,6 +18,7 @@ import {IProductData} from '../../query/types/product';
 import DAlert from '../common/alert/DAlert';
 import DeleteAlertContent from '../common/alert/DeleteAlertContent';
 import {commaToNum} from '../../util/sumUp';
+import {addNutr, minusNutr} from '../../stores/slices/cartSlice';
 
 interface IFoodList extends NavigationProps {
   item: IProductData;
@@ -37,35 +38,28 @@ const checkProductIncluded = (productNo: string, menu: IProductData[]) => {
 
 const FoodList = ({item, dietDetailData, navigation}: IFoodList) => {
   // redux
-  const dispatch = useDispatch();
   const {currentDietNo} = useSelector((state: RootState) => state.cart);
 
   // react-query
   const addMutation = useCreateDietDetail();
-  const delelteMutation = useDeleteDietDetail();
+  const deleteMutation = useDeleteDietDetail();
 
   // state
   const [deleteAlertShow, setDeleteAlertShow] = useState(false);
-  const [productNoToDelete, setProductNoToDelete] = useState('');
-  const [isIncluded, setIsIncluded] = useState(
-    checkProductIncluded(item.productNo, dietDetailData),
-  );
 
-  // const isIncluded =
-  //   dietDetailData && checkProductIncluded(item.productNo, dietDetailData);
+  const isIncluded =
+    dietDetailData && checkProductIncluded(item.productNo, dietDetailData);
 
   const onDelete = () => {
-    delelteMutation.mutate({
+    deleteMutation.mutate({
       dietNo: currentDietNo,
-      productNo: productNoToDelete,
+      productNo: item.productNo,
     });
-    setIsIncluded(v => !v);
     setDeleteAlertShow(false);
   };
 
   const onAdd = (productNo: string) => {
-    setIsIncluded(v => !v);
-    addMutation.mutate({dietNo: currentDietNo, productNo});
+    addMutation.mutate({dietNo: currentDietNo, productNo, item});
   };
 
   return (
@@ -94,9 +88,7 @@ const FoodList = ({item, dietDetailData, navigation}: IFoodList) => {
           <AddOrDeleteBtn
             onPress={() => {
               if (isIncluded) {
-                // 삭제할 식품 정보저장 및 알럿만 띄우고
                 // 실제 삭제는 DAlert callback에서!
-                setProductNoToDelete(item.productNo);
                 setDeleteAlertShow(true);
               } else {
                 onAdd(item.productNo);
