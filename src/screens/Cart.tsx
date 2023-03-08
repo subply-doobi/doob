@@ -17,12 +17,21 @@ import {
 import NutrientsProgress from '../components/common/NutrientsProgress';
 import MenuHeader from '../components/common/MenuHeader';
 import MenuSelect from '../components/common/MenuSelect';
-import {useListDiet, useListDietDetail} from '../query/queries/diet';
+import {
+  useListDiet,
+  useListDietDetail,
+  useListDietDetailAll,
+} from '../query/queries/diet';
 import AutoMenuBtn from '../components/cart/AutoMenuBtn';
 import BottomMenuSelect from '../components/cart/BottomMenuSelect';
 import AutoDietModal from '../components/cart/AutoDietModal';
 import CartFoodList from '../components/cart/CartFoodList';
-import {compareNutrToTarget, sumUpNutrients} from '../util/sumUp';
+import {
+  commaToNum,
+  compareNutrToTarget,
+  sumUpNutrients,
+  sumUpPrice,
+} from '../util/sumUp';
 import {useGetBaseLine} from '../query/queries/baseLine';
 import CartSummary from '../components/cart/CartSummary';
 
@@ -32,9 +41,10 @@ const Cart = () => {
   const dispatch = useDispatch();
 
   // react-query
-  const {data: baseLineData} = useGetBaseLine();
   const {data: dietData} = useListDiet();
-  const {data: dietDetailData} = useListDietDetail(currentDietNo);
+  const {data: baseLineData} = useGetBaseLine();
+  const {data: dietDetailData, isFetching: dietDetailIsFetching} =
+    useListDietDetail(currentDietNo);
 
   // useState
   const [menuSelectOpen, setMenuSelectOpen] = useState(false);
@@ -57,6 +67,7 @@ const Cart = () => {
         },
       )
     : 'empty';
+
   return (
     // <TouchableWithoutFeedback
     //   onPress={() => {
@@ -110,7 +121,9 @@ const Cart = () => {
             modalVisible={autoDietModalShow}
             setModalVisible={setAutoDietModalShow}
           />
-          <MenuTotalPrice>합계 0원</MenuTotalPrice>
+          <MenuTotalPrice>
+            합계 {dietDetailData && commaToNum(sumUpPrice(dietDetailData))}원
+          </MenuTotalPrice>
           {menuSelectOpen && (
             <MenuSelect setOpen={setMenuSelectOpen} center={true} />
           )}

@@ -35,16 +35,51 @@ export const useCreateDiet = (options?: IMutationOptions) => {
 
 export const useCreateDietDetail = () => {
   const mutation = useMutation({
-    mutationFn: ({dietNo, productNo}: {dietNo: string; productNo: string}) =>
+    mutationFn: ({
+      dietNo,
+      productNo,
+      item,
+    }: {
+      dietNo: string;
+      productNo: string;
+      item: IProductData;
+    }) =>
       mutationFn(
         `${CREATE_DIET_DETAIL}?dietNo=${dietNo}&productNo=${productNo}`,
         'put',
       ),
-    onSuccess: data => {
-      queryClient.invalidateQueries({queryKey: [DIET_DETAIL]});
+    onMutate: async ({dietNo, productNo, item}) => {
+      // Cancel any outgoing refetches
+      // (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({queryKey: [DIET_DETAIL, dietNo]});
+      // Snapshot the previous value
+      const prevData = queryClient.getQueryData<IProductData[]>([
+        DIET_DETAIL,
+        dietNo,
+      ]);
+      // Optimistically update to the new value
+      let newData: IProductData[] = [];
+      prevData &&
+        queryClient.setQueryData([DIET_DETAIL, dietNo], () => {
+          for (let i = 0; i < prevData.length; i++) {
+            newData.push(prevData[i]);
+          }
+          newData.push({...item, qty: '1'});
+          return newData;
+        });
+      // Return a context with the previous and new todo
+      return {prevData, newData};
+    },
+    onSuccess: (data, {dietNo, productNo}) => {
       queryClient.invalidateQueries({queryKey: [DIET_DETAIL_ALL]});
     },
-    onError: e => console.log('useCreateDietDetail error: ', e),
+    onError: (e, {dietNo, productNo}, context) => {
+      queryClient.setQueryData([DIET_DETAIL, dietNo], context?.prevData);
+      console.log('useCreateDietDetail error: ', e);
+    },
+    // onSettled: (data, err, {dietNo, productNo}) => {
+    //   queryClient.invalidateQueries({queryKey: [DIET_DETAIL, dietNo]});
+    // },
   });
   return mutation;
 };
@@ -65,7 +100,6 @@ export const useListDiet = (options?: IQueryOptions) => {
 };
 
 export const useListDietDetail = (dietNo: string, options?: IQueryOptions) => {
-  const dispatch = useDispatch();
   const enabled = options?.enabled ?? true;
   return useQuery<IDietDetailData>({
     queryKey: dietNo ? [DIET_DETAIL, dietNo] : [DIET_DETAIL],
@@ -101,8 +135,8 @@ export const useUpdateDietDetail = () => {
         `${UPDATE_DIET_DETAIL}?dietNo=${dietNo}&productNo=${productNo}&qty=${qty}`,
         'post',
       ),
-    onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: [DIET_DETAIL]});
+    onSuccess: (data, {dietNo}) => {
+      queryClient.invalidateQueries({queryKey: [DIET_DETAIL, dietNo]});
     },
     onError: e => console.log('useUpdateDietDetail error: ', e),
   });
@@ -132,33 +166,37 @@ export const useDeleteDietDetail = () => {
     onMutate: async ({dietNo, productNo}) => {
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries({queryKey: [DIET_DETAIL]});
+      await queryClient.cancelQueries({queryKey: [DIET_DETAIL, dietNo]});
       // Snapshot the previous value
-      // const prevData = queryClient.getQueryData<IProductData[]>([
-      //   DIET_DETAIL,
-      //   dietNo,
-      // ]);
+      const prevData = queryClient.getQueryData<IProductData[]>([
+        DIET_DETAIL,
+        dietNo,
+      ]);
 
       // Optimistically update to the new value
       let newData: IProductData[] = [];
-      queryClient.setQueryData([DIET_DETAIL, dietNo], () => {
-        // for (let i = 0; i < prevData.length; i++) {
-        //   prevData[i].productNo !== productNo && newData.push(prevData[i]);
-        // }
-        return [];
-      });
-      console.log('newData: ', newData);
+      prevData &&
+        queryClient.setQueryData([DIET_DETAIL, dietNo], () => {
+          for (let i = 0; i < prevData.length; i++) {
+            prevData[i].productNo !== productNo && newData.push(prevData[i]);
+          }
+          return newData;
+        });
+      // console.log('prevData: ', prevData);
+      // console.log('newData: ', newData);
       // Return a context with the previous and new todo
-      return newData;
+      return {prevData, newData};
     },
-    onSuccess: () => {},
+    onSuccess: (data, {dietNo, productNo}) => {
+      queryClient.invalidateQueries({queryKey: [DIET_DETAIL_ALL]});
+    },
     onError: (e, {dietNo, productNo}, context) => {
-      queryClient.setQueryData([DIET_DETAIL, dietNo], context?.newData);
+      queryClient.setQueryData([DIET_DETAIL, dietNo], context?.prevData);
       console.log('useDeleteDietDetail error: ', e);
     },
-    onSettled: (data, err, {dietNo, productNo}) => {
-      // queryClient.invalidateQueries({queryKey: [DIET_DETAIL, dietNo]});
-    },
+    // onSettled: (data, err, {dietNo, productNo}) => {
+    //   queryClient.invalidateQueries({queryKey: [DIET_DETAIL, dietNo]});
+    // },
   });
   return mutation;
 };

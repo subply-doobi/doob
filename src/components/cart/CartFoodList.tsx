@@ -1,11 +1,12 @@
 import {useState} from 'react';
-import {ActivityIndicator} from 'react-native';
+import {ActivityIndicator, Text} from 'react-native';
 import {useSelector} from 'react-redux';
 import styled from 'styled-components/native';
 import {
   useDeleteDietDetail,
   useListDiet,
   useListDietDetail,
+  useListDietDetailAll,
   useUpdateDietDetail,
 } from '../../query/queries/diet';
 import {BASE_URL} from '../../query/queries/urls';
@@ -18,9 +19,15 @@ import {
   TextMain,
   TextSub,
 } from '../../styles/styledConsts';
-import {commaToNum} from '../../util/sumUp';
+import {
+  commaToNum,
+  makePriceObjBySeller,
+  reGroupBySeller,
+} from '../../util/sumUp';
 import DAlert from '../common/alert/DAlert';
 import DeleteAlertContent from '../common/alert/DeleteAlertContent';
+import DBottomSheet from '../common/DBottomSheet';
+import NumberPickerContent from './NumberPickerContent';
 import QuantityControl from './QuantityControl';
 
 const CartFoodList = () => {
@@ -31,24 +38,25 @@ const CartFoodList = () => {
   const {data: dietData} = useListDiet();
   const {data: dietDetailData, isFetching: dietDetailIsFetching} =
     useListDietDetail(currentDietNo);
+  const {data: dietAllData} = useListDietDetailAll();
   const updateMutation = useUpdateDietDetail();
   const deleteMutation = useDeleteDietDetail();
 
   // state
   const [deleteAlertShow, setDeleteAlertShow] = useState(false);
   const [productNoToDelete, setProductNoToDelete] = useState('');
-  const [numberPickerOpen, setNumberPickerOpen] = useState(false);
+  const [numberPickerShow, setNumberPickerShow] = useState(false);
+  const [numberPickerInfo, setNumberPickerInfo] = useState({
+    platformNm: '',
+    productNo: '',
+    productNm: '',
+    price: '',
+    minQty: '',
+    freeShippingPrice: '',
+    shippingPrice: '',
+  });
 
-  const minusBtnOnPress = (
-    productNo: string,
-    qty: string = '1',
-    minQty: string,
-  ) => {};
-  const plusBtnOnPress = (
-    productNo: string,
-    qty: string = '1',
-    minQty: string,
-  ) => {};
+  // etc
   const onDelete = () => {
     dietData &&
       deleteMutation.mutate({
@@ -57,6 +65,11 @@ const CartFoodList = () => {
       });
     setDeleteAlertShow(false);
   };
+
+  // 판매자별 총액계산
+  const reGroupedProducts = dietAllData && reGroupBySeller(dietAllData);
+  const priceBySeller =
+    reGroupedProducts && makePriceObjBySeller(reGroupedProducts);
   return (
     <Container>
       {dietDetailData?.map((food, idx) => (
@@ -92,7 +105,11 @@ const CartFoodList = () => {
               </NutrientText>
               <Row style={{marginTop: 12, justifyContent: 'space-between'}}>
                 <ProductPrice>{commaToNum(food.price)}원</ProductPrice>
-                <QuantityControl food={food} />
+                <QuantityControl
+                  food={food}
+                  setNumberPickerShow={setNumberPickerShow}
+                  setNumberPickerInfo={setNumberPickerInfo}
+                />
               </Row>
             </Col>
           </Row>
@@ -107,6 +124,28 @@ const CartFoodList = () => {
           setDeleteAlertShow(false);
         }}
         renderContent={() => <DeleteAlertContent dietSeq={'해당식품을'} />}
+      />
+      <DBottomSheet
+        alertShow={numberPickerShow}
+        setAlertShow={setNumberPickerShow}
+        renderContent={() =>
+          priceBySeller ? (
+            <NumberPickerContent
+              setNumberPickerShow={setNumberPickerShow}
+              platformNm={numberPickerInfo.platformNm}
+              productNo={numberPickerInfo.productNo}
+              productNm={numberPickerInfo.productNm}
+              price={numberPickerInfo.price}
+              minQty={numberPickerInfo.minQty}
+              freeShippingPrice={numberPickerInfo.freeShippingPrice}
+              shippingPrice={numberPickerInfo.shippingPrice}
+              priceBySeller={priceBySeller}
+            />
+          ) : (
+            <></>
+          )
+        }
+        onCancel={() => setNumberPickerShow(false)}
       />
     </Container>
   );
