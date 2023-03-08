@@ -1,4 +1,25 @@
-import {BASE_URL, CREATE_PRODUCT_MARK, DELETE_PRODUCT_MARK} from './urls';
+import axios from 'axios';
+import {queryClient} from '../store';
+import {
+  BASE_URL,
+  CREATE_PRODUCT_MARK,
+  DELETE_PRODUCT_MARK,
+  CREATE_PRODUCT_AUTO,
+  LIST_PRODUCT,
+} from './urls';
+import {useMutation, useQuery} from '@tanstack/react-query';
+import {mutationFn, queryFn} from './requestFn';
+import {DIET_DETAIL, PRODUCT_AUTO} from '../keys';
+import {IMutationOptions, IQueryOptions} from '../types/common';
+import {ICreateProductAutoParams, IListProductParams} from '../types/product';
+// const getProductList = async () => {
+//   try {
+//     const res = await axios.get(PRODUCT_LIST);
+//     return res.data;
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
 
 export const useCreateProductMark = () => {
   const mutation = useMutation({
@@ -18,13 +39,6 @@ export const useDeleteProductMark = () => {
   });
   return mutation;
 };
-import {useMutation, useQuery} from '@tanstack/react-query';
-import {DIET_DETAIL, PRODUCT_AUTO} from '../keys';
-import {queryClient} from '../store';
-import {IMutationOptions, IQueryOptions} from '../types/common';
-import {ICreateProductAutoParams, IListProductParams} from '../types/product';
-import {mutationFn, queryFn} from './requestFn';
-import {CREATE_PRODUCT_AUTO, LIST_PRODUCT} from './urls';
 
 // PUT
 export const useCreateProductAuto = () => {

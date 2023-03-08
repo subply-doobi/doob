@@ -94,7 +94,7 @@ const Home = () => {
             <ListTitle>{listTitle}</ListTitle>
             <NoOfFoods> {tData?.length}개</NoOfFoods>
           </Row>
-          <SortBtn></SortBtn>
+          <SortBtn />
         </Row>
         <HorizontalLine style={{marginTop: 8}} />
         {/* <BtnCTA btnStyle="activated" onPress={async () => {}}>
