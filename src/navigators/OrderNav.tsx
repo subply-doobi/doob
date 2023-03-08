@@ -48,7 +48,7 @@ const OrderNav = ({navigation: {navigate}}: NavigationProps) => {
                   params: {from: 'AddressEdit'},
                 })
               }>
-              <BackArrow goBackFn={() => console.log('goBack')} />
+              <BackArrow goBackFn={() => navigate('Order')} />
             </TouchableOpacity>
           ),
         }}
