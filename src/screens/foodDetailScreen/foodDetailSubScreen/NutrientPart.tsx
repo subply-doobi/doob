@@ -1,113 +1,112 @@
-import React, {useState} from 'react';
-import {Text, ScrollView, StyleSheet, View} from 'react-native';
-import styled from 'styled-components/native';
-import {
-  BtnCTA,
-  BtnText,
-  Col,
-  Container,
-  HorizontalLine,
-  HorizontalSpace,
-  Row,
-  TextMain,
-  TextSub,
-} from '../../../styles/styledConsts';
+import React from 'react';
+import {Text, StyleSheet, View} from 'react-native';
 import colors from '../../../styles/colors';
+import {Dot} from '../../../styles/styledConsts';
+import {useGetBaseLine} from '../../../query/queries/baseLine';
+import {useUserProfile} from '../../../query/queries/member';
+import {TableItem} from '../FoodDetail';
 
-const HeaderText = styled(TextMain)`
-  font-size: 18px;
-  font-weight: bold;
-`;
-const ProductImage = styled.Image`
-  width: 24px;
-  height: 24px;
-`;
-const heads = ['총내용량', '250g', '호팔님의 1일 목표섭취량에 대한 비율'];
-const bodyDatas = [
-  ['칼로리', [['364kcal', '28%']]],
-  ['나트륨', [['', '472mg', '28%', '']]],
-  ['탄수화물', [['', '47g', '28%', '']]],
-  ['당류', [['', '2g', '28%', '']]],
-  ['단백질', [['', '15g', '28%', '']]],
-  ['지방', [['', '13g', '28%', '']]],
-];
+interface Props {
+  table: TableItem[];
+}
+const NutrientPart = ({table}: Props) => {
+  const userProfileQuery = useUserProfile();
+  const {isLoading, data} = userProfileQuery;
 
-const CustomTable = () => {
+  if (isLoading) {
+    return <Text>Loading</Text>;
+  }
+
   return (
-    <ScrollView style={styles.table}>
-      <View style={[styles.row, styles.borderStyle]}>
-        {heads.map((head, index) => (
-          <View
-            key={index}
-            style={[styles.rowHeadItem, index < 3 && {flexGrow: 2}]}>
-            <Text style={[styles.rowHeadItemText]}>{head}</Text>
-          </View>
-        ))}
-      </View>
-      {bodyDatas.map(([storedName, values], index) => (
-        <View key={index} style={[styles.row, styles.borderStyle]}>
-          <View style={[styles.rowItem, {flexGrow: 1}]}>
-            <Text>{storedName}</Text>
-          </View>
-          <View style={{flexGrow: 1}}>
-            {values.map((value, index2) => (
-              <View key={index2} style={styles.row}>
-                {value.map((text, index3) => {
-                  if (index3 === 0 || index3 === value.length - 1) {
-                    return null;
-                  }
-
-                  const style = [
-                    styles.rowItem,
-                    {
-                      borderBottomColor: 'grey',
-                      borderBottomWidth: index2 === values.length - 1 ? 0 : 1,
-                    },
-                  ];
-
-                  return index3 ? (
-                    <View
-                      style={[...style, index3 < 2 && {flexGrow: 1}]}
-                      key={index3}>
-                      <Text numberOfLines={1} style={styles.rowItemText}>
-                        {text}
-                      </Text>
-                    </View>
-                  ) : null;
-                })}
-              </View>
-            ))}
-          </View>
-          <View style={[styles.rowItem]} />
+    <>
+      <View style={[styles.row, styles.firstItem]}>
+        <View style={[styles.rowLeftItem, styles.firstItem]}>
+          <Text style={styles.text}>총 내용량</Text>
         </View>
+        <View style={[styles.rowRightItem, styles.firstItem]}>
+          <Text style={styles.text}>250g</Text>
+          <View>
+            <Text style={styles.subText}>{data.nickNm}님의 1일</Text>
+            <Text style={styles.subText}>목표섭취량에 대한 비율</Text>
+          </View>
+        </View>
+      </View>
+      {table.map(el => (
+        <RenderItem item={el} key={el.column1} />
       ))}
-    </ScrollView>
+    </>
   );
 };
+
+interface RenderProps {
+  item: TableItem;
+}
+
+function RenderItem({item}: RenderProps) {
+  const userBaseLine = useGetBaseLine();
+  const {data, isLoading} = userBaseLine;
+
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+
+  return (
+    <View style={styles.row}>
+      <View style={styles.rowLeftItem}>
+        <Text style={styles.text}>{item.column1}</Text>
+        {item.color ? <Dot backgroundColor={item.color} /> : null}
+      </View>
+      <View style={styles.rowRightItem}>
+        <Text style={styles.text}>{item.column2}g</Text>
+        <View>
+          <Text style={styles.text}>
+            {Math.round((Number(item.column2) / Number(data[item.name])) * 100)}
+            %
+          </Text>
+        </View>
+      </View>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
+  firstItem: {
+    height: 64,
+  },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  rowItem: {
-    justifyContent: 'center',
-    width: 50,
-    paddingHorizontal: 4,
-    height: 32,
-  },
-  rowHeadItem: {
-    justifyContent: 'center',
-    width: 50,
-    paddingHorizontal: 4,
-    height: 60,
-  },
-  borderStyle: {
     borderWidth: 1,
     borderColor: colors.inactivated,
+    height: 36,
+  },
+  rowRightItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    flex: 1,
+    height: 36,
+  },
+  rowLeftItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: 120,
+    paddingHorizontal: 8,
+    height: 36,
+    borderColor: colors.inactivated,
+    borderWidth: 1,
+  },
+  text: {
+    fontSize: 16,
+    color: colors.textMain,
+  },
+  subText: {
+    fontSize: 12,
+    color: colors.textMain,
+    textAlign: 'right',
   },
 });
-const NutrientPart = () => {
-  return <CustomTable />;
-};
 
 export default NutrientPart;
