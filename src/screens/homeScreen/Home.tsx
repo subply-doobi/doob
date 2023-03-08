@@ -26,6 +26,10 @@ import {setListTitle} from '../../stores/slices/filterSlice';
 import FoodList from '../../components/home/FoodList';
 import {IProductData} from '../../query/types/product';
 import {useListDietDetail} from '../../query/queries/diet';
+import DBottomSheet from '../../components/common/DBottomSheet';
+import SortModalContent from '../../components/home/SortModalContent';
+import FilterModalContent from '../../components/home/FilterModalContent';
+import FilterHeader from '../../components/home/FilterHeader';
 
 const Home = () => {
   // redux
@@ -62,6 +66,9 @@ const Home = () => {
     {id: 3, text: '가격'},
     {id: 4, text: '끼니구성'},
   ];
+  //modal
+  const [sortModalShow, setSortModalShow] = useState(false);
+  const [filterModalShow, setFilterModalShow] = useState(false);
 
   const renderFoodList = ({item}: {item: IProductData}) =>
     dietDetailData ? (
@@ -94,15 +101,32 @@ const Home = () => {
             <ListTitle>{listTitle}</ListTitle>
             <NoOfFoods> {tData?.length}개</NoOfFoods>
           </Row>
-          <SortBtn></SortBtn>
+          <SortBtn onPress={() => setSortModalShow(true)}>
+            <SortBtnText>정렬</SortBtnText>
+            <SortImage source={require('../../assets/icons/24_sort.png')} />
+          </SortBtn>
         </Row>
+        <DBottomSheet
+          alertShow={sortModalShow}
+          setAlertShow={setSortModalShow}
+          renderContent={() => <SortModalContent />}
+          onCancel={() => {
+            console.log('oncancel');
+          }}
+        />
         <HorizontalLine style={{marginTop: 8}} />
-        {/* <BtnCTA btnStyle="activated" onPress={async () => {}}>
-          <BtnText>테스트 데이터</BtnText>
-        </BtnCTA> */}
-
-        {/* 식품리스트 */}
         <HorizontalSpace height={16} />
+        <FilterHeader onPress={() => setFilterModalShow(true)} />
+        <DBottomSheet
+          alertShow={filterModalShow}
+          setAlertShow={setFilterModalShow}
+          renderContent={() => <FilterModalContent />}
+          onCancel={() => {
+            console.log('oncancel');
+          }}
+        />
+        <HorizontalSpace height={16} />
+
         {tData && dietDetailData && (
           <FlatList
             data={tData}
