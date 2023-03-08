@@ -19,16 +19,16 @@ const Login = ({navigation: {navigate}}: NavigationProps) => {
   const signInWithKakao = useCallback(async (): Promise<void> => {
     const isTokenValid = await validateToken();
 
-    isLoading
-      ? isLoading
-      : isTokenValid && Object.values(data).includes('')
-      ? navigate('InputNav', {screen: 'FirstInput'})
-      : navigate('BottomTabNav', {screen: 'Home'});
+    isTokenValid && !isLoading
+      ? Object.keys(data).length === 0
+        ? navigate('InputNav', {screen: 'FirstInput'})
+        : navigate('BottomTabNav', {screen: 'Home'})
+      : navigate('Login', {screen: 'Login'});
   }, [isLoading, data, navigate]);
 
   useEffect(() => {
     signInWithKakao();
-  }, []);
+  }, [signInWithKakao]);
 
   // const signInWithKakao = async (): Promise<void> => {
   //   const {isTokenValid} = await validateToken();

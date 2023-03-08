@@ -18,12 +18,24 @@ export const sumUpNutrients = (dietDetail: IDietDetailData | undefined) => {
   return {cal, carb, protein, fat};
 };
 
-export const sumUpPrice = (dietDetail: IDietDetailData) => {
+export const sumUpPrice = (dietDetail: IDietDetailData | undefined) => {
+  if (!dietDetail) {
+    return 0;
+  }
   let price = 0;
-  dietDetail.forEach((food, index) => {
+  dietDetail?.forEach((food, index) => {
     price += parseInt(food.price) * parseInt(food.qty);
   });
   return price;
+};
+export const makePriceObjBySeller = (
+  productsBySeller: Array<Array<IProductData>>,
+) => {
+  let priceBySeller: {[key: string]: number} = {};
+  productsBySeller.forEach((seller, idx) => {
+    priceBySeller[seller[0].platformNm] = sumUpPrice(seller);
+  });
+  return priceBySeller;
 };
 
 interface INutr {

@@ -20,22 +20,20 @@ const CartSummary = () => {
   );
 
   const reGroupedProducts = dietAllData && reGroupBySeller(dietAllData);
-
   return (
     <TotalSummaryContainer>
       <MenuTotalText>{menuTotalText}</MenuTotalText>
-      {reGroupedProducts &&
-        reGroupedProducts.map((group, idx) => (
-          <View key={idx}>
-            <SellerText>{group[0].platformNm}</SellerText>
-            <SellerProductPrice>
-              식품: {commaToNum(sumUpPrice(group))} 원
-            </SellerProductPrice>
-            <SellerShippingPrice>
-              배송비: 3,000원 (10,000원 이상 무료배송)
-            </SellerShippingPrice>
-          </View>
-        ))}
+      {reGroupedProducts?.map((group, idx) => (
+        <View key={idx}>
+          <SellerText>{group[0].platformNm}</SellerText>
+          <SellerProductPrice>
+            식품: {commaToNum(sumUpPrice(group))} 원
+          </SellerProductPrice>
+          <SellerShippingPrice>
+            배송비: 3,000원 (10,000원 이상 무료배송)
+          </SellerShippingPrice>
+        </View>
+      ))}
     </TotalSummaryContainer>
   );
 };
