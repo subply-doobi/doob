@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {TouchableWithoutFeedback, ScrollView, View} from 'react-native';
 import styled from 'styled-components/native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -12,6 +12,8 @@ import {
   Row,
   HorizontalSpace,
   TextSub,
+  BtnBottomCTA,
+  BtnText,
 } from '../styles/styledConsts';
 
 import NutrientsProgress from '../components/common/NutrientsProgress';
@@ -29,29 +31,35 @@ import CartFoodList from '../components/cart/CartFoodList';
 import {
   commaToNum,
   compareNutrToTarget,
+  reGroupBySeller,
   sumUpNutrients,
   sumUpPrice,
 } from '../util/sumUp';
 import {useGetBaseLine} from '../query/queries/baseLine';
 import CartSummary from '../components/cart/CartSummary';
+import {useNavigation} from '@react-navigation/native';
 
 const Cart = () => {
   // redux
   const {currentDietNo} = useSelector((state: RootState) => state.cart);
-  const dispatch = useDispatch();
 
   // react-query
   const {data: dietData} = useListDiet();
   const {data: baseLineData} = useGetBaseLine();
   const {data: dietDetailData} = useListDietDetail(currentDietNo);
+  const {data: dietDetailAllData} = useListDietDetailAll();
 
   // useState
   const [menuSelectOpen, setMenuSelectOpen] = useState(false);
-  const [checkAllClicked, setCheckAllClicked] = useState(false);
   const [autoDietModalShow, setAutoDietModalShow] = useState(false);
+  const [checkAllClicked, setCheckAllClicked] = useState(false);
+  const [selectedFoods, setSelectedFoods] = useState<{[key: string]: string[]}>(
+    {},
+  );
 
   // etc
-
+  // navigation
+  const navigation = useNavigation();
   // 현재 끼니의 식품들이 목표섭취량에 부합하는지 확인
   // empty/notEnough/exceed 에 따라 autoMenuBtn 디자인이 다름
   const {cal, carb, protein, fat} = sumUpNutrients(dietDetailData);
@@ -67,6 +75,40 @@ const Cart = () => {
       )
     : 'empty';
 
+  // 추가된 식품 하나도 없으면 주문버튼 비활성
+  const isEmpty = dietDetailAllData ? dietDetailAllData.length === 0 : false;
+  const totalPrice = useMemo(() => {
+    const reGroupedProducts =
+      dietDetailAllData && reGroupBySeller(dietDetailAllData);
+    if (!reGroupBySeller) return undefined;
+
+    let totalProductPrice = 0;
+    let totalShippingPrice = 0;
+
+    reGroupedProducts?.forEach(seller => {
+      const sellerProductPrice = sumUpPrice(seller);
+      // TBD | 아직 freeShippingPrice 서버에서 값 못받아서 수기로
+      // const sellershippingPrice =
+      //   sellerProductPrice < seller[0].freeShippingPrice
+      //     ? seller[0].shippingPrice
+      //     : 0;
+      const sellershippingPrice = sellerProductPrice < 30000 ? 3000 : 0;
+      totalProductPrice += sellerProductPrice;
+      totalShippingPrice += sellershippingPrice;
+    });
+
+    const totalPrice = totalProductPrice + totalShippingPrice;
+    return totalPrice;
+  }, [dietDetailAllData]);
+
+  const checkAll = () => {
+    const allArr = dietDetailData ? dietDetailData.map(v => v.productNo) : [];
+    dietDetailData && setSelectedFoods({[currentDietNo]: allArr});
+  };
+  const unCheckAll = () => {
+    setSelectedFoods({[currentDietNo]: []});
+  };
+
   return (
     // <TouchableWithoutFeedback
     //   onPress={() => {
@@ -79,7 +121,10 @@ const Cart = () => {
         <SelectedDeleteRow>
           <SelectAllBox>
             <SelectAllCheckbox
-              onPress={() => setCheckAllClicked(clicked => !clicked)}>
+              onPress={() => {
+                checkAllClicked ? unCheckAll() : checkAll();
+                setCheckAllClicked(clicked => !clicked);
+              }}>
               {checkAllClicked ? (
                 <CheckboxImage
                   source={require('../assets/icons/24_checkbox_selected.png')}
@@ -109,7 +154,10 @@ const Cart = () => {
           <NutrientsProgress currentDietNo={currentDietNo} />
 
           {/* 현재 끼니 식품들 */}
-          <CartFoodList />
+          <CartFoodList
+            selectedFoods={selectedFoods}
+            setSelectedFoods={setSelectedFoods}
+          />
 
           {/* 자동구성 버튼 */}
           <AutoMenuBtn
@@ -134,6 +182,13 @@ const Cart = () => {
         {/* 끼니 정보 요약 */}
         <CartSummary />
       </ScrollView>
+      <BtnBottomCTA
+        btnStyle={isEmpty ? 'inactivated' : 'activated'}
+        onPress={() => {
+          navigation.navigate('OrderNav', {screen: 'Order'});
+        }}>
+        <BtnText>총 {totalPrice && commaToNum(totalPrice)}원 주문하기</BtnText>
+      </BtnBottomCTA>
     </Container>
     // </TouchableWithoutFeedback>
   );

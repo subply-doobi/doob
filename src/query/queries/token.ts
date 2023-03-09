@@ -48,14 +48,6 @@ export const validateToken = async () => {
   let isTokenValid = false;
   let validToken: string | null = '';
   const {accessToken, refreshToken} = await getStoredToken();
-  if (!accessToken || !refreshToken) {
-    try {
-      validToken = await kakaoLogin();
-      isTokenValid = true;
-    } catch (e) {
-      console.log('카카오로그인 실패', e);
-    }
-  }
 
   if (!isTokenValid) {
     try {
