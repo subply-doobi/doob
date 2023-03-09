@@ -112,8 +112,6 @@ const Address = ({
     (state: RootState) => state.order,
   );
   // 렌더링이 6번되는데....
-  console.log('Address: selectedId: ', selectedAddressId);
-  console.log('orderInfo: ', orderInfo);
 
   // navigation
   const navigation = useNavigation();
@@ -172,7 +170,6 @@ const Address = ({
           <AddressBox>
             <SelectContainer
               onPress={() => {
-                console.log('onPress: index: ', index);
                 dispatch(setSelectedAddressId(index));
               }}>
               <CheckIcon
