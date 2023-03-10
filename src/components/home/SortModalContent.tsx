@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import {
   Row,
@@ -6,39 +6,169 @@ import {
   BtnCTA,
   BtnBottomCTA,
 } from '../../styles/styledConsts';
+import {useListProduct} from '../../query/queries/product';
 
-const SortModalContent = () => {
+const SortModalContent = props => {
+  const {closeModal} = props;
+  const [priceToggle, setPriceToggle] = useState(0);
+  const [calorieToggle, setCalorieToggle] = useState(0);
+  const [proteinToggle, setProteinToggle] = useState(0);
+  const [param, setParam] = useState('');
+  const [last, setLast] = useState('');
+  const {data} = useListProduct({sort: last}, {enabled: last ? true : false});
+  console.log('last:', last);
+  const toggleButton = arg => {
+    const {price, calorie, protein} = arg;
+    // setCalorieToggle(0);
+    // setProteinToggle(0);
+    price === 0
+      ? setParam('Price,DESC')
+      : price === 1
+      ? setParam('Price,ASC')
+      : price === 2
+      ? setParam('')
+      : null;
+    calorie === 0
+      ? setParam('PriceCalorieCompare,DESC')
+      : arg.calorie === 1
+      ? setParam('PriceCalorieCompare,ASC')
+      : arg.calorie === 2
+      ? setParam('')
+      : null;
+    protein === 0
+      ? setParam('PriceProteinCompare,DESC')
+      : arg.protein === 1
+      ? setParam('PriceProteinCompare,ASC')
+      : arg.protein === 2
+      ? setParam('')
+      : null;
+    // if (price) {
+    //   setCalorieToggle(0);
+    //   setProteinToggle(0);
+    //   price === 0
+    //     ? setParam('Price,DESC')
+    //     : price === 1
+    //     ? setParam('Price,ASC')
+    //     : price === 2
+    //     ? setParam('ㄴㄴ')
+    //     : null;
+    // } else if (calorie) {
+    //   setPriceToggle(0);
+    //   setProteinToggle(0);
+    //   calorie === 0
+    //     ? setParam('Calorie,DESC')
+    //     : arg.calorie === 1
+    //     ? setParam('Calorie,ASC')
+    //     : arg.calorie === 2
+    //     ? setParam('')
+    //     : null;
+    // } else if (protein) {
+    //   setPriceToggle(0);
+    //   setCalorieToggle(0);
+    //   protein === 0
+    //     ? setParam('Protein,DESC')
+    //     : arg.protein === 1
+    //     ? setParam('Protein,ASC')
+    //     : arg.protein === 2
+    //     ? setParam('')
+    //     : null;
+    // }
+  };
+
+  console.log('param:', param);
+
   return (
     <>
       <Button
         onPress={() => {
-          console.log;
+          setCalorieToggle(0);
+          setProteinToggle(0);
+          toggleButton({price: priceToggle});
+          setPriceToggle(
+            priceToggle % 2 === 0 && priceToggle !== 0 ? 0 : priceToggle + 1,
+          );
         }}>
         <SortRow>
           <Text>가격</Text>
-          <Image source={require('../../assets/icons/24_sort.png')} />
+          {priceToggle === 0 ? (
+            <Image source={require('../../assets/icons/24_sort.png')} />
+          ) : priceToggle === 1 ? (
+            <Image
+              source={require('../../assets/icons/24_sort_descending.png')}
+            />
+          ) : (
+            <Image
+              source={require('../../assets/icons/24_sort_ascending.png')}
+            />
+          )}
         </SortRow>
       </Button>
       <HorizontalLine />
-      <Button>
+      <Button
+        onPress={() => {
+          setPriceToggle(0);
+          setProteinToggle(0);
+          setCalorieToggle(
+            calorieToggle % 2 === 0 && calorieToggle !== 0
+              ? 0
+              : calorieToggle + 1,
+          );
+          toggleButton({calorie: calorieToggle});
+        }}>
         <SortRow>
           <Text>가칼비</Text>
-          <Image source={require('../../assets/icons/24_sort.png')} />
+          {calorieToggle === 0 ? (
+            <Image source={require('../../assets/icons/24_sort.png')} />
+          ) : calorieToggle === 1 ? (
+            <Image
+              source={require('../../assets/icons/24_sort_descending.png')}
+            />
+          ) : (
+            <Image
+              source={require('../../assets/icons/24_sort_ascending.png')}
+            />
+          )}
         </SortRow>
       </Button>
       <HorizontalLine />
 
-      <Button>
+      <Button
+        onPress={() => {
+          setCalorieToggle(0);
+          setCalorieToggle(0);
+          setProteinToggle(
+            proteinToggle % 2 === 0 && proteinToggle !== 0
+              ? 0
+              : proteinToggle + 1,
+          );
+          toggleButton({protein: proteinToggle});
+        }}>
         <SortRow>
           <Text>가단비</Text>
-          <Image source={require('../../assets/icons/24_sort.png')} />
+          {proteinToggle === 0 ? (
+            <Image source={require('../../assets/icons/24_sort.png')} />
+          ) : proteinToggle === 1 ? (
+            <Image
+              source={require('../../assets/icons/24_sort_descending.png')}
+            />
+          ) : (
+            <Image
+              source={require('../../assets/icons/24_sort_ascending.png')}
+            />
+          )}
         </SortRow>
       </Button>
       <BottomRow>
         <BtnCTA btnStyle="border" width="200">
           <BottomText>초기화</BottomText>
         </BtnCTA>
-        <BtnCTA btnStyle="border" width="200">
+        <BtnCTA
+          btnStyle="border"
+          width="200"
+          onPress={() => {
+            setLast(param);
+            closeModal(false);
+          }}>
           <BottomText>확인</BottomText>
         </BtnCTA>
       </BottomRow>

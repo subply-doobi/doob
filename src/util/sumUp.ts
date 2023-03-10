@@ -33,7 +33,7 @@ export const makePriceObjBySeller = (
 ) => {
   let priceBySeller: {[key: string]: number} = {};
   productsBySeller.forEach((seller, idx) => {
-    priceBySeller[seller[0].platformNm] = sumUpPrice(seller);
+    priceBySeller[seller[0]?.platformNm] = sumUpPrice(seller);
   });
   return priceBySeller;
 };
@@ -74,7 +74,9 @@ export const reGroupBySeller = (dietDetailData: IProductData[]) => {
       continue;
     }
     for (let j = 0; j < reGroupedProducts.length; j++) {
-      if (reGroupedProducts[j][0].platformNm === dietDetailData[i].platformNm) {
+      if (
+        reGroupedProducts[j][0]?.platformNm === dietDetailData[i]?.platformNm
+      ) {
         reGroupedProducts[j].push(dietDetailData[i]);
         break;
       } else {

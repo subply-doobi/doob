@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import {
   Row,
@@ -6,57 +6,105 @@ import {
   BtnCTA,
   BtnBottomCTA,
 } from '../../styles/styledConsts';
-import {useWeightPurposeCode} from '../../query/queries/code';
+import {useWeightPurposeCode, useFilterCode} from '../../query/queries/code';
+import {useListProduct} from '../../query/queries/product';
+import {useListCategory, useCountCategory} from '../../query/queries/category';
+import {ProgressBarAndroidComponent} from 'react-native';
 
-const CategoryContent = () => {
-  const weightTimeCd = useWeightPurposeCode('SP005');
-  console.log('filtermodal/008:', weightTimeCd);
-  return <Text>ooooo</Text>;
-};
-const filterMenus = [
-  {id: 1, text: '카테고리'},
-  {id: 2, text: '영양성분'},
-  {id: 3, text: '가격'},
-  {id: 4, text: '끼니구성'},
-];
-const FilterHeaderText = () => {
-  return (
-    <>
-      <FilterRow>
-        <Button
-          onPress={() => {
-            console.log('카테고리');
-          }}>
-          <Text>카테고리</Text>
-          <CategoryContent />
-        </Button>
-        <Button
-          onPress={() => {
-            console.log('영양성분');
-          }}>
-          <Text>영양성분</Text>
-        </Button>
-        <Button>
-          <Text>가격</Text>
-        </Button>
-        <Button>
-          <Text>식단구성</Text>
-        </Button>
-        <Button>
-          <Image
-            style={{marginTop: 5}}
-            source={require('../../assets/icons/24_filterInitialize.png')}
-          />
-        </Button>
-      </FilterRow>
-    </>
-  );
-};
+interface CategoryItem {
+  categoryCd: string;
+  CategoryCdNm: string;
+  productCnt: number;
+}
 
 const FilterModalContent = () => {
+  const [clicked, setClicked] = useState(0);
+  const CategoryContent = () => {
+    // const filter = useFilterCode('Protein');
+    // console.log('filterTest:', filter);
+    const list = useListProduct();
+    // console.log('filterModal/listproduct:', list);
+    const count = useCountCategory();
+    const onPress = arg => {
+      console.log('pressed', arg);
+    };
+    return count.data?.map((e, i) => (
+      <>
+        <CategoryButton
+          key={e.categoryCd}
+          onPress={() => onPress(e.categoryCd)}>
+          <CategoryText>
+            {e.categoryCdNm}( {e.productCnt})
+          </CategoryText>
+          <HorizontalLine />
+        </CategoryButton>
+      </>
+    ));
+  };
+  const NutritionContent = () => {
+    return <Text>nutrition</Text>;
+  };
+  const PriceContent = () => {
+    return <Text>price</Text>;
+  };
+  const AutoDietContent = () => {
+    return <Text>auto</Text>;
+  };
+  const FilterHeaderText = () => {
+    return (
+      <>
+        <FilterRow>
+          <Button
+            onPress={() => {
+              setClicked(0);
+            }}>
+            <Text>카테고리</Text>
+          </Button>
+          <Button
+            onPress={() => {
+              setClicked(1);
+            }}>
+            <Text>영양성분</Text>
+          </Button>
+          <Button
+            onPress={() => {
+              setClicked(2);
+            }}>
+            <Text>가격</Text>
+          </Button>
+          <Button
+            onPress={() => {
+              setClicked(3);
+            }}>
+            <Text>식단구성</Text>
+          </Button>
+          <Button>
+            <Image
+              style={{marginTop: 5}}
+              source={require('../../assets/icons/24_filterInitialize.png')}
+            />
+          </Button>
+        </FilterRow>
+      </>
+    );
+  };
+  const ShowContent = (i: any) => {
+    return i.index === 0 ? (
+      <CategoryContent />
+    ) : i.index === 1 ? (
+      <NutritionContent />
+    ) : i.index === 2 ? (
+      <PriceContent />
+    ) : i.index === 3 ? (
+      <AutoDietContent />
+    ) : (
+      <CategoryContent />
+    );
+  };
   return (
     <>
       <FilterHeaderText />
+      <ShowContent index={clicked} />
       <BottomRow>
         <BtnCTA btnStyle="border" width="200">
           <BottomText>초기화</BottomText>
@@ -75,6 +123,13 @@ const Text = styled.Text`
   font-size: 18px;
   margin: 15px;
 `;
+const CategoryText = styled.Text`
+  font-size: 16px;
+  margin: 15px;
+  text-align: center;
+`;
+const CategoryButton = styled.TouchableOpacity``;
+
 const BottomText = styled.Text`
   font-size: 16px;
 `;

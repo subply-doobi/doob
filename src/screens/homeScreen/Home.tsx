@@ -109,7 +109,9 @@ const Home = () => {
         <DBottomSheet
           alertShow={sortModalShow}
           setAlertShow={setSortModalShow}
-          renderContent={() => <SortModalContent />}
+          renderContent={() => (
+            <SortModalContent closeModal={setSortModalShow} />
+          )}
           onCancel={() => {
             console.log('oncancel');
           }}
