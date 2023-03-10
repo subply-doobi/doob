@@ -85,7 +85,6 @@ const CartFoodList = ({
     setSelectedFoods(newObj);
   };
   const deleteFromSelected = (productNo: string) => {
-    const newArr = selectedFoods[currentDietNo];
     const newObj = {
       ...selectedFoods,
       [currentDietNo]: [

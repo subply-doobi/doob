@@ -19,7 +19,6 @@ import {
   LIST_PRODUCT,
   UPDATE_DIET_DETAIL,
 } from './urls';
-
 // PUT //
 export const useCreateDiet = (options?: IMutationOptions) => {
   const mutation = useMutation({

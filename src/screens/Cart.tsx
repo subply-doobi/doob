@@ -20,6 +20,7 @@ import NutrientsProgress from '../components/common/NutrientsProgress';
 import MenuHeader from '../components/common/MenuHeader';
 import MenuSelect from '../components/common/MenuSelect';
 import {
+  useDeleteDietDetail,
   useListDiet,
   useListDietDetail,
   useListDietDetailAll,
@@ -44,10 +45,10 @@ const Cart = () => {
   const {currentDietNo} = useSelector((state: RootState) => state.cart);
 
   // react-query
-  const {data: dietData} = useListDiet();
   const {data: baseLineData} = useGetBaseLine();
   const {data: dietDetailData} = useListDietDetail(currentDietNo);
   const {data: dietDetailAllData} = useListDietDetailAll();
+  const deleteDietDetailMutation = useDeleteDietDetail();
 
   // useState
   const [menuSelectOpen, setMenuSelectOpen] = useState(false);
@@ -109,6 +110,20 @@ const Cart = () => {
     setSelectedFoods({[currentDietNo]: []});
   };
 
+  // TBD | 에러처리는 어떻게??
+  const deleteSelected = () => {
+    Promise.all(
+      selectedFoods[currentDietNo]?.map(productNo =>
+        deleteDietDetailMutation.mutateAsync({
+          dietNo: currentDietNo,
+          productNo,
+        }),
+      ),
+    )
+      .then(() => console.log('삭제 완료'))
+      .catch(e => console.log('삭제 실패', e));
+  };
+
   return (
     // <TouchableWithoutFeedback
     //   onPress={() => {
@@ -138,7 +153,7 @@ const Cart = () => {
 
             <SelectAllText>전체 선택</SelectAllText>
           </SelectAllBox>
-          <BtnSmall onPress={() => console.log('선택삭제')}>
+          <BtnSmall onPress={deleteSelected}>
             <BtnSmallText isActivated={true}>선택 삭제</BtnSmallText>
           </BtnSmall>
         </SelectedDeleteRow>
