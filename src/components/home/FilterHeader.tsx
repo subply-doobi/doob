@@ -3,21 +3,37 @@ import {Row, TextMain} from '../../styles/styledConsts';
 import styled from 'styled-components/native';
 
 const FilterHeader = props => {
-  const {onPress} = props;
-
+  const {onPress, setFilterIndex} = props;
+  console.log(props);
   return (
     <>
       <Row>
-        <FilterBtn onPress={onPress}>
+        <FilterBtn
+          onPress={() => {
+            onPress();
+            setFilterIndex(0);
+          }}>
           <FilterBtnText>카테고리</FilterBtnText>
         </FilterBtn>
-        <FilterBtn onPress={onPress}>
+        <FilterBtn
+          onPress={() => {
+            onPress();
+            setFilterIndex(1);
+          }}>
           <FilterBtnText>영양성분</FilterBtnText>
         </FilterBtn>
-        <FilterBtn onPress={onPress}>
+        <FilterBtn
+          onPress={() => {
+            onPress();
+            setFilterIndex(2);
+          }}>
           <FilterBtnText>가격</FilterBtnText>
         </FilterBtn>
-        <FilterBtn onPress={onPress}>
+        <FilterBtn
+          onPress={() => {
+            onPress();
+            setFilterIndex(3);
+          }}>
           <FilterBtnText>식단구성</FilterBtnText>
         </FilterBtn>
       </Row>

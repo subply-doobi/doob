@@ -61,7 +61,8 @@ const Home = () => {
   const [searchText, setSearchText] = useState('');
   const [menuSelectOpen, setMenuSelectOpen] = useState(false);
   let filterHeight = true;
-
+  const [filterIndex, setFilterIndex] = useState(0);
+  console.log('HOME/FILTERINDEX:', filterIndex);
   //modal
   const [sortModalShow, setSortModalShow] = useState(false);
   const [filterModalShow, setFilterModalShow] = useState(false);
@@ -113,11 +114,16 @@ const Home = () => {
         />
         <HorizontalLine style={{marginTop: 8}} />
         <HorizontalSpace height={16} />
-        <FilterHeader onPress={() => setFilterModalShow(true)} />
+        <FilterHeader
+          setFilterIndex={setFilterIndex}
+          onPress={() => {
+            setFilterModalShow(true);
+          }}
+        />
         <DBottomSheet
           alertShow={filterModalShow}
           setAlertShow={setFilterModalShow}
-          renderContent={() => <FilterModalContent />}
+          renderContent={() => <FilterModalContent filterIndex={filterIndex} />}
           onCancel={() => {
             console.log('oncancel');
           }}

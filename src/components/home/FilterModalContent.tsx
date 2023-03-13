@@ -16,8 +16,9 @@ import CategoryContent from './filterContents/CategoryContent';
 import NutritionContent from './filterContents/NutritionContent';
 import PriceContent from './filterContents/PriceContent';
 
-const FilterModalContent = () => {
+const FilterModalContent = props => {
   const [clicked, setClicked] = useState(0);
+  const {filterIndex} = props;
 
   const AutoDietContent = () => {
     return <Text>auto</Text>;
@@ -77,7 +78,7 @@ const FilterModalContent = () => {
     <>
       <ScrollView>
         <FilterHeaderText />
-        <ShowContent index={clicked} />
+        <ShowContent index={filterIndex} />
       </ScrollView>
     </>
   );
