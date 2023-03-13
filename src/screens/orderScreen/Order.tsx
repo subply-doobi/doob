@@ -51,9 +51,6 @@ const Order = ({navigation: {navigate}, route}: NavigationProps) => {
     pay,
   } = useKakaoPayReady();
 
-  const {data: listDietDetailAll, isLoading: isListDietDetailLoading} =
-    useListDietDetailAll();
-
   const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
 
   const {orderInfo, selectedAddressId, orderSummary} = useSelector(
@@ -113,7 +110,7 @@ const Order = ({navigation: {navigate}, route}: NavigationProps) => {
           <HeaderSubTitle>외</HeaderSubTitle>
         </Row>
       ),
-      content: <FoodToOrder listDietDetailAll={listDietDetailAll} />,
+      content: <FoodToOrder />,
     },
     {
       title: '주문자',
@@ -191,9 +188,6 @@ const Order = ({navigation: {navigate}, route}: NavigationProps) => {
   // useEffect(() => {
   //   handleSubmit(() => {})();
   // }, []);
-  if (isListDietDetailLoading) {
-    return <ActivityIndicator />;
-  }
 
   return (
     <SafeAreaView style={{flex: 1}}>

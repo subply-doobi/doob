@@ -11,17 +11,17 @@ import {BASE_URL} from '../../query/queries/urls';
 import {IProductData} from '../../query/types/product';
 import colors from '../../styles/colors';
 import {IDietDetailData} from '../../query/types/diet';
-
+import {useListDiet, useListDietDetailAll} from '../../query/queries/diet';
 interface GroupedByDietNo {
   [key: string]: IProductData[];
 }
 
-const FoodToOrder = ({
-  listDietDetailAll,
-}: {
-  listDietDetailAll: IDietDetailData | undefined;
-}) => {
-  function groupFoodsByDietNo(foods: IDietDetailData): GroupedByDietNo {
+const FoodToOrder = () => {
+  const {data: listDietDetailAll, isLoading: isListDietDetailLoading} =
+    useListDietDetailAll();
+  const {data: listDiet} = useListDiet();
+
+  const groupFoodsByDietNo = (foods: IDietDetailData): GroupedByDietNo => {
     const groups: GroupedByDietNo = {};
 
     for (const food of foods) {
@@ -33,7 +33,14 @@ const FoodToOrder = ({
     }
 
     return groups;
-  }
+  };
+
+  // const getDietSeqByDietNo = (dietNo)=>{
+  //   for(let i=0;i<listDiet?.length;i++){
+  //     if(listDiet[i]
+  //   }
+  // }
+
   const groupedFoods = groupFoodsByDietNo(listDietDetailAll);
 
   return (
@@ -41,7 +48,7 @@ const FoodToOrder = ({
       {Object.keys(groupedFoods).map((el, index) => {
         return (
           <Col key={index}>
-            <MenuTitle>{el}</MenuTitle>
+            <MenuTitle>끼니{index}</MenuTitle>
             <HorizontalLine
               style={{marginTop: 8, backgroundColor: colors.line}}
             />
