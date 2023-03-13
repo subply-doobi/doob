@@ -15,7 +15,9 @@ const SortModalContent = props => {
   const [proteinToggle, setProteinToggle] = useState(0);
   const [param, setParam] = useState('');
   const [last, setLast] = useState('');
-  const {data} = useListProduct({sort: last}, {enabled: last ? true : false});
+  const {data} = useListProduct();
+
+  console.log(data);
   console.log('last:', last);
   const toggleButton = arg => {
     const {price, calorie, protein} = arg;
@@ -134,7 +136,7 @@ const SortModalContent = props => {
 
       <Button
         onPress={() => {
-          setCalorieToggle(0);
+          setPriceToggle(0);
           setCalorieToggle(0);
           setProteinToggle(
             proteinToggle % 2 === 0 && proteinToggle !== 0
@@ -166,7 +168,6 @@ const SortModalContent = props => {
           btnStyle="border"
           width="200"
           onPress={() => {
-            setLast(param);
             closeModal(false);
           }}>
           <BottomText>확인</BottomText>

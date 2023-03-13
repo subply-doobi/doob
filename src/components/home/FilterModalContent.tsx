@@ -5,48 +5,20 @@ import {
   HorizontalLine,
   BtnCTA,
   BtnBottomCTA,
+  TextMain,
 } from '../../styles/styledConsts';
 import {useWeightPurposeCode, useFilterCode} from '../../query/queries/code';
 import {useListProduct} from '../../query/queries/product';
 import {useListCategory, useCountCategory} from '../../query/queries/category';
-import {ProgressBarAndroidComponent} from 'react-native';
-
-interface CategoryItem {
-  categoryCd: string;
-  CategoryCdNm: string;
-  productCnt: number;
-}
+import {ProgressBarAndroidComponent, ScrollView} from 'react-native';
+import DSlider from '../common/slider/DSlider';
+import CategoryContent from './filterContents/CategoryContent';
+import NutritionContent from './filterContents/NutritionContent';
+import PriceContent from './filterContents/PriceContent';
 
 const FilterModalContent = () => {
   const [clicked, setClicked] = useState(0);
-  const CategoryContent = () => {
-    // const filter = useFilterCode('Protein');
-    // console.log('filterTest:', filter);
-    const list = useListProduct();
-    // console.log('filterModal/listproduct:', list);
-    const count = useCountCategory();
-    const onPress = arg => {
-      console.log('pressed', arg);
-    };
-    return count.data?.map((e, i) => (
-      <>
-        <CategoryButton
-          key={e.categoryCd}
-          onPress={() => onPress(e.categoryCd)}>
-          <CategoryText>
-            {e.categoryCdNm}( {e.productCnt})
-          </CategoryText>
-          <HorizontalLine />
-        </CategoryButton>
-      </>
-    ));
-  };
-  const NutritionContent = () => {
-    return <Text>nutrition</Text>;
-  };
-  const PriceContent = () => {
-    return <Text>price</Text>;
-  };
+
   const AutoDietContent = () => {
     return <Text>auto</Text>;
   };
@@ -103,16 +75,10 @@ const FilterModalContent = () => {
   };
   return (
     <>
-      <FilterHeaderText />
-      <ShowContent index={clicked} />
-      <BottomRow>
-        <BtnCTA btnStyle="border" width="200">
-          <BottomText>초기화</BottomText>
-        </BtnCTA>
-        <BtnCTA btnStyle="border" width="200">
-          <BottomText>확인</BottomText>
-        </BtnCTA>
-      </BottomRow>
+      <ScrollView>
+        <FilterHeaderText />
+        <ShowContent index={clicked} />
+      </ScrollView>
     </>
   );
 };
@@ -123,12 +89,6 @@ const Text = styled.Text`
   font-size: 18px;
   margin: 15px;
 `;
-const CategoryText = styled.Text`
-  font-size: 16px;
-  margin: 15px;
-  text-align: center;
-`;
-const CategoryButton = styled.TouchableOpacity``;
 
 const BottomText = styled.Text`
   font-size: 16px;
@@ -145,3 +105,11 @@ const BottomRow = styled.View`
   flex-direction: row;
   justify-content: center;
 `;
+const SliderTitle = styled(TextMain)`
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 40px;
+`;
+const MODAL_WIDTH = 328;
+const MODAL_INNER_WIDTH = MODAL_WIDTH - 32;
+const SLIDER_WIDTH = MODAL_INNER_WIDTH - 32;

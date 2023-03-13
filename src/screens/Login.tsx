@@ -14,27 +14,24 @@ const Login = ({navigation: {navigate}}: NavigationProps) => {
   const {currentDietNo} = useSelector((state: RootState) => state.cart);
 
   //유저값 check 후 화면 이동
-  const {data, isLoading} = useGetBaseLine();
-  console.log(isLoading);
-  const signInWithKakao = async (): Promise<void> => {
-    const {isTokenValid} = await validateToken();
-    isTokenValid && !isLoading
-      ? Object.keys(data)?.length === 0
-        ? navigate('InputNav', {screen: 'FirstInput'})
-        : navigate('BottomTabNav', {screen: 'Home'})
-      : navigate('Login', {screen: 'Login'});
-  };
-
-  useEffect(() => {
-    signInWithKakao();
-  }, []);
-
+  // const {data, isLoading} = useGetBaseLine();
+  // console.log(isLoading);
   // const signInWithKakao = async (): Promise<void> => {
   //   const {isTokenValid} = await validateToken();
-  //   if (isTokenValid) {
-  //     navigate('InputNav', {screen: 'FirstInput'});
-  //   }
+  //   isTokenValid && !isLoading
+  //     ? Object.keys(data)?.length === 0
+  //       ? navigate('InputNav', {screen: 'FirstInput'})
+  //       : navigate('BottomTabNav', {screen: 'Home'})
+  //     : navigate('Login', {screen: 'Login'});
   // };
+
+  // useEffect(() => {
+  //   signInWithKakao();
+  // }, []);
+
+  const signInWithKakao = async (): Promise<void> => {
+    navigate('BottomTabNav', {screen: 'Home'});
+  };
   return (
     <Container>
       <Box>

@@ -60,16 +60,11 @@ const Home = () => {
   // state
   const [searchText, setSearchText] = useState('');
   const [menuSelectOpen, setMenuSelectOpen] = useState(false);
-  const filterMenus = [
-    {id: 1, text: '카테고리'},
-    {id: 2, text: '영양성분'},
-    {id: 3, text: '가격'},
-    {id: 4, text: '끼니구성'},
-  ];
+  let filterHeight = true;
+
   //modal
   const [sortModalShow, setSortModalShow] = useState(false);
   const [filterModalShow, setFilterModalShow] = useState(false);
-
   const renderFoodList = ({item}: {item: IProductData}) =>
     dietDetailData ? (
       <FoodList item={item} dietDetailData={dietDetailData} />
@@ -126,6 +121,7 @@ const Home = () => {
           onCancel={() => {
             console.log('oncancel');
           }}
+          filterHeight={filterHeight}
         />
         <HorizontalSpace height={16} />
 
