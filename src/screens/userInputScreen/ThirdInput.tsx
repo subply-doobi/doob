@@ -24,6 +24,7 @@ import {
   useGetBaseLine,
   useUpdateBaseLine,
 } from '../../query/queries/baseLine';
+import {useCreateDiet, useListDiet} from '../../query/queries/diet';
 
 interface IFormData {
   ratioType: string;
@@ -35,10 +36,12 @@ interface IFormData {
 
 const ThirdInput = ({navigation: {navigate}}: NavigationProps) => {
   // react-query
+  const {data} = useGetBaseLine();
   const updateMutation = useUpdateBaseLine();
   const createMutation = useCreateBaseLine();
-  const {data} = useGetBaseLine();
-  // console.log('ThirdInput/data:', data);
+  const {data: dietData} = useListDiet();
+  const createDietMutation = useCreateDiet();
+
   // redux
   const {userInfo, userTarget} = useSelector(
     (state: RootState) => state.userInfo,
@@ -155,7 +158,14 @@ const ThirdInput = ({navigation: {navigate}}: NavigationProps) => {
     };
     const requestBody = convertDataByMethod[calculationMethod](dataToConvert);
     // console.log('ThirdInput/requestBody:', requestBody);
-    updateMutation.mutate(requestBody);
+    if (!dietData) return;
+    if (dietData.length === 0) {
+      createDietMutation.mutate();
+      createMutation.mutate(requestBody);
+    } else {
+      updateMutation.mutate(requestBody);
+    }
+    navigate('BottomTabNav', {screen: 'Home'});
   };
   // TBD | 스크롤뷰 ref를 Manual에 넘겨서 단백질입력 활성화시 스크롤 내려주기
   return (
@@ -180,7 +190,6 @@ const ThirdInput = ({navigation: {navigate}}: NavigationProps) => {
         disabled={btnIsActive ? false : true}
         onPress={() => {
           onSubmit();
-          navigate('BottomTabNav', {screen: 'Home'});
         }}>
         <BtnText>완료</BtnText>
       </BtnBottomCTA>

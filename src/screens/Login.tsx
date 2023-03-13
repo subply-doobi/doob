@@ -10,8 +10,6 @@ import {RootState} from '../stores/store';
 
 const Login = ({navigation: {navigate}}: NavigationProps) => {
   //redux
-  const dispatch = useDispatch();
-  const {currentDietNo} = useSelector((state: RootState) => state.cart);
 
   //유저값 check 후 화면 이동
   const {data, isLoading} = useGetBaseLine();
@@ -30,12 +28,6 @@ const Login = ({navigation: {navigate}}: NavigationProps) => {
     signInWithKakao();
   }, [signInWithKakao]);
 
-  // const signInWithKakao = async (): Promise<void> => {
-  //   const {isTokenValid} = await validateToken();
-  //   if (isTokenValid) {
-  //     navigate('InputNav', {screen: 'FirstInput'});
-  //   }
-  // };
   return (
     <Container>
       <Box>
