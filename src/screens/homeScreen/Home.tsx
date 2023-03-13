@@ -35,8 +35,9 @@ const Home = () => {
 
   // react-query
   const {data: tData} = useListProduct(
-    {categoryCd: 'CG001'},
+    {dietNo: currentDietNo, categoryCd: 'CG001'},
     {
+      enabled: currentDietNo ? true : false,
       onSuccess: () => {
         dispatch(setListTitle('도시락'));
       },

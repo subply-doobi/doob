@@ -72,7 +72,6 @@ const CartFoodList = ({
       });
     setDeleteAlertShow(false);
   };
-  console.log(selectedFoods);
 
   const addToSelected = (productNo: string) => {
     const newArr = selectedFoods[currentDietNo]

@@ -177,6 +177,7 @@ const FreeShippingNotice = styled(TextMain)`
 `;
 
 const BtnPlusMinus = styled.TouchableOpacity`
+  margin-left: 8px;
   width: 48px;
   height: 48px;
   justify-content: center;
