@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useMemo, useCallback} from 'react';
 import {TouchableWithoutFeedback, FlatList} from 'react-native';
 import styled from 'styled-components/native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -35,15 +35,17 @@ const Home = () => {
 
   // react-query
   const {data: tData} = useListProduct(
-    {categoryCd: 'CG003'},
+    {dietNo: currentDietNo, categoryCd: 'CG001'},
     {
+      enabled: currentDietNo ? true : false,
       onSuccess: () => {
-        dispatch(setListTitle('샐러드'));
+        dispatch(setListTitle('도시락'));
       },
     },
   );
-  const {data: dietDetailData, isFetching: dietDetailIsFetching} =
-    useListDietDetail(currentDietNo, {enabled: currentDietNo ? true : false});
+  const {data: dietDetailData} = useListDietDetail(currentDietNo, {
+    enabled: currentDietNo ? true : false,
+  });
 
   useEffect(() => {
     // 앱 시작할 때 내가 어떤 끼니를 보고 있는지 redux에 저장해놓기 위해 필요함
@@ -69,6 +71,14 @@ const Home = () => {
     ) : (
       <></>
     );
+
+  // const renderFoods = useCallback(
+  //   ({item}: {item: IProductData}) =>
+  //     dietDetailData ? (
+  //       <FoodList item={item} dietDetailData={dietDetailData} />
+  //     ) : null,
+  //   [],
+  // );
 
   return (
     <TouchableWithoutFeedback
@@ -109,6 +119,12 @@ const Home = () => {
             keyExtractor={item => item.productNo}
             renderItem={renderFoodList}
             ItemSeparatorComponent={() => <HorizontalSpace height={16} />}
+            initialNumToRender={2}
+            windowSize={2}
+            maxToRenderPerBatch={1}
+            removeClippedSubviews={true}
+            onEndReachedThreshold={0.4}
+            showsVerticalScrollIndicator={false}
           />
         )}
 

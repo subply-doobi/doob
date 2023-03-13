@@ -79,6 +79,7 @@ const FoodDetail = () => {
       headerTitleContainerStyle: {
         flexDirection: 'row',
         alignItems: 'center',
+        headerBackVisible: false,
       },
       headerTitle: () => {
         return (
