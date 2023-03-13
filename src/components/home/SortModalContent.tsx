@@ -17,8 +17,8 @@ const SortModalContent = props => {
   const [last, setLast] = useState('');
   const {data} = useListProduct();
 
-  console.log(data);
-  console.log('last:', last);
+  // console.log(data);
+  // console.log('last:', last);
   const toggleButton = arg => {
     const {price, calorie, protein} = arg;
     // setCalorieToggle(0);

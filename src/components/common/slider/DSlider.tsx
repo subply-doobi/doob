@@ -26,7 +26,6 @@ const DSlider = ({
   g,
 }: IDSlider) => {
   const width = sliderWidth ? sliderWidth : '100%';
-  console.log(kcal, g);
   return (
     <Container>
       <SliderContainer style={{width}}>
