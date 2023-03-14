@@ -42,7 +42,6 @@ export const useCreateDiet = (options?: IMutationOptions) => {
       dispatch(setCurrentDietNo(data.dietNo));
       queryClient.invalidateQueries({queryKey: [DIET]});
       queryClient.invalidateQueries({queryKey: [DIET_DETAIL_EMPTY_YN]});
-
       queryClient.invalidateQueries({queryKey: [PRODUCT]});
     },
     onError: e => console.log('useCreateDiet error: ', e),

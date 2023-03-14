@@ -220,6 +220,7 @@ export interface NavigationProps {
     navigate: Function;
     goBack: Function;
     setOptions: Function;
+    reset: Function;
   };
   route?: any;
 }

@@ -15,14 +15,13 @@ import {useListDietDetailAll} from '../query/queries/diet';
 
 const Tab = createBottomTabNavigator();
 
-const BottomTabNav = () => {
+const BottomTabNav = props => {
   // react-query
   const {data: dietDetailAllData} = useListDietDetailAll();
-
   const navigation = useNavigation();
   const {goBack} = navigation;
   return (
-    <Tab.Navigator>
+    <Tab.Navigator backBehavior="history">
       <Tab.Screen
         name="Home"
         component={Home}

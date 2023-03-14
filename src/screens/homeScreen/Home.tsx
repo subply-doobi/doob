@@ -26,8 +26,33 @@ import {setListTitle} from '../../stores/slices/filterSlice';
 import FoodList from '../../components/home/FoodList';
 import {IProductData} from '../../query/types/product';
 import {useListDietDetail} from '../../query/queries/diet';
+import DBottomSheet from '../../components/common/DBottomSheet';
+import SortModalContent from '../../components/home/SortModalContent';
+import FilterModalContent from '../../components/home/FilterModalContent';
+import FilterHeader from '../../components/home/FilterHeader';
 
 const Home = () => {
+  // state
+  const [searchText, setSearchText] = useState('');
+  const [menuSelectOpen, setMenuSelectOpen] = useState(false);
+  let filterHeight = true;
+  const [filterIndex, setFilterIndex] = useState(0);
+  const [sortParam, setSortParam] = useState('');
+  const [sortImageToggle, setSortImageToggle] = useState(0);
+  // console.log('HOME/sortParam:', sortParam);
+
+  //sortParam 안에 DSC면 아래모양, ASC면 위모양 , 없으면 기본모양
+  const checkSortImageToggle = () => {
+    sortParam.includes('DESC')
+      ? setSortImageToggle(1)
+      : sortParam.includes('ASC')
+      ? setSortImageToggle(2)
+      : setSortImageToggle(0);
+  };
+  useEffect(() => {
+    checkSortImageToggle();
+  }, [sortParam]);
+
   // redux
   const dispatch = useDispatch();
   const {listTitle} = useSelector((state: RootState) => state.filter);
@@ -39,7 +64,7 @@ const Home = () => {
     refetch: refetchProduct,
     isFetching: productIsFetching,
   } = useListProduct(
-    {dietNo: currentDietNo, categoryCd: 'CG001'},
+    {dietNo: currentDietNo, categoryCd: '', sort: sortParam},
     {
       enabled: currentDietNo ? true : false,
       onSuccess: () => {
@@ -47,28 +72,23 @@ const Home = () => {
       },
     },
   );
+  useEffect(() => {
+    currentDietNo && refetchProduct();
+  }, [sortParam]);
   const {data: dietDetailData} = useListDietDetail(currentDietNo, {
     enabled: currentDietNo ? true : false,
   });
 
   useEffect(() => {
     // 앱 시작할 때 내가 어떤 끼니를 보고 있는지 redux에 저장해놓기 위해 필요함
-    console.log('HOme');
     queryFn(LIST_DIET).then(res => {
       res[0] && dispatch(setCurrentDietNo(res[0]?.dietNo));
     });
   }, []);
 
-  // state
-  const [searchText, setSearchText] = useState('');
-  const [menuSelectOpen, setMenuSelectOpen] = useState(false);
-  const filterMenus = [
-    {id: 1, text: '카테고리'},
-    {id: 2, text: '영양성분'},
-    {id: 3, text: '가격'},
-    {id: 4, text: '끼니구성'},
-  ];
-
+  //modal
+  const [sortModalShow, setSortModalShow] = useState(false);
+  const [filterModalShow, setFilterModalShow] = useState(false);
   const renderFoodList = ({item}: {item: IProductData}) =>
     dietDetailData ? (
       <FoodList item={item} dietDetailData={dietDetailData} />
@@ -108,15 +128,53 @@ const Home = () => {
             <ListTitle>{listTitle}</ListTitle>
             <NoOfFoods> {tData?.length}개</NoOfFoods>
           </Row>
-          <SortBtn />
+          <SortBtn onPress={() => setSortModalShow(true)}>
+            <SortBtnText>정렬</SortBtnText>
+            {sortImageToggle === 0 ? (
+              <SortImage source={require('../../assets/icons/24_sort.png')} />
+            ) : sortImageToggle === 1 ? (
+              <SortImage
+                source={require('../../assets/icons/24_sort_descending.png')}
+              />
+            ) : (
+              <SortImage
+                source={require('../../assets/icons/24_sort_ascending.png')}
+              />
+            )}
+          </SortBtn>
         </Row>
+        <DBottomSheet
+          alertShow={sortModalShow}
+          setAlertShow={setSortModalShow}
+          renderContent={() => (
+            <SortModalContent
+              closeModal={setSortModalShow}
+              setSortParam={setSortParam}
+            />
+          )}
+          onCancel={() => {
+            console.log('oncancel');
+          }}
+        />
         <HorizontalLine style={{marginTop: 8}} />
-        {/* <BtnCTA btnStyle="activated" onPress={async () => {}}>
-          <BtnText>테스트 데이터</BtnText>
-        </BtnCTA> */}
-
-        {/* 식품리스트 */}
         <HorizontalSpace height={16} />
+        <FilterHeader
+          setFilterIndex={setFilterIndex}
+          onPress={() => {
+            setFilterModalShow(true);
+          }}
+        />
+        <DBottomSheet
+          alertShow={filterModalShow}
+          setAlertShow={setFilterModalShow}
+          renderContent={() => <FilterModalContent filterIndex={filterIndex} />}
+          onCancel={() => {
+            console.log('oncancel');
+          }}
+          filterHeight={filterHeight}
+        />
+        <HorizontalSpace height={16} />
+
         {tData && dietDetailData && (
           <FlatList
             data={tData}

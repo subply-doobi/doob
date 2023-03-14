@@ -27,9 +27,10 @@ export const LIST_PRODUCT = `${BASE_URL}/api/member/product/list-product`;
 export const CREATE_PRODUCT_AUTO = `${BASE_URL}/api/member/product/create-product-auto`;
 export const CREATE_PRODUCT_MARK = `${BASE_URL}/api/member/product/create-product-mark`;
 export const DELETE_PRODUCT_MARK = `${BASE_URL}/api/member/product/delete-product-mark`;
-
+export const FILTER = `${BASE_URL}/api/member/product/get-product-filter-range`;
 // api-member-code-controller
 export const COMMON_CODE = `${BASE_URL}/api/member/code/list-code`;
 
 // category-controller
 export const LIST_CATEGORY = `${BASE_URL}/api/member/category/list-category/CG`;
+export const COUNT_CATEGORY = `${BASE_URL}/api/member/category/list-category-product-cnt/CG`;

@@ -13,9 +13,9 @@ import {useNavigation} from '@react-navigation/native';
 
 const Stack = createNativeStackNavigator();
 
-const OrderNav = () => {
+const OrderNav = ({navigation: {navigate}}: NavigationProps) => {
   const navigation = useNavigation();
-  const {navigate} = navigation;
+  const {goBack} = navigation;
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -30,11 +30,7 @@ const OrderNav = () => {
             fontWeight: 'bold',
             color: colors.textMain,
           },
-          headerLeft: () => (
-            <BackArrow
-              goBackFn={() => navigate('BottomTabNav', {screen: 'Cart'})}
-            />
-          ),
+          headerLeft: () => <BackArrow goBackFn={goBack} />,
         }}
       />
       <Stack.Screen
@@ -51,7 +47,7 @@ const OrderNav = () => {
                   params: {from: 'AddressEdit'},
                 })
               }>
-              <BackArrow goBackFn={() => navigate('Order')} />
+              <BackArrow goBackFn={goBack} />
             </TouchableOpacity>
           ),
         }}
