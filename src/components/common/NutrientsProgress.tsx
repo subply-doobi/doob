@@ -80,7 +80,8 @@ const ProgressBar = ({title, numerator, denominator}: INutrientProgress) => {
 const NutrientsProgress = ({currentDietNo}: {currentDietNo: string}) => {
   // react-query
   const {data: baseLineData, isLoading: baseLineIsLoading} = useGetBaseLine();
-  const {data: dietDetailData} = useListDietDetail(currentDietNo);
+  const {data: dietDetailData, isLoading: dietDetailIsLoading} =
+    useListDietDetail(currentDietNo);
 
   const {cal, carb, protein, fat} = sumUpNutrients(dietDetailData);
   return (

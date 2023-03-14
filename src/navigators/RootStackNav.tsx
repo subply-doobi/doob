@@ -10,7 +10,7 @@ import PaymentHistoryNav from './PaymentHistoryNav';
 import colors from '../styles/colors';
 import BackArrow from '../components/common/BackArrow';
 import {useNavigation} from '@react-navigation/native';
-import {Platform} from 'react-native';
+
 const Stack = createNativeStackNavigator();
 
 const RootStackNav = () => {
