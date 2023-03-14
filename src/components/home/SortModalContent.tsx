@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, View} from 'react';
 import styled from 'styled-components/native';
 import {
   Row,
@@ -80,7 +80,7 @@ const SortModalContent = props => {
   console.log('param:', param);
 
   return (
-    <>
+    <View>
       <Button
         onPress={() => {
           setCalorieToggle(0);
@@ -173,7 +173,7 @@ const SortModalContent = props => {
           <BottomText>확인</BottomText>
         </BtnCTA>
       </BottomRow>
-    </>
+    </View>
   );
 };
 
@@ -192,7 +192,8 @@ const Image = styled.Image`
   height: 24px;
 `;
 const SortRow = styled(Row)`
-  margin: 10px;
+  margin-top: 16px;
+  margin-left: 16px;
   justify-content: center;
 `;
 const BottomRow = styled.View`

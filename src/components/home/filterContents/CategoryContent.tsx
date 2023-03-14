@@ -45,14 +45,6 @@ const CategoryContent = () => {
           </CategoryButton>
         </>
       ))}
-      <BottomRow>
-        <BtnCTA btnStyle="border" width="200">
-          <BottomText>카테고리 초기화</BottomText>
-        </BtnCTA>
-        <BtnCTA btnStyle="border" width="200">
-          <BottomText>확인</BottomText>
-        </BtnCTA>
-      </BottomRow>
     </>
   );
 };

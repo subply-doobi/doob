@@ -64,28 +64,6 @@ const NutritionContent = () => {
         sliderWidth={SLIDER_WIDTH}
         g={g}
       />
-      <BottomRow>
-        <BtnCTA
-          style={{marginRight: 15, marginTop: 5}}
-          btnStyle={reset ? 'activated' : 'border'}
-          width="180"
-          onPress={() => {
-            setReset(!reset);
-            setClicked(false);
-          }}>
-          <BottomText clicked={reset}>영양성분 초기화</BottomText>
-        </BtnCTA>
-        <BtnCTA
-          style={{marginTop: 5}}
-          btnStyle={clicked ? 'activated' : 'border'}
-          width="180"
-          onPress={() => {
-            setClicked(!clicked);
-            setReset(false);
-          }}>
-          <BottomText clicked={clicked}>확인</BottomText>
-        </BtnCTA>
-      </BottomRow>
     </SafeAreaView>
   );
 };
@@ -99,7 +77,7 @@ const Text = styled.Text`
 
 const BottomText = styled.Text`
   font-size: 16px;
-  color: ${({clicked}) => (clicked ? 'white' : colors.textSub)};
+  color: ${colors.white};
 `;
 const Button = styled.TouchableOpacity``;
 const Image = styled.Image`

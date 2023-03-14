@@ -7,6 +7,7 @@ import {
   BtnBottomCTA,
   TextMain,
 } from '../../styles/styledConsts';
+import colors from '../../styles/colors';
 import {useWeightPurposeCode, useFilterCode} from '../../query/queries/code';
 import {useListProduct} from '../../query/queries/product';
 import {useListCategory, useCountCategory} from '../../query/queries/category';
@@ -19,7 +20,36 @@ import PriceContent from './filterContents/PriceContent';
 const FilterModalContent = props => {
   const [clicked, setClicked] = useState(0);
   const {filterIndex} = props;
-
+  console.log('filtermodalcontent:', clicked);
+  const resetType = [
+    {
+      text: '카테고리 초기화',
+      reset: () => {
+        console.log('카테고리 reset');
+      },
+      onPress: () => {
+        console.log('카테고리 확인');
+      },
+    },
+    {
+      text: '영양성분 초기화',
+      onPress: () => {
+        console.log('영양성분 확인');
+      },
+    },
+    {
+      text: '가격 초기화',
+      onPress: () => {
+        console.log('가격 확인');
+      },
+    },
+    {
+      text: '식단구성 초기화',
+      onPress: () => {
+        console.log('식단구성 확인');
+      },
+    },
+  ];
   const AutoDietContent = () => {
     return <Text>auto</Text>;
   };
@@ -62,6 +92,7 @@ const FilterModalContent = props => {
     );
   };
   const ShowContent = (i: any) => {
+    console.log('showcontent:', i.index);
     return i.index === 0 ? (
       <CategoryContent />
     ) : i.index === 1 ? (
@@ -70,15 +101,33 @@ const FilterModalContent = props => {
       <PriceContent />
     ) : i.index === 3 ? (
       <AutoDietContent />
-    ) : (
-      <CategoryContent />
-    );
+    ) : null;
   };
   return (
     <>
       <ScrollView>
         <FilterHeaderText />
-        <ShowContent index={filterIndex} />
+        <ShowContent index={clicked ? clicked : filterIndex} />
+        <BottomRow>
+          <BtnCTA
+            style={{marginRight: 8, marginTop: 5}}
+            btnStyle={'border'}
+            width="180"
+            onPress={() => console.log('초기화')}>
+            <BottomText style={{color: colors.textSub}}>
+              {resetType[clicked].text}
+            </BottomText>
+          </BtnCTA>
+          <BtnCTA
+            style={{marginTop: 5}}
+            btnStyle={'activated'}
+            width="180"
+            onPress={() => {
+              resetType[clicked].onPress();
+            }}>
+            <BottomText>확인</BottomText>
+          </BtnCTA>
+        </BottomRow>
       </ScrollView>
     </>
   );
@@ -88,11 +137,12 @@ export default FilterModalContent;
 
 const Text = styled.Text`
   font-size: 18px;
-  margin: 15px;
+  margin-right: 16px;
 `;
 
 const BottomText = styled.Text`
   font-size: 16px;
+  color: ${colors.white};
 `;
 const Button = styled.TouchableOpacity``;
 const Image = styled.Image`
@@ -101,6 +151,7 @@ const Image = styled.Image`
 `;
 const FilterRow = styled(Row)`
   justify-content: center;
+  margin-top: 24px;
 `;
 const BottomRow = styled.View`
   flex-direction: row;
