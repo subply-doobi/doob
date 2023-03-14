@@ -112,6 +112,7 @@ const Cart = () => {
 
   // TBD | 에러처리는 어떻게??
   const deleteSelected = () => {
+    setCheckAllClicked(false);
     Promise.all(
       selectedFoods[currentDietNo]?.map(productNo =>
         deleteDietDetailMutation.mutateAsync({

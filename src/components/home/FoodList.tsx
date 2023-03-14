@@ -59,6 +59,7 @@ const FoodList = ({item, dietDetailData}: IFoodList) => {
             source={{
               uri: `${BASE_URL}${item?.mainAttUrl}`,
             }}
+            resizeMode="center"
           />
           <ProductInfoContainer>
             <Col>
@@ -172,7 +173,7 @@ const NutrSummaryContainer = styled.View`
 
 const Nutr = styled.View`
   flex-direction: row;
-  width: ${(SCREENWIDTH - 16) / 5}px;
+  /* width: ${(SCREENWIDTH - 16) / 5}px; */
 `;
 
 const NutrText = styled(TextSub)`

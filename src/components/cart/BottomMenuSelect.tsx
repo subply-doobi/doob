@@ -77,7 +77,9 @@ const BottomMenuSelect = () => {
               <BtnSmall
                 isActivated={isActivated}
                 style={{marginBottom: 8}}
-                onPress={() => dispatch(setCurrentDietNo(menu.dietNo))}>
+                onPress={() => {
+                  dispatch(setCurrentDietNo(menu.dietNo));
+                }}>
                 <BtnSmallText isActivated={isActivated}>
                   {menu?.dietSeq}
                 </BtnSmallText>

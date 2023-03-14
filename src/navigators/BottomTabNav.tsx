@@ -10,15 +10,17 @@ import colors from '../styles/colors';
 import BackArrow from '../components/common/BackArrow';
 import Home from '../screens/homeScreen/Home';
 import {NavigationProps} from '../constants/constants';
+import {useNavigation} from '@react-navigation/native';
+import {useListDietDetailAll} from '../query/queries/diet';
 
 const Tab = createBottomTabNavigator();
 
-const BottomTabIcon = styled.Image`
-  width: 36px;
-  height: 36px;
-`;
+const BottomTabNav = () => {
+  // react-query
+  const {data: dietDetailAllData} = useListDietDetailAll();
 
-const BottomTabNav = ({navigation: {goBack}}: NavigationProps) => {
+  const navigation = useNavigation();
+  const {goBack} = navigation;
   return (
     <Tab.Navigator>
       <Tab.Screen
@@ -88,18 +90,25 @@ const BottomTabNav = ({navigation: {goBack}}: NavigationProps) => {
         name="Cart"
         component={Cart}
         options={{
-          tabBarIcon: ({focused}) =>
-            focused ? (
-              <BottomTabIcon
-                source={require('../assets/icons/36_cartPage_selected.png')}
-              />
-            ) : (
-              <BottomTabIcon
-                source={require('../assets/icons/36_cartPage.png')}
-              />
-            ),
+          tabBarIcon: ({focused}) => (
+            <CartIcon>
+              {focused ? (
+                <BottomTabIcon
+                  source={require('../assets/icons/36_cartPage_selected.png')}
+                />
+              ) : (
+                <BottomTabIcon
+                  source={require('../assets/icons/36_cartPage.png')}
+                />
+              )}
+              {dietDetailAllData && dietDetailAllData.length !== 0 && (
+                <Badge>
+                  <BadgeText>{dietDetailAllData.length}</BadgeText>
+                </Badge>
+              )}
+            </CartIcon>
+          ),
           tabBarShowLabel: false,
-
           headerShown: true,
           headerTitle: '장바구니',
           headerTitleAlign: 'center',
@@ -116,3 +125,29 @@ const BottomTabNav = ({navigation: {goBack}}: NavigationProps) => {
 };
 
 export default BottomTabNav;
+
+const BottomTabIcon = styled.Image`
+  width: 36px;
+  height: 36px;
+`;
+
+const CartIcon = styled.View`
+  width: 36px;
+  height: 36px;
+`;
+
+const Badge = styled.View`
+  width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  background-color: ${colors.main};
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  justify-content: center;
+  align-items: center;
+`;
+const BadgeText = styled.Text`
+  color: ${colors.white};
+  font-size: 10px;
+`;

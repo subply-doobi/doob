@@ -106,7 +106,10 @@ const CartFoodList = ({
               width: '100%',
               alignItems: 'flex-start',
             }}>
-            <ThumbnailImage source={{uri: `${BASE_URL}${food.mainAttUrl}`}} />
+            <ThumbnailImage
+              source={{uri: `${BASE_URL}${food.mainAttUrl}`}}
+              resizeMode="center"
+            />
             {selectedFoods[currentDietNo]?.includes(food.productNo) ? (
               <SelectedBtn
                 onPress={() => {

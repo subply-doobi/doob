@@ -70,6 +70,7 @@ export const validateToken = async () => {
           authorization: `Bearer ${refreshToken}`,
         },
       });
+      console.log();
       await storeToken(reIssue.data.accessToken, reIssue.data.refreshToken);
       isTokenValid = true;
       validToken = reIssue.data.accessToken;

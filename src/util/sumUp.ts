@@ -29,7 +29,7 @@ export const sumUpPrice = (dietDetail: IDietDetailData | undefined) => {
   return price;
 };
 export const makePriceObjBySeller = (
-  productsBySeller: Array<Array<IProductData>>,
+  productsBySeller: Array<Array<IProductData> | IDietDetailData>,
 ) => {
   let priceBySeller: {[key: string]: number} = {};
   productsBySeller.forEach((seller, idx) => {

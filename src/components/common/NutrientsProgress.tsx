@@ -33,14 +33,14 @@ const Container = styled.View`
   align-items: center;
 `;
 const indicatorColorsByTitle: {[key: string]: string} = {
-  '칼로리(g)': colors.main,
+  '칼로리(kcal)': colors.main,
   '탄수화물(g)': colors.blue,
   '단백질(g)': colors.green,
   '지방(g)': colors.orange,
 };
 
 const NutrUpperBoundByTitle: {[key: string]: number} = {
-  '칼로리(g)': 50,
+  '칼로리(kcal)': 50,
   '탄수화물(g)': 15,
   '단백질(g)': 5,
   '지방(g)': 5,
@@ -91,7 +91,7 @@ const NutrientsProgress = ({currentDietNo}: {currentDietNo: string}) => {
         baseLineData && (
           <>
             <ProgressBar
-              title="칼로리(g)"
+              title="칼로리(kcal)"
               numerator={cal}
               denominator={parseInt(baseLineData.calorie)}
             />

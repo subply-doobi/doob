@@ -61,9 +61,10 @@ const MenuSelect = ({setOpen, center}: IMenuSelect) => {
   };
 
   const onDeleteDiet = () => {
+    if (!dietData) {
+      return;
+    }
     dietNoToDelete && deleteDietMutation.mutate({dietNo: dietNoToDelete});
-    dietData &&
-      dispatch(setCurrentDietNo(dietData[dietData.length - 2]?.dietNo));
     setOpen(false);
     setDeleteAlertShow(false);
   };

@@ -1,5 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit';
 import type {PayloadAction} from '@reduxjs/toolkit';
+import {queryClient} from '../../query/store';
+import {DIET_DETAIL_EMPTY_YN, PRODUCT} from '../../query/keys';
 
 // cart -> menu -> product
 
@@ -30,6 +32,7 @@ export const cartSlice = createSlice({
   reducers: {
     setCurrentDietNo: (state, action: PayloadAction<string>) => {
       state.currentDietNo = action.payload;
+      queryClient.invalidateQueries([PRODUCT]);
     },
     // setCurrentNutr: (state, action: PayloadAction<ICurrentNutr>) => {
     //   const {cal, carb, protein, fat} = state.currentNutr;

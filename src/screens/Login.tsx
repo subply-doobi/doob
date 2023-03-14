@@ -8,9 +8,7 @@ import {validateToken} from '../query/queries/token';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../stores/store';
 
-const Login = ({navigation: {navigate}}: NavigationProps) => {
-  //redux
-
+const Login = ({navigation: {navigate, reset}}: NavigationProps) => {
   //유저값 check 후 화면 이동
   const {data, isLoading} = useGetBaseLine();
 
@@ -26,7 +24,7 @@ const Login = ({navigation: {navigate}}: NavigationProps) => {
 
   useEffect(() => {
     signInWithKakao();
-  }, [signInWithKakao]);
+  }, [signInWithKakao, data]);
 
   return (
     <Container>

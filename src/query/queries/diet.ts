@@ -1,6 +1,7 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {setCurrentDietNo} from '../../stores/slices/cartSlice';
+import {RootState} from '../../stores/store';
 import {sumUpNutrients} from '../../util/sumUp';
 import {
   DIET,
@@ -38,10 +39,11 @@ export const useCreateDiet = (options?: IMutationOptions) => {
     mutationFn: () => mutationFn(CREATE_DIET, 'put'),
     onSuccess: data => {
       options?.onSuccess && options?.onSuccess(data);
+      dispatch(setCurrentDietNo(data.dietNo));
       queryClient.invalidateQueries({queryKey: [DIET]});
       queryClient.invalidateQueries({queryKey: [DIET_DETAIL_EMPTY_YN]});
 
-      dispatch(setCurrentDietNo(data.dietNo));
+      queryClient.invalidateQueries({queryKey: [PRODUCT]});
     },
     onError: e => console.log('useCreateDiet error: ', e),
   });
@@ -196,12 +198,29 @@ export const useUpdateDietDetail = () => {
 
 // DELETE //
 export const useDeleteDiet = () => {
+  const {currentDietNo} = useSelector((state: RootState) => state.cart);
+  const dispatch = useDispatch();
   const mutation = useMutation({
     mutationFn: ({dietNo}: {dietNo: string}) =>
       mutationFn(`${DELETE_DIET}/${dietNo}`, 'delete'),
-    onSuccess: () => {
+    onSuccess: (data, {dietNo}: {dietNo: string}) => {
+      const prevDietData = queryClient.getQueryData<IDietData>([DIET]);
+      let nextDietIdx = 0;
+      let currentDietIdx = 0;
+      if (!prevDietData) {
+        return;
+      }
+      if (currentDietNo === dietNo) {
+        prevDietData.forEach((diet, idx) => {
+          if (diet.dietNo === dietNo) currentDietIdx = idx;
+        });
+        nextDietIdx = currentDietIdx === 0 ? 1 : prevDietData.length - 2;
+        dispatch(setCurrentDietNo(prevDietData[nextDietIdx].dietNo));
+      }
+
       queryClient.invalidateQueries({queryKey: [DIET]});
       queryClient.invalidateQueries({queryKey: [DIET_DETAIL_EMPTY_YN]});
+      queryClient.invalidateQueries({queryKey: [PRODUCT]});
     },
     onError: e => console.log('useDeleteDiet error: ', e),
   });

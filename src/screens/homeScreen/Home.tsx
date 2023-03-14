@@ -34,7 +34,11 @@ const Home = () => {
   const {currentDietNo} = useSelector((state: RootState) => state.cart);
 
   // react-query
-  const {data: tData} = useListProduct(
+  const {
+    data: tData,
+    refetch: refetchProduct,
+    isFetching: productIsFetching,
+  } = useListProduct(
     {dietNo: currentDietNo, categoryCd: 'CG001'},
     {
       enabled: currentDietNo ? true : false,
@@ -125,6 +129,8 @@ const Home = () => {
             removeClippedSubviews={true}
             onEndReachedThreshold={0.4}
             showsVerticalScrollIndicator={false}
+            refreshing={productIsFetching}
+            onRefresh={refetchProduct}
           />
         )}
 
