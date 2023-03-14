@@ -20,7 +20,6 @@ import PriceContent from './filterContents/PriceContent';
 const FilterModalContent = props => {
   const [clicked, setClicked] = useState(0);
   const {filterIndex} = props;
-  console.log('filtermodalcontent:', clicked);
   const resetType = [
     {
       text: '카테고리 초기화',

@@ -1,4 +1,9 @@
-import {NavigationContainer} from '@react-navigation/native';
+import {
+  NavigationContainer,
+  useNavigationContainerRef,
+} from '@react-navigation/native';
+import {useFlipper} from '@react-navigation/devtools';
+
 import RootStackNav from './src/navigators/RootStackNav';
 import React from 'react';
 import {store} from './src/stores/store';
@@ -12,10 +17,13 @@ if (__DEV__) {
   });
 }
 function App(): JSX.Element {
+  const navigationRef = useNavigationContainerRef();
+  useFlipper(navigationRef);
+
   return (
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
           <RootStackNav />
         </NavigationContainer>
       </Provider>

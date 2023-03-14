@@ -24,7 +24,7 @@ interface CategoryItem {
 const CategoryContent = () => {
   // const filter = useFilterCode('Protein');
   // console.log('filterTest:', filter);
-  const list = useListProduct();
+  // const list = useListProduct();
   // console.log('filterModal/listproduct:', list);
   const count = useCountCategory();
   const onPress = arg => {

@@ -1,8 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
 import type {PayloadAction} from '@reduxjs/toolkit';
-import {getProductIndex, hasProduct} from '../../util/reduxUtil';
-import {IProduct} from '../../constants/constants';
-import {IProductData} from '../../query/types/product';
 
 // cart -> menu -> product
 
@@ -34,36 +31,35 @@ export const cartSlice = createSlice({
     setCurrentDietNo: (state, action: PayloadAction<string>) => {
       state.currentDietNo = action.payload;
     },
-    setCurrentNutr: (state, action: PayloadAction<ICurrentNutr>) => {
-      const {cal, carb, protein, fat} = state.currentNutr;
-      state.currentNutr = {
-        cal: action.payload.cal,
-        carb: action.payload.carb,
-        protein: action.payload.protein,
-        fat: action.payload.fat,
-      };
-    },
-    addNutr: (state, action: PayloadAction<ICurrentNutr>) => {
-      const {cal, carb, protein, fat} = state.currentNutr;
-      state.currentNutr = {
-        cal: cal + action.payload.cal,
-        carb: carb + action.payload.carb,
-        protein: protein + action.payload.protein,
-        fat: fat + action.payload.fat,
-      };
-    },
-    minusNutr: (state, action: PayloadAction<ICurrentNutr>) => {
-      const {cal, carb, protein, fat} = state.currentNutr;
-      state.currentNutr = {
-        cal: cal - action.payload.cal,
-        carb: carb - action.payload.carb,
-        protein: protein - action.payload.protein,
-        fat: fat - action.payload.fat,
-      };
-    },
+    // setCurrentNutr: (state, action: PayloadAction<ICurrentNutr>) => {
+    //   const {cal, carb, protein, fat} = state.currentNutr;
+    //   state.currentNutr = {
+    //     cal: action.payload.cal,
+    //     carb: action.payload.carb,
+    //     protein: action.payload.protein,
+    //     fat: action.payload.fat,
+    //   };
+    // },
+    // addNutr: (state, action: PayloadAction<ICurrentNutr>) => {
+    //   const {cal, carb, protein, fat} = state.currentNutr;
+    //   state.currentNutr = {
+    //     cal: cal + action.payload.cal,
+    //     carb: carb + action.payload.carb,
+    //     protein: protein + action.payload.protein,
+    //     fat: fat + action.payload.fat,
+    //   };
+    // },
+    // minusNutr: (state, action: PayloadAction<ICurrentNutr>) => {
+    //   const {cal, carb, protein, fat} = state.currentNutr;
+    //   state.currentNutr = {
+    //     cal: cal - action.payload.cal,
+    //     carb: carb - action.payload.carb,
+    //     protein: protein - action.payload.protein,
+    //     fat: fat - action.payload.fat,
+    //   };
+    // },
   },
 });
 
-export const {setCurrentDietNo, setCurrentNutr, addNutr, minusNutr} =
-  cartSlice.actions;
+export const {setCurrentDietNo} = cartSlice.actions;
 export default cartSlice.reducer;

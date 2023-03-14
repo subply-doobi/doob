@@ -6,19 +6,18 @@ import {
   BtnCTA,
   BtnBottomCTA,
 } from '../../styles/styledConsts';
+import colors from '../../styles/colors';
 import {useListProduct} from '../../query/queries/product';
+import {useSelector} from 'react-redux';
 
 const SortModalContent = props => {
-  const {closeModal} = props;
+  const {closeModal, setSortParam} = props;
   const [priceToggle, setPriceToggle] = useState(0);
   const [calorieToggle, setCalorieToggle] = useState(0);
   const [proteinToggle, setProteinToggle] = useState(0);
   const [param, setParam] = useState('');
-  const [last, setLast] = useState('');
-  const {data} = useListProduct();
+  const {currentDietNo} = useSelector((state: RootState) => state.cart);
 
-  // console.log(data);
-  // console.log('last:', last);
   const toggleButton = arg => {
     const {price, calorie, protein} = arg;
     // setCalorieToggle(0);
@@ -77,10 +76,8 @@ const SortModalContent = props => {
     // }
   };
 
-  console.log('param:', param);
-
   return (
-    <View>
+    <>
       <Button
         onPress={() => {
           setCalorieToggle(0);
@@ -161,19 +158,25 @@ const SortModalContent = props => {
         </SortRow>
       </Button>
       <BottomRow>
-        <BtnCTA btnStyle="border" width="200">
-          <BottomText>초기화</BottomText>
+        <BtnCTA
+          style={{marginRight: 8, marginTop: 5}}
+          btnStyle={'border'}
+          width="180"
+          onPress={() => setParam('')}>
+          <BottomText style={{color: colors.textSub}}>초기화</BottomText>
         </BtnCTA>
         <BtnCTA
-          btnStyle="border"
-          width="200"
+          style={{marginTop: 5}}
+          btnStyle={'activated'}
+          width="180"
           onPress={() => {
             closeModal(false);
+            setSortParam(param);
           }}>
           <BottomText>확인</BottomText>
         </BtnCTA>
       </BottomRow>
-    </View>
+    </>
   );
 };
 
@@ -181,15 +184,21 @@ export default SortModalContent;
 
 const Text = styled.Text`
   font-size: 16px;
-  margin-bottom: 10px;
 `;
+
 const BottomText = styled.Text`
   font-size: 16px;
+  color: ${colors.white};
 `;
-const Button = styled.TouchableOpacity``;
+const Button = styled.TouchableOpacity`
+  height: 58px;
+`;
 const Image = styled.Image`
   width: 24px;
   height: 24px;
+  position: absolute;
+  right: 0;
+  align-self: center;
 `;
 const SortRow = styled(Row)`
   margin-top: 16px;

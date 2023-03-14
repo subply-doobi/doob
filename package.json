@@ -16,6 +16,7 @@
     "@react-native-community/checkbox": "^0.5.14",
     "@react-native-seoul/kakao-login": "^5.2.6",
     "@react-navigation/bottom-tabs": "^6.5.4",
+    "@react-navigation/devtools": "^6.0.18",
     "@react-navigation/material-top-tabs": "^6.5.3",
     "@react-navigation/native": "^6.1.3",
     "@react-navigation/native-stack": "^6.9.9",

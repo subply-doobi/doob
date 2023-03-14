@@ -10,6 +10,7 @@ import colors from '../styles/colors';
 import BackArrow from '../components/common/BackArrow';
 import Home from '../screens/homeScreen/Home';
 import {NavigationProps} from '../constants/constants';
+import {useNavigation} from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
 
@@ -18,9 +19,11 @@ const BottomTabIcon = styled.Image`
   height: 36px;
 `;
 
-const BottomTabNav = ({navigation: {goBack}}: NavigationProps) => {
+const BottomTabNav = props => {
+  const navigation = useNavigation();
+  const {goBack} = navigation;
   return (
-    <Tab.Navigator>
+    <Tab.Navigator backBehavior="history">
       <Tab.Screen
         name="Home"
         component={Home}
